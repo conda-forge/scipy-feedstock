@@ -37,6 +37,7 @@ requirements:
 test:
   requires:
     - nose
+    - mpmath
   imports:
     - scipy
     - scipy.integrate.vode
@@ -60,3 +61,4 @@ extra:
   recipe-maintainers:
     - jakirkham
     - msarahan
+    - rgommers

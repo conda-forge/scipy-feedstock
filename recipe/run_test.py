@@ -66,7 +66,6 @@ import scipy.special.specfun
 import scipy.stats._rank
 import scipy.stats.mvn
 import scipy.stats.statlib
-import scipy.stats.vonmises_cython
 
 import scipy.stats
 import scipy.special
