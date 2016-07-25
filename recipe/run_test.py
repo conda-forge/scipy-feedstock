@@ -63,7 +63,6 @@ import scipy.special._ellip_harm_2
 import scipy.special._ufuncs
 import scipy.special._ufuncs_cxx
 import scipy.special.specfun
-import scipy.stats._rank
 import scipy.stats.mvn
 import scipy.stats.statlib
 
