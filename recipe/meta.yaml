@@ -13,7 +13,7 @@ source:
   md5: d70e7f533622ab705bc016dac328d93e
 
 build:
-  number: 200
+  number: 201
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
@@ -40,13 +40,6 @@ test:
   requires:
     - nose
     - mpmath
-  imports:
-    - scipy
-    - scipy.integrate.vode
-    - scipy.linalg._fblas
-    - scipy.linalg._flapack
-    - scipy.sparse.linalg.eigen.arpack._arpack
-    - scipy.sparse.linalg.isolve._iterative
 
 about:
   home: http://www.scipy.org/
