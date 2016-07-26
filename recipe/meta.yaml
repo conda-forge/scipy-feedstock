@@ -1,4 +1,4 @@
-{% set version = "0.17.1" %}
+{% set version = "0.18.0" %}
 
 {% set variant = "openblas" %}
 
@@ -10,10 +10,10 @@ package:
 source:
   fn: scipy-{{ version }}.tar.gz
   url: https://pypi.io/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  md5: 8987b9a3e3cd79218a0a423b21c8e4de
+  md5: d70e7f533622ab705bc016dac328d93e
 
 build:
-  number: 202
+  number: 200
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
@@ -64,3 +64,4 @@ extra:
     - jakirkham
     - msarahan
     - rgommers
+    - ocefpaf
