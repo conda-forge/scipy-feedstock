@@ -9,6 +9,8 @@ Feedstock license: BSD 3-Clause
 
 Summary: Scientific Library for Python
 
+SciPy is a Python-based ecosystem of open-source software for mathematics,
+science, and engineering.
 
 
 Installing scipy
@@ -38,7 +40,7 @@ About conda-forge
 
 conda-forge is a community-led conda channel of installable packages.
 In order to provide high-quality builds, the process has been automated into the
-conda-forge GitHub organization. The conda-forge organization contains one repository 
+conda-forge GitHub organization. The conda-forge organization contains one repository
 for each of the installable packages. Such a repository is known as a *feedstock*.
 
 A feedstock is made up of a conda recipe (the instructions on what and how to build
@@ -71,7 +73,7 @@ Current build status
 ====================
 
 Linux: [![Circle CI](https://circleci.com/gh/conda-forge/scipy-feedstock.svg?style=svg)](https://circleci.com/gh/conda-forge/scipy-feedstock)
-OSX: [![TravisCI](https://travis-ci.org/conda-forge/scipy-feedstock.svg?branch=master)](https://travis-ci.org/conda-forge/scipy-feedstock) 
+OSX: [![TravisCI](https://travis-ci.org/conda-forge/scipy-feedstock.svg?branch=master)](https://travis-ci.org/conda-forge/scipy-feedstock)
 Windows: [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/conda-forge/scipy-feedstock?svg=True)](https://ci.appveyor.com/project/conda-forge/scipy-feedstock/branch/master)
 
 Current release info
@@ -92,7 +94,7 @@ install and use.
 
 In order to produce a uniquely identifiable distribution:
  * If the version of a package **is not** being increased, please add or increase
-   the [``build/number``](http://conda.pydata.org/docs/building/meta-yaml.html#build-number-and-string). 
+   the [``build/number``](http://conda.pydata.org/docs/building/meta-yaml.html#build-number-and-string).
  * If the version of a package **is** being increased, please remember to return
    the [``build/number``](http://conda.pydata.org/docs/building/meta-yaml.html#build-number-and-string)
    back to 0.
