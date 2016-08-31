@@ -47,7 +47,7 @@ test -f "${PREFIX}/lib/libopenblas.a" && ln -fs "${PREFIX}/lib/libopenblas.a" "$
 test -f "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" && ln -fs "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" "${PREFIX}/lib/libblas.${DYLIB_EXT}"
 test -f "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" && ln -fs "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" "${PREFIX}/lib/liblapack.${DYLIB_EXT}"
 
-$PYTHON setup.py install
+$PYTHON setup.py install --single-version-externally-managed --record=record.txt
 
 # Need to clean these up as we don't want them as part of the NumPy package.
 # If these are part of a BLAS (e.g. ATLAS), this won't cause us any problems

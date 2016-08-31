@@ -24,6 +24,7 @@ requirements:
     - toolchain
     - gcc          # [osx]
     - python
+    - setuptools
     - cython
     - blas 1.1 {{ variant }}
     - libgfortran  # [linux]
