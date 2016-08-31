@@ -28,13 +28,13 @@ requirements:
     - blas 1.1 {{ variant }}
     - libgfortran  # [linux]
     - openblas 0.2.18|0.2.18.*
-    - numpy     x.x
+    - numpy x.x
   run:
     - python
     - blas 1.1 {{ variant }}
     - libgfortran
     - openblas 0.2.18|0.2.18.*
-    - numpy     x.x
+    - numpy x.x
 
 test:
   requires:
