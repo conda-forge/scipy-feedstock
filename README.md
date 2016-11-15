@@ -35,7 +35,6 @@ conda search scipy --channel conda-forge
 ```
 
 
-
 About conda-forge
 =================
 
