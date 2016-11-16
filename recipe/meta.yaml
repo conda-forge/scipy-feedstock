@@ -13,7 +13,7 @@ source:
   md5: 8987b9a3e3cd79218a0a423b21c8e4de
 
 build:
-  number: 204
+  number: 205
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win or np!=111]
   features:
@@ -27,13 +27,13 @@ requirements:
     - cython
     - blas 1.1 {{ variant }}
     - libgfortran  # [linux]
-    - openblas 0.2.18|0.2.18.*
+    - openblas 0.2.19|0.2.19.*
     - numpy     x.x
   run:
     - python
     - blas 1.1 {{ variant }}
     - libgfortran
-    - openblas 0.2.18|0.2.18.*
+    - openblas 0.2.19|0.2.19.*
     - numpy     x.x
 
 test:
