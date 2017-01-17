@@ -15,7 +15,7 @@ source:
 build:
   number: 201
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
-  skip: true  # [win or np!=111]
+  skip: true  # [win]
   features:
     - blas_{{ variant }}
 
