@@ -1,4 +1,4 @@
-{% set version = "0.17.1" %}
+{% set version = "0.19.0" %}
 
 {% set variant = "openblas" %}
 
@@ -9,13 +9,13 @@ package:
 
 source:
   fn: scipy-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  md5: 8987b9a3e3cd79218a0a423b21c8e4de
+  url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
+  sha256: efa71d68ef0fa4a2836a3058fc1c5aa6b61d93ee0248a127cd862ea3bf22b69a
 
 build:
-  number: 205
+  number: 200
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
-  skip: true  # [win or np!=111]
+  skip: true  # [win or (np!=112 and linux)]
   features:
     - blas_{{ variant }}
 
@@ -24,29 +24,23 @@ requirements:
     - toolchain
     - gcc          # [osx]
     - python
+    - setuptools
     - cython
     - blas 1.1 {{ variant }}
     - libgfortran  # [linux]
     - openblas 0.2.19|0.2.19.*
-    - numpy     x.x
+    - numpy x.x
   run:
     - python
     - blas 1.1 {{ variant }}
     - libgfortran
     - openblas 0.2.19|0.2.19.*
-    - numpy     x.x
+    - numpy x.x
 
 test:
   requires:
     - nose
     - mpmath
-  imports:
-    - scipy
-    - scipy.integrate.vode
-    - scipy.linalg._fblas
-    - scipy.linalg._flapack
-    - scipy.sparse.linalg.eigen.arpack._arpack
-    - scipy.sparse.linalg.isolve._iterative
 
 about:
   home: http://www.scipy.org/
@@ -64,3 +58,4 @@ extra:
     - jakirkham
     - msarahan
     - rgommers
+    - ocefpaf

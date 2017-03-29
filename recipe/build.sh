@@ -1,18 +1,9 @@
 #!/bin/bash
 
 
-# Letting SciPy set these for us.
-# This may not be the best long term strategy,
-# but it works fine to get our first build.
-unset LDFLAGS
-
-# FIXME: This is a hack to make sure the environment is activated.
-# The reason this is required is due to the conda-build issue
-# mentioned below.
-#
-# https://github.com/conda/conda-build/issues/910
-#
-source activate "${CONDA_DEFAULT_ENV}"
+# Use OpenBLAS with 1 thread only as it seems to be using too many
+# on the CIs apparently.
+export OPENBLAS_NUM_THREADS=1
 
 
 export LIBRARY_PATH="${PREFIX}/lib"
@@ -25,11 +16,9 @@ if [[ `uname` == 'Darwin' ]]; then
     # `gfortran` and cause problems.
     #
     # https://github.com/conda-forge/toolchain-feedstock/pull/8
-    DYLIB_EXT=dylib
     export CFLAGS="${CFLAGS} -stdlib=libc++ -lc++"
     export LDFLAGS="-headerpad_max_install_names -undefined dynamic_lookup -bundle -Wl,-search_paths_first -lc++"
 else
-    DYLIB_EXT=so
     unset LDFLAGS
 fi
 
@@ -39,10 +28,10 @@ fi
 # OpenBLAS. This will make it easy for NumPy to find it.
 test -f "${PREFIX}/lib/libopenblas.a" && ln -fs "${PREFIX}/lib/libopenblas.a" "${PREFIX}/lib/libblas.a"
 test -f "${PREFIX}/lib/libopenblas.a" && ln -fs "${PREFIX}/lib/libopenblas.a" "${PREFIX}/lib/liblapack.a"
-test -f "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" && ln -fs "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" "${PREFIX}/lib/libblas.${DYLIB_EXT}"
-test -f "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" && ln -fs "${PREFIX}/lib/libopenblas.${DYLIB_EXT}" "${PREFIX}/lib/liblapack.${DYLIB_EXT}"
+test -f "${PREFIX}/lib/libopenblas${SHLIB_EXT}" && ln -fs "${PREFIX}/lib/libopenblas${SHLIB_EXT}" "${PREFIX}/lib/libblas${SHLIB_EXT}"
+test -f "${PREFIX}/lib/libopenblas${SHLIB_EXT}" && ln -fs "${PREFIX}/lib/libopenblas${SHLIB_EXT}" "${PREFIX}/lib/liblapack${SHLIB_EXT}"
 
-$PYTHON setup.py install
+$PYTHON setup.py install --single-version-externally-managed --record=record.txt
 
 # Need to clean these up as we don't want them as part of the NumPy package.
 # If these are part of a BLAS (e.g. ATLAS), this won't cause us any problems
@@ -50,5 +39,5 @@ $PYTHON setup.py install
 # ignored packaging those files anyways.
 rm -f "${PREFIX}/lib/libblas.a"
 rm -f "${PREFIX}/lib/liblapack.a"
-rm -f "${PREFIX}/lib/libblas.${DYLIB_EXT}"
-rm -f "${PREFIX}/lib/liblapack.${DYLIB_EXT}"
+rm -f "${PREFIX}/lib/libblas${SHLIB_EXT}"
+rm -f "${PREFIX}/lib/liblapack${SHLIB_EXT}"
