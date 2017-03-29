@@ -1,4 +1,9 @@
 import sys
+import os
+
+# Use OpenBLAS with 1 thread only as it seems to be using too many
+# on the CIs apparently.
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
 
 import scipy
 import scipy.cluster._hierarchy
@@ -63,7 +68,6 @@ import scipy.special._ellip_harm_2
 import scipy.special._ufuncs
 import scipy.special._ufuncs_cxx
 import scipy.special.specfun
-import scipy.stats._rank
 import scipy.stats.mvn
 import scipy.stats.statlib
 
