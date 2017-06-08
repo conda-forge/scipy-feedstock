@@ -20,7 +20,7 @@ source:
     - PR_7229.diff
 
 build:
-  number: 201
+  number: 202
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win or (np!=113 and linux)]
   features:
