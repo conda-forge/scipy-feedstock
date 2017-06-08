@@ -11,6 +11,13 @@ source:
   fn: scipy-{{ version }}.tar.gz
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: efa71d68ef0fa4a2836a3058fc1c5aa6b61d93ee0248a127cd862ea3bf22b69a
+  patches:
+    #
+    # Fix a test failure caused by a change to NumPy's `assert_equal`'s.
+    #
+    # xref: https://github.com/scipy/scipy/pull/7229
+    #
+    - PR_7229.diff
 
 build:
   number: 201
