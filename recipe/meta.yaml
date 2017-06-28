@@ -18,10 +18,15 @@ build:
   skip: true  # [win or np!=113]
   features:
     - blas_{{ variant }}
+  script:
+    # Use OpenBLAS with 1 thread only as it seems to be using too many
+    # on the CIs apparently.
+    - export OPENBLAS_NUM_THREADS=1                                                     # [unix]
+    - python setup.py install --single-version-externally-managed --record=record.txt   # [unix]
 
 requirements:
   build:
-    - toolchain
+    - toolchain3
     - gcc          # [osx]
     - python
     - setuptools
