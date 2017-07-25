@@ -11,7 +11,7 @@ export C_INCLUDE_PATH="${PREFIX}/include"
 export CPLUS_INCLUDE_PATH="${PREFIX}/include"
 
 # Depending on our platform, shared libraries end with either .so or .dylib
-if [[ `uname` == 'Darwin' ]]; then
+if [[ $(uname) == 'Darwin' ]]; then
     # Also, included a workaround so that `-stdlib=c++` doesn't go to
     # `gfortran` and cause problems.
     #

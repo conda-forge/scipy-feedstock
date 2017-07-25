@@ -1,7 +1,5 @@
 {% set version = "0.19.1" %}
-
 {% set variant = "openblas" %}
-
 
 package:
   name: scipy
@@ -13,9 +11,9 @@ source:
   sha256: ac268fe92edd149c6f52fa138d2a03877c080981d7944e96bab8ef68764f71cc
 
 build:
-  number: 200
+  number: 201
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
-  skip: true  # [win or np!=113]
+  skip: true  # [win]
   features:
     - blas_{{ variant }}
 
@@ -28,19 +26,24 @@ requirements:
     - cython
     - blas 1.1 {{ variant }}
     - libgfortran  # [linux]
-    - openblas 0.2.19|0.2.19.*
-    - numpy x.x
+    - openblas 0.2.20
+    - numpy 1.9.*  # [py27 or py35]
+    - numpy 1.11.*  # [py36]
   run:
     - python
     - blas 1.1 {{ variant }}
     - libgfortran
-    - openblas 0.2.19|0.2.19.*
-    - numpy x.x
+    - openblas >=0.2.15
+    - numpy >=1.9  # [py27 or py35]
+    - numpy >=1.11  # [py36]
 
 test:
   requires:
     - nose
     - mpmath
+  commands:
+    - conda inspect linkages -p $PREFIX scipy  # [not win]
+    - conda inspect objects -p $PREFIX scipy  # [osx]
 
 about:
   home: http://www.scipy.org/
