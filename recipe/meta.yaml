@@ -6,12 +6,11 @@ package:
   version: {{ version }}
 
 source:
-  fn: scipy-{{ version }}.tar.gz
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: ac268fe92edd149c6f52fa138d2a03877c080981d7944e96bab8ef68764f71cc
 
 build:
-  number: 201
+  number: 202
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
@@ -27,15 +26,15 @@ requirements:
     - blas 1.1 {{ variant }}
     - libgfortran  # [linux]
     - openblas 0.2.19|0.2.19*
-    - numpy 1.9.*  # [py27 or py35]
-    - numpy 1.11.*  # [py36]
+    - numpy 1.9.*  # [not (win and py36)]
+    - numpy 1.11.*  # [win and py36]
   run:
     - python
     - blas 1.1 {{ variant }}
     - libgfortran
     - openblas 0.2.19|0.2.19*
-    - numpy >=1.9  # [py27 or py35]
-    - numpy >=1.11  # [py36]
+    - numpy >=1.9  # [not (win and py36)]
+    - numpy >=1.11  # [win and py36]
 
 test:
   requires:
