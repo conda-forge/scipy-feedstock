@@ -25,7 +25,6 @@ import scipy.interpolate.interpnd
 import scipy.io.matlab.mio5_utils
 import scipy.io.matlab.mio_utils
 import scipy.io.matlab.streams
-import scipy.linalg._calc_lwork
 import scipy.linalg._decomp_update
 import scipy.linalg._fblas
 import scipy.linalg._flapack
