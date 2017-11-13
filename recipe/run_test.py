@@ -74,4 +74,4 @@ import scipy.stats
 import scipy.special
 
 
-sys.exit(not scipy.test())
+sys.exit(not scipy.test(verbose=2))
