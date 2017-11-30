@@ -11,30 +11,31 @@ source:
 
 build:
   number: 201
-  # We lack openblas on Windows, and therefore can't build scipy there either currently.
-  skip: true  # [win]
+  # We lack openblas on following platforms
+  skip: true  # [win32 or (win and py27)]
   features:
     - blas_{{ variant }}
 
 requirements:
   build:
     - toolchain
-    - gcc          # [osx]
+    - gcc                       # [osx]
+    - flang                     # [win]
     - python
     - setuptools
     - cython
     - blas 1.1 {{ variant }}
-    - libgfortran  # [linux]
     - openblas 0.2.20|0.2.20*
-    - numpy 1.9.*  # [not (win and py36)]
-    - numpy 1.11.*  # [win and py36]
+    - numpy 1.9.*               # [not win]
+    - numpy 1.13.*              # [win]
   run:
     - python
     - blas 1.1 {{ variant }}
-    - libgfortran
+    - libgfortran               # [unix]
+    - libflang                  # [win]
     - openblas 0.2.20|0.2.20*
-    - numpy >=1.9  # [not (win and py36)]
-    - numpy >=1.11  # [win and py36]
+    - numpy >=1.9               # [not win]
+    - numpy >=1.13              # [win]
 
 test:
   requires:
