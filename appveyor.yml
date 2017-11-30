@@ -44,6 +44,8 @@ install:
     - cmd: conda config --remove channels defaults
     - cmd: conda config --add channels defaults
     - cmd: conda config --add channels conda-forge
+    # Until https://github.com/conda-forge/numpy-feedstock/pull/73 is merged
+    - cmd: conda config --add channels isuruf/label/numpy
 
     # Configure the VM.
     - cmd: conda install -n root --quiet --yes conda-forge-build-setup
