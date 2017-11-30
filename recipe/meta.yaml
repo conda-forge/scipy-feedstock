@@ -1,3 +1,4 @@
+{% set name = "scipy" %}
 {% set version = "1.0.0" %}
 {% set variant = "openblas" %}
 
@@ -6,8 +7,8 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: c423a4511684554958dab55f2877df78e765b44f8eef46d5425891d6ac3b49bc
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 87ea1f11a0e9ec08c264dc64551d501fa307289460705f6fccd84cbfc7926d10
 
 build:
   number: 201
@@ -23,7 +24,6 @@ requirements:
     - flang                     # [win]
     - python
     - setuptools
-    - cython
     - blas 1.1 {{ variant }}
     - openblas 0.2.20|0.2.20*
     - numpy 1.9.*               # [not win]
