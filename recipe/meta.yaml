@@ -9,6 +9,8 @@ package:
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: 87ea1f11a0e9ec08c264dc64551d501fa307289460705f6fccd84cbfc7926d10
+  patches:
+    - delete_test_segfault.patch
 
 build:
   number: 201
