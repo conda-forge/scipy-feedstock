@@ -10,7 +10,7 @@ source:
   sha256: a0eaaa6b6958db9d89f8ef0ce23391fedebac3fb416e05bdd966e6895dd6cd3d
 
 build:
-  number: 0
+  number: 200
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
