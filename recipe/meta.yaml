@@ -1,4 +1,4 @@
-{% set version = "1.0.0" %}
+{% set version = "1.0.1" %}
 {% set variant = "openblas" %}
 
 package:
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: c423a4511684554958dab55f2877df78e765b44f8eef46d5425891d6ac3b49bc
+  sha256: a0eaaa6b6958db9d89f8ef0ce23391fedebac3fb416e05bdd966e6895dd6cd3d
 
 build:
-  number: 201
+  number: 200
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
