@@ -1,5 +1,4 @@
-{% set name = "scipy" %}
-{% set version = "1.0.0" %}
+{% set version = "1.0.1" %}
 {% set variant = "openblas" %}
 
 package:
@@ -7,13 +6,13 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: 87ea1f11a0e9ec08c264dc64551d501fa307289460705f6fccd84cbfc7926d10
   patches:
     - delete_test_segfault.patch
 
 build:
-  number: 201
+  number: 200
   # We lack openblas on following platforms
   skip: true  # [win32 or (win and py27)]
   features:
@@ -44,8 +43,8 @@ test:
     - pytest
     - mpmath
   commands:
-    - conda inspect linkages -p $PREFIX scipy  # [not win]
-    - conda inspect objects -p $PREFIX scipy  # [osx]
+    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: http://www.scipy.org/
