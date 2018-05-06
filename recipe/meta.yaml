@@ -10,7 +10,7 @@ source:
   sha256: 0291a2254d9a020af9b49ca648e8b41e1366be9a8a40849be9102626b2022422
 
 build:
-  number: 0
+  number: 200
   # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
@@ -41,8 +41,8 @@ test:
     - pytest
     - mpmath
   commands:
-    - conda inspect linkages -p $PREFIX scipy  # [not win]
-    - conda inspect objects -p $PREFIX scipy  # [osx]
+    - conda inspect linkages -p $PREFIX $PKG_NAME  # [not win]
+    - conda inspect objects -p $PREFIX $PKG_NAME  # [osx]
 
 about:
   home: http://www.scipy.org/
