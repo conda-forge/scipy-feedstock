@@ -11,7 +11,6 @@ source:
 
 build:
   number: 201
-  # We lack openblas on Windows, and therefore can't build scipy there either currently.
   skip: true  # [win]
   features:
     - blas_{{ variant }}
@@ -27,14 +26,12 @@ requirements:
     - cython
     - blas 1.1 {{ variant }}
     - openblas
-    - numpy        # [not (win and py36)]
-    - numpy         # [win and py36]
+    - numpy
   run:
     - python
     - blas 1.1 {{ variant }}
     - openblas
-    - {{ pin_compatible('numpy') }}   # [not (win and py36)]
-    - {{ pin_compatible('numpy') }}   # [win and py36]
+    - {{ pin_compatible('numpy') }}
 
 test:
   requires:
