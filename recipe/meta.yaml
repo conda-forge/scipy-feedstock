@@ -10,31 +10,28 @@ source:
   sha256: 0291a2254d9a020af9b49ca648e8b41e1366be9a8a40849be9102626b2022422
 
 build:
-  number: 200
-  # We lack openblas on Windows, and therefore can't build scipy there either currently.
+  number: 201
   skip: true  # [win]
   features:
     - blas_{{ variant }}
 
 requirements:
   build:
-    - toolchain
-    - gcc          # [osx]
+    - {{ compiler('fortran') }}
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+  host:
     - python
     - setuptools
     - cython
     - blas 1.1 {{ variant }}
-    - libgfortran  # [linux]
-    - openblas 0.2.20|0.2.20*
-    - numpy 1.9.*  # [not (win and py36)]
-    - numpy 1.11.*  # [win and py36]
+    - openblas
+    - numpy
   run:
     - python
     - blas 1.1 {{ variant }}
-    - libgfortran
-    - openblas 0.2.20|0.2.20*
-    - numpy >=1.9  # [not (win and py36)]
-    - numpy >=1.11  # [win and py36]
+    - openblas
+    - {{ pin_compatible('numpy') }}
 
 test:
   requires:
