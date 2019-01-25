@@ -8,9 +8,12 @@ package:
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: 4bb04ed281c55471b598f69eaa730825ddf613b9d9517834181c707dc4509fce
+  patches:
+    # https://github.com/scipy/scipy/issues/9606
+    - backport_gh9615.patch
 
 build:
-  number: 1200
+  number: 1201
   skip: true  # [win]
   features:
     - blas_{{ variant }}
