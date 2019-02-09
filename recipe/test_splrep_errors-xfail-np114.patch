@@ -1,0 +1,33 @@
+From ef1659a0a9b654e1c9c2ab72993b5c689f733532 Mon Sep 17 00:00:00 2001
+From: Tyler Reddy <tyler.je.reddy@gmail.com>
+Date: Thu, 7 Feb 2019 21:11:02 -0800
+Subject: [PATCH] TST: xfail problematic test for 1.2.1 LTS
+
+* test_splrep_errors is now xfailed when SciPy
+is tested with NumPy < 1.14.0 because of an
+f2py-related requirement identified in gh-9777
+---
+ scipy/interpolate/tests/test_bsplines.py | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/scipy/interpolate/tests/test_bsplines.py b/scipy/interpolate/tests/test_bsplines.py
+index 6e520bdd079..8b666100f5c 100644
+--- a/scipy/interpolate/tests/test_bsplines.py
++++ b/scipy/interpolate/tests/test_bsplines.py
+@@ -10,6 +10,7 @@
+         make_lsq_spline, _bspl, splev, splrep, splprep, splder, splantider,
+          sproot, splint, insert)
+ import scipy.linalg as sl
++from scipy._lib._version import NumpyVersion
+ 
+ from scipy.interpolate._bsplines import _not_a_knot, _augknt
+ import scipy.interpolate._fitpack_impl as _impl
+@@ -614,6 +615,8 @@ def test_splrep(self):
+         b = BSpline(*tck)
+         assert_allclose(y, b(x), atol=1e-15)
+ 
++    @pytest.mark.xfail(NumpyVersion(np.__version__) < '1.14.0',
++                       reason='requires NumPy >= 1.14.0')
+     def test_splrep_errors(self):
+         # test that both "old" and "new" splrep raise for an n-D ``y`` array
+         # with n > 1

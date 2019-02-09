@@ -8,6 +8,9 @@ package:
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: d4b9c1c1dee37ffd1653fd62ea52587212d3b1570c927f16719fd7c4077c0d0a
+  patches:
+    # https://github.com/scipy/scipy/issues/9777
+    - test_splrep_errors-xfail-np114.patch
 
 build:
   number: 0
