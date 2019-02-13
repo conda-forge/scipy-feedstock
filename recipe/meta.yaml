@@ -31,7 +31,7 @@ requirements:
     - blas 1.1 {{ variant }}
     - openblas
     - numpy   # [not win]
-    - numpy 1.14  # [win]
+    - numpy 1.16  # [win]
   run:
     - python
     - blas 1.1 {{ variant }}
