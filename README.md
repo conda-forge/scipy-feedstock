@@ -20,8 +20,9 @@ science, and engineering.
 Current build status
 ====================
 
-[![Linux,OSX](https://img.shields.io/circleci/project/github/conda-forge/scipy-feedstock/master.svg?label=Linux,OSX)](https://circleci.com/gh/conda-forge/scipy-feedstock)
 [![Windows](https://img.shields.io/appveyor/ci/conda-forge/scipy-feedstock/master.svg?label=Windows)](https://ci.appveyor.com/project/conda-forge/scipy-feedstock/branch/master)
+![Linux disabled](https://img.shields.io/badge/linux-disabled-lightgrey.svg)
+![OSX disabled](https://img.shields.io/badge/OSX-disabled-lightgrey.svg)
 
 Current release info
 ====================
