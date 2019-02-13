@@ -29,7 +29,8 @@ requirements:
     - cython
     - blas 1.1 {{ variant }}
     - openblas
-    - numpy
+    - numpy   # [not win]
+    - numpy 1.14  # [win]
   run:
     - python
     - blas 1.1 {{ variant }}
