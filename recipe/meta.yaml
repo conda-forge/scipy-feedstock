@@ -1,4 +1,4 @@
-{% set version = "1.2.0" %}
+{% set version = "1.2.1" %}
 {% set variant = "openblas" %}
 
 package:
@@ -7,13 +7,14 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: 4bb04ed281c55471b598f69eaa730825ddf613b9d9517834181c707dc4509fce
+  sha256: d4b9c1c1dee37ffd1653fd62ea52587212d3b1570c927f16719fd7c4077c0d0a
   patches:
-    # https://github.com/scipy/scipy/issues/9606
-    - backport_gh9615.patch
+    # https://github.com/scipy/scipy/issues/9777
+    # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
+    - np114.patch
 
 build:
-  number: 1201
+  number: 0
   skip: true  # [win]
   features:
     - blas_{{ variant }}
