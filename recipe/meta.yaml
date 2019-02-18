@@ -8,6 +8,10 @@ package:
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: d4b9c1c1dee37ffd1653fd62ea52587212d3b1570c927f16719fd7c4077c0d0a
+  patches:
+    # https://github.com/scipy/scipy/issues/9777
+    # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
+    - np114.patch
 
 build:
   number: 0
