@@ -1,5 +1,4 @@
 {% set version = "1.2.1" %}
-{% set variant = "openblas" %}
 
 package:
   name: scipy
@@ -14,10 +13,8 @@ source:
     - np114.patch
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win]
-  features:
-    - blas_{{ variant }}
 
 requirements:
   build:
@@ -25,16 +22,15 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
+    - libblas
+    - libcblas
+    - liblapack
     - python
     - setuptools
     - cython
-    - blas 1.1 {{ variant }}
-    - openblas
     - numpy
   run:
     - python
-    - blas 1.1 {{ variant }}
-    - openblas
     - {{ pin_compatible('numpy') }}
 
 test:
