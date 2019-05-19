@@ -14,7 +14,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [win or (py2k)]
+  skip: true  # [win or py2k]
 
 requirements:
   build:
@@ -41,7 +41,7 @@ test:
 
 about:
   home: http://www.scipy.org/
-  license: BSD 3-Clause
+  license: BSD-3-Clause
   license_file: LICENSE.txt
   summary: Scientific Library for Python
   description: |
