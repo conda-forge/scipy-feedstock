@@ -18,7 +18,6 @@ import scipy.integrate._test_odeint_banded
 import scipy.integrate.lsoda
 import scipy.integrate.vode
 import scipy.interpolate._fitpack
-import scipy.interpolate._interpolate
 import scipy.interpolate._ppoly
 import scipy.interpolate.dfitpack
 import scipy.interpolate.interpnd
