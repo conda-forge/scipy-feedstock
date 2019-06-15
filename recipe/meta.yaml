@@ -22,9 +22,9 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
-    - libblas
-    - libcblas
-    - liblapack
+    - libblas    # [not aarch64]
+    - libcblas   # [not aarch64]
+    - liblapack  # [not aarch64]
     - python
     - setuptools
     - cython
@@ -37,6 +37,7 @@ test:
   requires:
     - pytest
     - mpmath
+    - pytest-faulthandler
 
 about:
   home: http://www.scipy.org/
