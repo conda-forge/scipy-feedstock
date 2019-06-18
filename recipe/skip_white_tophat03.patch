@@ -6,7 +6,7 @@ index 904793ede..b3fe4b4d4 100644
                                        structure=structure)
          assert_array_almost_equal(expected, output)
  
-+    @pytest.skipif(True, "Known failure on aarch64")
++    @pytest.mark.skip(reason="Known failure on aarch64")
      def test_white_tophat03(self):
          array = numpy.array([[1, 0, 0, 0, 0, 0, 0],
                               [0, 1, 1, 1, 1, 1, 0],

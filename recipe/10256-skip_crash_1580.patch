@@ -6,7 +6,7 @@ index 128bb03b1..78bdcc8f0 100644
                          sigma[i,i] = s[i]
                      assert_array_almost_equal(dot(dot(u,sigma),vh),a)
  
-+    @pytest.skipif(True, "Known segfault on ppc64le see gh-10256")
++    @pytest.mark.skip(reason="Known segfault on ppc64le see gh-10256")
      def test_crash_1580(self):
          sizes = [(13, 23), (30, 50), (60, 100)]
          np.random.seed(1234)
