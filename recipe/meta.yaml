@@ -11,6 +11,8 @@ source:
     # https://github.com/scipy/scipy/issues/9777
     # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
     - np114.patch
+    - 10256-skip_crash_1580.patch  # [ppc64le]
+
 
 build:
   number: 0
