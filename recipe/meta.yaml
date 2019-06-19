@@ -13,15 +13,15 @@ source:
     - np114.patch
     - 10256-skip_crash_1580.patch  # [ppc64le]
     - relax_gmres_error_check.patch  # [aarch64]
-    - skip_problematic_boost_test.patch  # [aarch64]
-    - skip_problematic_root_finding.patch  # [aarch64]
+    - skip_problematic_boost_test.patch  # [aarch64 or ppc64le]
+    - skip_problematic_root_finding.patch  # [aarch64 or ppc64le]
     - skip_TestIDCTIVFloat_aarch64.patch  # [aarch64]
-    - skip_white_tophat03.patch  # [aarch64]
+    - skip_white_tophat03.patch  # [aarch64 or ppc64le]
 
 
 build:
   number: 0
-  skip: true  # [not (ppc64le or aarch64)] 
+  skip: true  # [not (ppc64le or aarch64)]
   skip: true  # [win or py2k]
 
 requirements:
@@ -30,9 +30,9 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
-    - libblas    # [not aarch64]
-    - libcblas   # [not aarch64]
-    - liblapack  # [not aarch64]
+    - libblas
+    - libcblas
+    - liblapack
     - python
     - setuptools
     - cython
@@ -45,7 +45,6 @@ test:
   requires:
     - pytest
     - mpmath
-    - pytest-faulthandler
 
 about:
   home: http://www.scipy.org/
