@@ -45,6 +45,7 @@ test:
   requires:
     - pytest
     - mpmath
+    - pytest-faulthandler
 
 about:
   home: http://www.scipy.org/
