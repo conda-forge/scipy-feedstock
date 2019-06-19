@@ -30,9 +30,10 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
-    # - libblas
-    # - libcblas
-    # - liblapack
+    - libblas
+    - libcblas
+    - liblapack
+    - libopenblas 0.3.6
     - python
     - setuptools
     - cython
