@@ -11,7 +11,7 @@ source:
     # https://github.com/scipy/scipy/issues/9777
     # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
     - np114.patch
-    - 10256-skip_crash_1580.patch  # [ppc64le]
+      # - 10256-skip_crash_1580.patch  # [ppc64le]
     - relax_gmres_error_check.patch  # [aarch64]
     - skip_problematic_boost_test.patch  # [aarch64 or ppc64le]
     - skip_problematic_root_finding.patch  # [aarch64 or ppc64le]
@@ -30,9 +30,9 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
-    - libblas
-    - libcblas
-    - liblapack
+    # - libblas
+    # - libcblas
+    # - liblapack
     - python
     - setuptools
     - cython
