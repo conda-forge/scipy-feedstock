@@ -10,7 +10,7 @@ source:
   patches:
     # https://github.com/scipy/scipy/issues/9777
     # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
-    # - np114.patch
+    # - np114.patch 
     # This crash occurs due to a bug in openblas < 0.3.6. When the pin is updated, this patch should be removed.
     - 10256-skip_crash_1580.patch  # [ppc64le]
     - relax_gmres_error_check.patch  # [aarch64]
