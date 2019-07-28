@@ -10,11 +10,11 @@ source:
   patches:
     # https://github.com/scipy/scipy/issues/9777
     # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
-    - np114.patch
+    # - np114.patch
 
 build:
-  number: 1
-  skip: true  # [win]
+  number: 2
+  skip: true  # [win or aarch64 or ppc64le or py3k]
 
 requirements:
   build:
