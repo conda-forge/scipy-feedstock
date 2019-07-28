@@ -3,7 +3,7 @@ About scipy
 
 Home: http://www.scipy.org/
 
-Package license: BSD 3-Clause
+Package license: BSD-3-Clause
 
 Feedstock license: BSD 3-Clause
 
@@ -158,8 +158,8 @@ In order to produce a uniquely identifiable distribution:
 Feedstock Maintainers
 =====================
 
+* [@beckermr](https://github.com/beckermr/)
 * [@jakirkham](https://github.com/jakirkham/)
 * [@msarahan](https://github.com/msarahan/)
 * [@ocefpaf](https://github.com/ocefpaf/)
 * [@rgommers](https://github.com/rgommers/)
-
