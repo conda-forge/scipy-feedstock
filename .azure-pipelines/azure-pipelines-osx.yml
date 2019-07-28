@@ -21,7 +21,7 @@ jobs:
   # TODO: Fast finish on azure pipelines?
   - script: |
       echo "Fast Finish"
-
+      
 
   - script: |
       echo "Removing homebrew from Azure to avoid conflicts."
