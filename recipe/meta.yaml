@@ -8,6 +8,7 @@ source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: 4ea68de2840cf7d35c58464412d21f6f154cab7fba610c11002603ee0b9e2372
   patches:
+    - gh10591.patch
     # https://github.com/scipy/scipy/issues/9777
     # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
     # - np114.patch 
@@ -21,7 +22,7 @@ source:
 
 
 build:
-  number: 0
+  number: 1
   skip: true  # [win or py2k]
 
 requirements:
@@ -37,6 +38,7 @@ requirements:
     - setuptools
     - cython
     - numpy
+    - pip
   run:
     - python
     - {{ pin_compatible('numpy') }}

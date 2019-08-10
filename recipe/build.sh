@@ -5,21 +5,8 @@
 # on the CIs apparently.
 export OPENBLAS_NUM_THREADS=1
 
+# Use the G77 ABI wrapper everywhere so that the underlying blas implementation
+# can have a G77 ABI (currently only MKL)
+export SCIPY_USE_G77_ABI_WRAPPER=1
 
-export LIBRARY_PATH="${PREFIX}/lib"
-export C_INCLUDE_PATH="${PREFIX}/include"
-export CPLUS_INCLUDE_PATH="${PREFIX}/include"
-
-# Depending on our platform, shared libraries end with either .so or .dylib
-if [[ $(uname) == 'Darwin' ]]; then
-    # Also, included a workaround so that `-stdlib=c++` doesn't go to
-    # `gfortran` and cause problems.
-    #
-    # https://github.com/conda-forge/toolchain-feedstock/pull/8
-    export CFLAGS="${CFLAGS} -stdlib=libc++ -lc++"
-    export LDFLAGS="-headerpad_max_install_names -undefined dynamic_lookup -bundle -Wl,-search_paths_first -lc++"
-else
-    unset LDFLAGS
-fi
-
-$PYTHON setup.py install --single-version-externally-managed --record=record.txt
+pip install . -vv
