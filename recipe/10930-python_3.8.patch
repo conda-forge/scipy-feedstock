@@ -1,0 +1,315 @@
+From 994480c8acfd52972c697f283cc26183271c1741 Mon Sep 17 00:00:00 2001
+From: Eric Larson <larson.eric.d@gmail.com>
+Date: Tue, 15 Oct 2019 12:10:01 -0400
+Subject: [PATCH 1/6] BUG: Fix comparison for 3.8
+
+---
+ scipy/io/netcdf.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/scipy/io/netcdf.py b/scipy/io/netcdf.py
+index 9742a950c91..0d85add1127 100644
+--- a/scipy/io/netcdf.py
++++ b/scipy/io/netcdf.py
+@@ -767,7 +767,7 @@ def _read_att_values(self):
+         values = self.fp.read(int(count))
+         self.fp.read(-count % 4)  # read padding
+ 
+-        if typecode is not 'c':
++        if typecode != 'c':
+             values = frombuffer(values, dtype='>%s' % typecode).copy()
+             if values.shape == (1,):
+                 values = values[0]
+@@ -1095,4 +1095,3 @@ def _apply_missing_value(data, missing_value):
+ 
+ NetCDFFile = netcdf_file
+ NetCDFVariable = netcdf_variable
+-
+
+From 981b4404c8a78c38c1f3d46a2c67e16bf5781d18 Mon Sep 17 00:00:00 2001
+From: Eric Larson <larson.eric.d@gmail.com>
+Date: Tue, 15 Oct 2019 12:33:11 -0400
+Subject: [PATCH 2/6] MAINT: Update test and code for 3.8
+
+---
+ scipy/stats/_binned_statistic.py           | 5 +++++
+ scipy/stats/tests/test_binned_statistic.py | 4 ++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/scipy/stats/_binned_statistic.py b/scipy/stats/_binned_statistic.py
+index 9e847f4e916..7c146867b7b 100644
+--- a/scipy/stats/_binned_statistic.py
++++ b/scipy/stats/_binned_statistic.py
+@@ -1,5 +1,7 @@
+ from __future__ import division, print_function, absolute_import
+ 
++import sys
++
+ import numpy as np
+ from scipy._lib.six import callable, xrange
+ from scipy._lib._numpy_compat import suppress_warnings
+@@ -685,6 +687,9 @@ def _bin_numbers(sample, nbin, edges, dedges):
+     # Using `digitize`, values that fall on an edge are put in the right bin.
+     # For the rightmost bin, we want values equal to the right
+     # edge to be counted in the last bin, and not as an outlier.
++    exceptions = (RuntimeWarning,)
++    if sys.version_info >= (3, 8):
++        exceptions += (OverflowError,)  # Python3.8 int(np.inf) throws this
+     for i in xrange(Ndim):
+         # Find the rounding precision
+         try:
+diff --git a/scipy/stats/tests/test_binned_statistic.py b/scipy/stats/tests/test_binned_statistic.py
+index ebf13291a1e..740e38bef86 100644
+--- a/scipy/stats/tests/test_binned_statistic.py
++++ b/scipy/stats/tests/test_binned_statistic.py
+@@ -471,5 +471,5 @@ def test_dd_zero_dedges(self):
+         bins = np.linspace(0, 1, 10)
+         bins = np.append(bins, 1)
+         bins = (bins, bins, bins)
+-        assert_raises(ValueError, binned_statistic_dd,
+-                      x, v, 'mean', bins=bins)
++        with assert_raises(ValueError, match='difference is numerically 0'):
++            binned_statistic_dd(x, v, 'mean', bins=bins)
+
+From 8f697cdff0a3efaf5ce97555031aea43606b0196 Mon Sep 17 00:00:00 2001
+From: Eric Larson <larson.eric.d@gmail.com>
+Date: Tue, 15 Oct 2019 13:19:50 -0400
+Subject: [PATCH 3/6] BUG: Use correct var
+
+---
+ scipy/stats/_binned_statistic.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scipy/stats/_binned_statistic.py b/scipy/stats/_binned_statistic.py
+index 7c146867b7b..573d2e52f5c 100644
+--- a/scipy/stats/_binned_statistic.py
++++ b/scipy/stats/_binned_statistic.py
+@@ -694,7 +694,7 @@ def _bin_numbers(sample, nbin, edges, dedges):
+         # Find the rounding precision
+         try:
+             decimal = int(-np.log10(dedges[i].min())) + 6
+-        except RuntimeWarning:
++        except exceptions:
+             raise ValueError('The smallest edge difference is numerically 0.')
+         # Find which points are on the rightmost edge.
+         on_edge = np.where(np.around(sample[:, i], decimal) ==
+
+From e6cdc97f28246d4ee94b9027371bbd47dce6111b Mon Sep 17 00:00:00 2001
+From: Eric Larson <larson.eric.d@gmail.com>
+Date: Tue, 15 Oct 2019 15:17:48 -0400
+Subject: [PATCH 4/6] MAINT: Add pytest fixture to clean up
+ multiprocessing.Pool
+
+---
+ scipy/conftest.py                                 | 15 +++++++++++++++
+ .../tests/test__differential_evolution.py         |  9 ++++-----
+ 2 files changed, 19 insertions(+), 5 deletions(-)
+
+diff --git a/scipy/conftest.py b/scipy/conftest.py
+index 736e88aa38f..249cb57f5eb 100644
+--- a/scipy/conftest.py
++++ b/scipy/conftest.py
+@@ -1,8 +1,10 @@
+ # Pytest customization
+ from __future__ import division, absolute_import, print_function
+ 
++import gc
+ import os
+ import pytest
++import sys
+ import warnings
+ 
+ from distutils.version import LooseVersion
+@@ -44,3 +46,16 @@ def check_fpu_mode(request):
+         warnings.warn("FPU mode changed from {0:#x} to {1:#x} during "
+                       "the test".format(old_mode, new_mode),
+                       category=FPUModeChangeWarning, stacklevel=0)
++
++
++@pytest.yield_fixture(scope="module")
++def pool():
++    """Fixture for tests that use multiprocessing.pool."""
++    # See https://bugs.python.org/issue38501
++    # We only need to decorate tests that do not use `with mapwrapper:`
++    # because the problem occurs when close/terminate are not explicitly
++    # called, and garbage collection is supposed to take care of it.
++    if sys.version_info >= (3, 8):
++        pytest.xfail('Python 3.8 hangs when cleaning up a pool')
++    yield
++    gc.collect()  # clean up
+diff --git a/scipy/optimize/tests/test__differential_evolution.py b/scipy/optimize/tests/test__differential_evolution.py
+index fa3fce83262..41da3abcc6b 100644
+--- a/scipy/optimize/tests/test__differential_evolution.py
++++ b/scipy/optimize/tests/test__differential_evolution.py
+@@ -3,10 +3,9 @@
+ """
+ import multiprocessing
+ 
+-from scipy.optimize import _differentialevolution
+ from scipy.optimize._differentialevolution import (DifferentialEvolutionSolver,
+                                                    _ConstraintWrapper)
+-from scipy.optimize import differential_evolution, minimize
++from scipy.optimize import differential_evolution
+ from scipy.optimize._constraints import (Bounds, NonlinearConstraint,
+                                          LinearConstraint)
+ from scipy.optimize import rosen
+@@ -528,7 +527,7 @@ def test_deferred_updating(self):
+         assert_(solver._mapwrapper._mapfunc is map)
+         solver.solve()
+ 
+-    def test_immediate_updating(self):
++    def test_immediate_updating(self, pool):
+         # check setting of immediate updating, with default workers
+         bounds = [(0., 2.), (0., 2.)]
+         solver = DifferentialEvolutionSolver(rosen, bounds)
+@@ -538,9 +537,9 @@ def test_immediate_updating(self):
+         # is being overridden by the workers keyword
+         with warns(UserWarning):
+             solver = DifferentialEvolutionSolver(rosen, bounds, workers=2)
+-            assert_(solver._updating == 'deferred')
++        assert_(solver._updating == 'deferred')
+ 
+-    def test_parallel(self):
++    def test_parallel(self, pool):
+         # smoke test for parallelisation with deferred updating
+         bounds = [(0., 2.), (0., 2.)]
+         with multiprocessing.Pool(2) as p, DifferentialEvolutionSolver(
+
+From a5df38b43cee61647531eaff2ee8618d8504dcb0 Mon Sep 17 00:00:00 2001
+From: Eric Larson <larson.eric.d@gmail.com>
+Date: Sat, 19 Oct 2019 07:45:46 -0400
+Subject: [PATCH 5/6] BUG: yield_fixture is deprecated
+
+---
+ scipy/conftest.py | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/scipy/conftest.py b/scipy/conftest.py
+index 249cb57f5eb..ceb5a76afd5 100644
+--- a/scipy/conftest.py
++++ b/scipy/conftest.py
+@@ -48,9 +48,9 @@ def check_fpu_mode(request):
+                       category=FPUModeChangeWarning, stacklevel=0)
+ 
+ 
+-@pytest.yield_fixture(scope="module")
++@pytest.fixture
+ def pool():
+-    """Fixture for tests that use multiprocessing.pool."""
++    """Fixture for tests that use MapWrapper (not as a context manager)."""
+     # See https://bugs.python.org/issue38501
+     # We only need to decorate tests that do not use `with mapwrapper:`
+     # because the problem occurs when close/terminate are not explicitly
+@@ -58,4 +58,7 @@ def pool():
+     if sys.version_info >= (3, 8):
+         pytest.xfail('Python 3.8 hangs when cleaning up a pool')
+     yield
+-    gc.collect()  # clean up
++    # Clean up immediately after the test to trigger the problem.
++    # This way, any problems occur in the given test rather than potentially
++    # mysteriously later, e.g., in the `sparse` test that does gc.collect().
++    gc.collect()
+
+From 3b709bf8c03a936ebbd48f4cae020f2fb1195dc7 Mon Sep 17 00:00:00 2001
+From: Eric Larson <larson.eric.d@gmail.com>
+Date: Sat, 19 Oct 2019 12:35:16 -0400
+Subject: [PATCH 6/6] STY: Less magical
+
+---
+ scipy/conftest.py                              | 18 ------------------
+ .../tests/test__differential_evolution.py      | 17 +++++++++++++++--
+ 2 files changed, 15 insertions(+), 20 deletions(-)
+
+diff --git a/scipy/conftest.py b/scipy/conftest.py
+index ceb5a76afd5..736e88aa38f 100644
+--- a/scipy/conftest.py
++++ b/scipy/conftest.py
+@@ -1,10 +1,8 @@
+ # Pytest customization
+ from __future__ import division, absolute_import, print_function
+ 
+-import gc
+ import os
+ import pytest
+-import sys
+ import warnings
+ 
+ from distutils.version import LooseVersion
+@@ -46,19 +44,3 @@ def check_fpu_mode(request):
+         warnings.warn("FPU mode changed from {0:#x} to {1:#x} during "
+                       "the test".format(old_mode, new_mode),
+                       category=FPUModeChangeWarning, stacklevel=0)
+-
+-
+-@pytest.fixture
+-def pool():
+-    """Fixture for tests that use MapWrapper (not as a context manager)."""
+-    # See https://bugs.python.org/issue38501
+-    # We only need to decorate tests that do not use `with mapwrapper:`
+-    # because the problem occurs when close/terminate are not explicitly
+-    # called, and garbage collection is supposed to take care of it.
+-    if sys.version_info >= (3, 8):
+-        pytest.xfail('Python 3.8 hangs when cleaning up a pool')
+-    yield
+-    # Clean up immediately after the test to trigger the problem.
+-    # This way, any problems occur in the given test rather than potentially
+-    # mysteriously later, e.g., in the `sparse` test that does gc.collect().
+-    gc.collect()
+diff --git a/scipy/optimize/tests/test__differential_evolution.py b/scipy/optimize/tests/test__differential_evolution.py
+index 41da3abcc6b..ba859f978a8 100644
+--- a/scipy/optimize/tests/test__differential_evolution.py
++++ b/scipy/optimize/tests/test__differential_evolution.py
+@@ -1,7 +1,9 @@
+ """
+ Unit tests for the differential global minimization algorithm.
+ """
++import gc
+ import multiprocessing
++import sys
+ 
+ from scipy.optimize._differentialevolution import (DifferentialEvolutionSolver,
+                                                    _ConstraintWrapper)
+@@ -19,6 +21,11 @@
+ import pytest
+ 
+ 
++knownfail_on_py38 = pytest.mark.xfail(
++    sys.version_info >= (3, 8), run=False,
++    reason='Python 3.8 hangs when cleaning up MapWrapper')
++
++
+ class TestDifferentialEvolutionSolver(object):
+ 
+     def setup_method(self):
+@@ -527,7 +534,8 @@ def test_deferred_updating(self):
+         assert_(solver._mapwrapper._mapfunc is map)
+         solver.solve()
+ 
+-    def test_immediate_updating(self, pool):
++    @knownfail_on_py38
++    def test_immediate_updating(self):
+         # check setting of immediate updating, with default workers
+         bounds = [(0., 2.), (0., 2.)]
+         solver = DifferentialEvolutionSolver(rosen, bounds)
+@@ -538,8 +546,11 @@ def test_immediate_updating(self, pool):
+         with warns(UserWarning):
+             solver = DifferentialEvolutionSolver(rosen, bounds, workers=2)
+         assert_(solver._updating == 'deferred')
++        del solver
++        gc.collect()  # ensure MapWrapper cleans up properly
+ 
+-    def test_parallel(self, pool):
++    @knownfail_on_py38
++    def test_parallel(self):
+         # smoke test for parallelisation with deferred updating
+         bounds = [(0., 2.), (0., 2.)]
+         with multiprocessing.Pool(2) as p, DifferentialEvolutionSolver(
+@@ -553,6 +564,8 @@ def test_parallel(self, pool):
+             assert_(solver._mapwrapper.pool is not None)
+             assert_(solver._updating == 'deferred')
+             solver.solve()
++        del solver
++        gc.collect()  # ensure MapWrapper cleans up properly
+ 
+     def test_converged(self):
+         solver = DifferentialEvolutionSolver(rosen, [(0, 2), (0, 2)])
