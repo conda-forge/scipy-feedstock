@@ -1,0 +1,1509 @@
+diff --git a/scipy/io/netcdf.py b/scipy/io/netcdf.py
+index 9742a950c..0d85add11 100644
+--- a/scipy/io/netcdf.py
++++ b/scipy/io/netcdf.py
+@@ -767,7 +767,7 @@ class netcdf_file(object):
+         values = self.fp.read(int(count))
+         self.fp.read(-count % 4)  # read padding
+
+-        if typecode is not 'c':
++        if typecode != 'c':
+             values = frombuffer(values, dtype='>%s' % typecode).copy()
+             if values.shape == (1,):
+                 values = values[0]
+@@ -1095,4 +1095,3 @@ class netcdf_variable(object):
+
+ NetCDFFile = netcdf_file
+ NetCDFVariable = netcdf_variable
+-
+diff --git a/scipy/linalg/decomp_svd.py b/scipy/linalg/decomp_svd.py
+index b56def2f9..82d7adf27 100644
+--- a/scipy/linalg/decomp_svd.py
++++ b/scipy/linalg/decomp_svd.py
+@@ -472,15 +472,15 @@ def subspace_angles(A, B):
+     del B
+
+     # 2. Compute SVD for cosine
+-    QA_T_QB = dot(QA.T, QB)
+-    sigma = svdvals(QA_T_QB)
++    QA_H_QB = dot(QA.T.conj(), QB)
++    sigma = svdvals(QA_H_QB)
+
+     # 3. Compute matrix B
+     if QA.shape[1] >= QB.shape[1]:
+-        B = QB - dot(QA, QA_T_QB)
++        B = QB - dot(QA, QA_H_QB)
+     else:
+-        B = QA - dot(QB, QA_T_QB.T)
+-    del QA, QB, QA_T_QB
++        B = QA - dot(QB, QA_H_QB.T.conj())
++    del QA, QB, QA_H_QB
+
+     # 4. Compute SVD for sine
+     mask = sigma ** 2 >= 0.5
+@@ -490,6 +490,7 @@ def subspace_angles(A, B):
+         mu_arcsin = 0.
+
+     # 5. Compute the principal angles
+-    # with reverse ordering of sigma because smallest sigma belongs to largest angle theta
++    # with reverse ordering of sigma because smallest sigma belongs to largest
++    # angle theta
+     theta = where(mask, mu_arcsin, arccos(clip(sigma[::-1], -1., 1.)))
+     return theta
+diff --git a/scipy/linalg/tests/test_decomp.py b/scipy/linalg/tests/test_decomp.py
+index 128bb03b1..59d0fabc1 100644
+--- a/scipy/linalg/tests/test_decomp.py
++++ b/scipy/linalg/tests/test_decomp.py
+@@ -2736,6 +2736,14 @@ def test_subspace_angles():
+     expected = np.array([np.pi/2, 0, 0])
+     assert_allclose(subspace_angles(A, B), expected, rtol=1e-12)
+
++    # Complex
++    # second column in "b" does not affect result, just there so that
++    # b can have more cols than a, and vice-versa (both conditional code paths)
++    a = [[1 + 1j], [0]]
++    b = [[1 - 1j, 0], [0, 1]]
++    assert_allclose(subspace_angles(a, b), 0., atol=1e-14)
++    assert_allclose(subspace_angles(b, a), 0., atol=1e-14)
++
+
+ class TestCDF2RDF(object):
+
+diff --git a/scipy/odr/__odrpack.c b/scipy/odr/__odrpack.c
+index 9d037deab..ca1fc00e8 100644
+--- a/scipy/odr/__odrpack.c
++++ b/scipy/odr/__odrpack.c
+@@ -476,7 +476,7 @@ PyObject *odr(PyObject * self, PyObject * args, PyObject * kwds)
+   int full_output = 0;
+   double taufac = 0.0, sstol = -1.0, partol = -1.0;
+   char *errfile = NULL, *rptfile = NULL;
+-  int lerrfile = 0, lrptfile = 0;
++  Py_ssize_t lerrfile = 0, lrptfile = 0;
+   PyArrayObject *beta = NULL, *y = NULL, *x = NULL, *we = NULL, *wd = NULL;
+   PyArrayObject *ifixb = NULL, *ifixx = NULL;
+   PyArrayObject *stpb = NULL, *stpd = NULL, *sclb = NULL, *scld = NULL;
+diff --git a/scipy/odr/odrpack.h b/scipy/odr/odrpack.h
+index 75e556e0d..0af19ae76 100644
+--- a/scipy/odr/odrpack.h
++++ b/scipy/odr/odrpack.h
+@@ -1,3 +1,4 @@
++#define PY_SSIZE_T_CLEAN
+ #include "Python.h"
+ #include "numpy/arrayobject.h"
+
+diff --git a/scipy/optimize/_differentiable_functions.py b/scipy/optimize/_differentiable_functions.py
+index d4568b4ce..0681fb301 100644
+--- a/scipy/optimize/_differentiable_functions.py
++++ b/scipy/optimize/_differentiable_functions.py
+@@ -146,14 +146,14 @@ class ScalarFunction(object):
+                 self.x_prev = self.x
+                 self.g_prev = self.g
+
+-                self.x = x
++                self.x = np.atleast_1d(x).astype(float)
+                 self.f_updated = False
+                 self.g_updated = False
+                 self.H_updated = False
+                 self._update_hess()
+         else:
+             def update_x(x):
+-                self.x = x
++                self.x = np.atleast_1d(x).astype(float)
+                 self.f_updated = False
+                 self.g_updated = False
+                 self.H_updated = False
+@@ -398,14 +398,14 @@ class VectorFunction(object):
+                 self._update_jac()
+                 self.x_prev = self.x
+                 self.J_prev = self.J
+-                self.x = x
++                self.x = np.atleast_1d(x).astype(float)
+                 self.f_updated = False
+                 self.J_updated = False
+                 self.H_updated = False
+                 self._update_hess()
+         else:
+             def update_x(x):
+-                self.x = x
++                self.x = np.atleast_1d(x).astype(float)
+                 self.f_updated = False
+                 self.J_updated = False
+                 self.H_updated = False
+@@ -483,7 +483,7 @@ class LinearVectorFunction(object):
+
+     def _update_x(self, x):
+         if not np.array_equal(x, self.x):
+-            self.x = x
++            self.x = np.atleast_1d(x).astype(float)
+             self.f_updated = False
+
+     def fun(self, x):
+diff --git a/scipy/optimize/_linprog_ip.py b/scipy/optimize/_linprog_ip.py
+index bfd938de4..2d78df448 100644
+--- a/scipy/optimize/_linprog_ip.py
++++ b/scipy/optimize/_linprog_ip.py
+@@ -561,7 +561,7 @@ def _display_iter(rho_p, rho_d, rho_g, alpha, rho_mu, obj, header=False):
+         float(rho_p),
+         float(rho_d),
+         float(rho_g),
+-        float(alpha) if isinstance(alpha, numbers.Number) else alpha,
++        alpha if isinstance(alpha, str) else float(alpha),
+         float(rho_mu),
+         float(obj)))
+
+diff --git a/scipy/optimize/cobyla.py b/scipy/optimize/cobyla.py
+index 0a9d62110..1fd999139 100644
+--- a/scipy/optimize/cobyla.py
++++ b/scipy/optimize/cobyla.py
+@@ -265,7 +265,8 @@ def _minimize_cobyla(fun, x0, args=(), constraints=(),
+                                       'in COBYLA subroutine.',
+                                    4: 'Did not converge to a solution '
+                                       'satisfying the constraints. See '
+-                                      '`maxcv` for magnitude of violation.'
++                                      '`maxcv` for magnitude of violation.',
++                                   5: 'NaN result encountered.'
+                                    }.get(info[0], 'Unknown exit status.'),
+                           nfev=int(info[1]),
+                           fun=info[2],
+diff --git a/scipy/optimize/cobyla/cobyla2.f b/scipy/optimize/cobyla/cobyla2.f
+index d67e3d075..9ebcf4fe1 100644
+--- a/scipy/optimize/cobyla/cobyla2.f
++++ b/scipy/optimize/cobyla/cobyla2.f
+@@ -374,6 +374,12 @@ C
+       IVMD=IDXNEW+N
+       CALL TRSTLP (N,M,A,CON,RHO,DX,IFULL,IACT,W(IZ),W(IZDOTA),
+      1  W(IVMC),W(ISDIRN),W(IDXNEW),W(IVMD),IPRINT)
++      DO 375 I=1,N
++         IF (DX(I).NE.DX(I)) THEN
++            DINFO(1)=5.0d0
++            GOTO 600
++         END IF
++ 375  CONTINUE
+       IF (IFULL .EQ. 0) THEN
+           TEMP=0.0d0
+           DO 380 I=1,N
+diff --git a/scipy/optimize/cobyla/trstlp.f b/scipy/optimize/cobyla/trstlp.f
+index 1e5a5a0d6..f2258d813 100644
+--- a/scipy/optimize/cobyla/trstlp.f
++++ b/scipy/optimize/cobyla/trstlp.f
+@@ -467,6 +467,12 @@ C     Otherwise switch to stage two or end the calculation.
+ C
+       IF (ICON .GT. 0) GOTO 70
+       IF (STEP .EQ. STPFUL) GOTO 500
++      IF (STEP .NE. STEP) THEN
++C        Nan encountered, propagate it (avoid infinite loop)
++         DO 475 I=1,N
++  475       DX(I)=STEP
++         GOTO 500
++      END IF
+   480 MCON=M+1
+       ICON=MCON
+       IACT(MCON)=MCON
+diff --git a/scipy/optimize/lbfgsb_src/lbfgsb.f b/scipy/optimize/lbfgsb_src/lbfgsb.f
+index 797ec84f2..3d94e2e22 100644
+--- a/scipy/optimize/lbfgsb_src/lbfgsb.f
++++ b/scipy/optimize/lbfgsb_src/lbfgsb.f
+@@ -2939,6 +2939,11 @@ c     ************
+       sbgnrm = zero
+       do 15 i = 1, n
+         gi = g(i)
++        if (gi.ne.gi) then
++c          NaN value in gradient: propagate it
++           sbgnrm = gi
++           return
++        endif
+         if (nbd(i) .ne. 0) then
+            if (gi .lt. zero) then
+               if (nbd(i) .ge. 2) gi = max((x(i)-u(i)),gi)
+diff --git a/scipy/optimize/optimize.py b/scipy/optimize/optimize.py
+index d10807eed..7ae85234b 100644
+--- a/scipy/optimize/optimize.py
++++ b/scipy/optimize/optimize.py
+@@ -48,7 +48,8 @@ _status_message = {'success': 'Optimization terminated successfully.',
+                    'maxiter': 'Maximum number of iterations has been '
+                               'exceeded.',
+                    'pr_loss': 'Desired error not necessarily achieved due '
+-                              'to precision loss.'}
++                              'to precision loss.',
++                   'nan': 'NaN result encountered.'}
+
+
+ class MemoizeJac(object):
+@@ -913,6 +914,7 @@ def fmin_bfgs(f, x0, fprime=None, args=(), gtol=1e-5, norm=Inf,
+     warnflag : integer
+         1 : Maximum number of iterations exceeded.
+         2 : Gradient and/or function calls not changing.
++        3 : NaN result encountered.
+     allvecs  :  list
+         The value of xopt at each iteration.  Only returned if retall is True.
+
+@@ -1058,16 +1060,15 @@ def _minimize_bfgs(fun, x0, args=(), jac=None, callback=None,
+                                                  sk[numpy.newaxis, :])
+
+     fval = old_fval
+-    if np.isnan(fval):
+-        # This can happen if the first call to f returned NaN;
+-        # the loop is then never entered.
+-        warnflag = 2
+
+     if warnflag == 2:
+         msg = _status_message['pr_loss']
+     elif k >= maxiter:
+         warnflag = 1
+         msg = _status_message['maxiter']
++    elif np.isnan(gnorm) or np.isnan(fval) or np.isnan(xk).any():
++        warnflag = 3
++        msg = _status_message['nan']
+     else:
+         msg = _status_message['success']
+
+@@ -1157,6 +1158,8 @@ def fmin_cg(f, x0, fprime=None, args=(), gtol=1e-5, norm=Inf, epsilon=_epsilon,
+         2 : Gradient and/or function calls were not changing.  May indicate
+             that precision was lost, i.e., the routine did not converge.
+
++        3 : NaN result encountered.
++
+     allvecs : list of ndarray, optional
+         List of arrays, containing the results at each iteration.
+         Only returned if `retall` is True.
+@@ -1371,6 +1374,9 @@ def _minimize_cg(fun, x0, args=(), jac=None, callback=None,
+     elif k >= maxiter:
+         warnflag = 1
+         msg = _status_message['maxiter']
++    elif np.isnan(gnorm) or np.isnan(fval) or np.isnan(xk).any():
++        warnflag = 3
++        msg = _status_message['nan']
+     else:
+         msg = _status_message['success']
+
+@@ -1446,6 +1452,8 @@ def fmin_ncg(f, x0, fprime, fhess_p=None, fhess=None, args=(), avextol=1e-5,
+     warnflag : int
+         Warnings generated by the algorithm.
+         1 : Maximum number of iterations exceeded.
++        2 : Line search failure (precision loss).
++        3 : NaN result encountered.
+     allvecs : list
+         The result at each iteration, if retall is True (see below).
+
+@@ -1647,6 +1655,9 @@ def _minimize_newtoncg(fun, x0, args=(), jac=None, hess=None, hessp=None,
+             allvecs.append(xk)
+         k += 1
+     else:
++        if np.isnan(old_fval) or np.isnan(update).any():
++            return terminate(3, _status_message['nan'])
++
+         msg = _status_message['success']
+         return terminate(0, msg)
+
+@@ -1856,6 +1867,9 @@ def _minimize_scalar_bounded(func, bounds, args=(),
+             flag = 1
+             break
+
++    if np.isnan(xf) or np.isnan(fx) or np.isnan(fu):
++        flag = 2
++
+     fval = fx
+     if disp > 0:
+         _endprint(x, flag, fval, maxfun, xatol, disp)
+@@ -1863,7 +1877,8 @@ def _minimize_scalar_bounded(func, bounds, args=(),
+     result = OptimizeResult(fun=fval, status=flag, success=(flag == 0),
+                             message={0: 'Solution found.',
+                                      1: 'Maximum number of function calls '
+-                                        'reached.'}.get(flag, ''),
++                                        'reached.',
++                                     2: _status_message['nan']}.get(flag, ''),
+                             x=xf, nfev=num)
+
+     return result
+@@ -2140,8 +2155,11 @@ def _minimize_scalar_brent(func, brack=None, args=(),
+     brent.set_bracket(brack)
+     brent.optimize()
+     x, fval, nit, nfev = brent.get_result(full_output=True)
++
++    success = nit < maxiter and not (np.isnan(x) or np.isnan(fval))
++
+     return OptimizeResult(fun=fval, x=x, nit=nit, nfev=nfev,
+-                          success=nit < maxiter)
++                          success=success)
+
+
+ def golden(func, args=(), brack=None, tol=_epsilon,
+@@ -2282,8 +2300,10 @@ def _minimize_scalar_golden(func, brack=None, args=(),
+         xmin = x2
+         fval = f2
+
++    success = nit < maxiter and not (np.isnan(fval) or np.isnan(xmin))
++
+     return OptimizeResult(fun=fval, nfev=funcalls, x=xmin, nit=nit,
+-                          success=nit < maxiter)
++                          success=success)
+
+
+ def bracket(func, xa=0.0, xb=1.0, args=(), grow_limit=110.0, maxiter=1000):
+@@ -2461,6 +2481,7 @@ def fmin_powell(func, x0, args=(), xtol=1e-4, ftol=1e-4, maxiter=None,
+         Integer warning flag:
+             1 : Maximum number of function evaluations.
+             2 : Maximum number of iterations.
++            3 : NaN result encountered.
+     allvecs : list
+         List of solutions at each iteration.
+
+@@ -2625,6 +2646,9 @@ def _minimize_powell(func, x0, args=(), callback=None,
+             break
+         if iter >= maxiter:
+             break
++        if np.isnan(fx) and np.isnan(fval):
++            # Ended up in a nan-region: bail out
++            break
+
+         # Construct the extrapolated point
+         direc1 = x - x1
+@@ -2655,6 +2679,11 @@ def _minimize_powell(func, x0, args=(), callback=None,
+         msg = _status_message['maxiter']
+         if disp:
+             print("Warning: " + msg)
++    elif np.isnan(fval) or np.isnan(x).any():
++        warnflag = 3
++        msg = _status_message['nan']
++        if disp:
++            print("Warning: " + msg)
+     else:
+         msg = _status_message['success']
+         if disp:
+@@ -2683,6 +2712,9 @@ def _endprint(x, flag, fval, maxfun, xtol, disp):
+         if disp:
+             print("\nMaximum number of function evaluations exceeded --- "
+                   "increase maxfun argument.\n")
++    if flag == 2:
++        if disp:
++            print("\n{}".format(_status_message['nan']))
+     return
+
+
+diff --git a/scipy/optimize/slsqp/slsqp_optmz.f b/scipy/optimize/slsqp/slsqp_optmz.f
+index 95e2c696a..72dd6c3c0 100644
+--- a/scipy/optimize/slsqp/slsqp_optmz.f
++++ b/scipy/optimize/slsqp/slsqp_optmz.f
+@@ -420,7 +420,8 @@ C   UPDATE MULTIPLIERS FOR L1-TEST
+ C   CHECK CONVERGENCE
+
+       mode = 0
+-      IF (h1.LT.acc .AND. h2.LT.acc .AND. .NOT. badlin) GO TO 330
++      IF (h1.LT.acc .AND. h2.LT.acc .AND. .NOT. badlin
++     *     .AND. f .EQ. f) GO TO 330
+       h1 = ZERO
+       DO 180 j=1,m
+          IF (j.LE.meq) THEN
+@@ -492,7 +493,7 @@ C   CHECK CONVERGENCE
+          h3 = h3 + MAX(-c(j),h1)
+   250 CONTINUE
+       IF ((ABS(f-f0).LT.acc .OR. dnrm2_(n,s,1).LT.acc) .AND. h3.LT.acc
+-     *     .AND. .NOT. badlin)
++     *     .AND. .NOT. badlin .AND. f .EQ. f)
+      *   THEN
+             mode = 0
+          ELSE
+@@ -504,7 +505,7 @@ C   CHECK relaxed CONVERGENCE in case of positive directional derivative
+
+   255 CONTINUE
+       IF ((ABS(f-f0).LT.tol .OR. dnrm2_(n,s,1).LT.tol) .AND. h3.LT.tol
+-     *     .AND. .NOT. badlin)
++     *     .AND. .NOT. badlin .AND. f .EQ. f)
+      *   THEN
+             mode = 0
+          ELSE
+diff --git a/scipy/optimize/tests/test__differential_evolution.py b/scipy/optimize/tests/test__differential_evolution.py
+index 8f13f3a87..3a05b3fe1 100644
+--- a/scipy/optimize/tests/test__differential_evolution.py
++++ b/scipy/optimize/tests/test__differential_evolution.py
+@@ -1,20 +1,30 @@
+ """
+ Unit tests for the differential global minimization algorithm.
+ """
++import gc
+ import multiprocessing
++import sys
+
+-from scipy.optimize import _differentialevolution
+ from scipy.optimize._differentialevolution import DifferentialEvolutionSolver
+ from scipy.optimize import differential_evolution
+-from scipy.optimize._constraints import Bounds
+-import numpy as np
++from scipy.optimize._constraints import (Bounds, NonlinearConstraint,
++                                         LinearConstraint)
+ from scipy.optimize import rosen
++from scipy._lib._numpy_compat import suppress_warnings
++
++import numpy as np
+ from numpy.testing import (assert_equal, assert_allclose,
+                            assert_almost_equal,
+                            assert_string_equal, assert_)
++import pytest
+ from pytest import raises as assert_raises, warns
+
+
++knownfail_on_py38 = pytest.mark.xfail(
++    sys.version_info >= (3, 8), run=False,
++    reason='Python 3.8 hangs when cleaning up MapWrapper')
++
++
+ class TestDifferentialEvolutionSolver(object):
+
+     def setup_method(self):
+@@ -523,6 +533,7 @@ class TestDifferentialEvolutionSolver(object):
+         assert_(solver._mapwrapper._mapfunc is map)
+         solver.solve()
+
++    @knownfail_on_py38
+     def test_immediate_updating(self):
+         # check setting of immediate updating, with default workers
+         bounds = [(0., 2.), (0., 2.)]
+@@ -533,8 +544,11 @@ class TestDifferentialEvolutionSolver(object):
+         # is being overriden by the workers keyword
+         with warns(UserWarning):
+             solver = DifferentialEvolutionSolver(rosen, bounds, workers=2)
+-            assert_(solver._updating == 'deferred')
++        assert_(solver._updating == 'deferred')
++        del solver
++        gc.collect()  # ensure MapWrapper cleans up properly
+
++    @knownfail_on_py38
+     def test_parallel(self):
+         # smoke test for parallelisation with deferred updating
+         bounds = [(0., 2.), (0., 2.)]
+@@ -549,6 +563,8 @@ class TestDifferentialEvolutionSolver(object):
+             assert_(solver._mapwrapper.pool is not None)
+             assert_(solver._updating == 'deferred')
+             solver.solve()
++        del solver
++        gc.collect()  # ensure MapWrapper cleans up properly
+
+     def test_converged(self):
+         solver = DifferentialEvolutionSolver(rosen, [(0, 2), (0, 2)])
+diff --git a/scipy/optimize/tests/test_differentiable_functions.py b/scipy/optimize/tests/test_differentiable_functions.py
+index 482cd7e68..0a6da7e30 100644
+--- a/scipy/optimize/tests/test_differentiable_functions.py
++++ b/scipy/optimize/tests/test_differentiable_functions.py
+@@ -1,13 +1,16 @@
+ from __future__ import division, print_function, absolute_import
++import pytest
+ import numpy as np
+ from numpy.testing import (TestCase, assert_array_almost_equal,
+-                           assert_array_equal, assert_)
++                           assert_array_equal, assert_, assert_allclose,
++                           assert_equal)
+ from scipy.sparse import csr_matrix
+ from scipy.sparse.linalg import LinearOperator
+ from scipy.optimize._differentiable_functions import (ScalarFunction,
+                                                       VectorFunction,
+                                                       LinearVectorFunction,
+                                                       IdentityVectorFunction)
++from scipy.optimize._hessian_update_strategy import BFGS
+
+
+ class ExScalarFunction:
+@@ -253,6 +256,48 @@ class TestScalarFunction(TestCase):
+         assert_array_equal(ex.nhev, nhev)
+         assert_array_equal(analit.nhev+approx.nhev, nhev)
+
++    def test_x_storage_overlap(self):
++        # Scalar_Function should not store references to arrays, it should
++        # store copies - this checks that updating an array in-place causes
++        # Scalar_Function.x to be updated.
++
++        def f(x):
++            return np.sum(np.asarray(x) ** 2)
++
++        x = np.array([1., 2., 3.])
++        sf = ScalarFunction(f, x, (), '3-point', lambda x: x, None, (-np.inf, np.inf))
++
++        assert x is not sf.x
++        assert_equal(sf.fun(x), 14.0)
++        assert x is not sf.x
++
++        x[0] = 0.
++        f1 = sf.fun(x)
++        assert_equal(f1, 13.0)
++
++        x[0] = 1
++        f2 = sf.fun(x)
++        assert_equal(f2, 14.0)
++        assert x is not sf.x
++
++        # now test with a HessianUpdate strategy specified
++        hess = BFGS()
++        x = np.array([1., 2., 3.])
++        sf = ScalarFunction(f, x, (), '3-point', hess, None, (-np.inf, np.inf))
++
++        assert x is not sf.x
++        assert_equal(sf.fun(x), 14.0)
++        assert x is not sf.x
++
++        x[0] = 0.
++        f1 = sf.fun(x)
++        assert_equal(f1, 13.0)
++
++        x[0] = 1
++        f2 = sf.fun(x)
++        assert_equal(f2, 14.0)
++        assert x is not sf.x
++
+
+ class ExVectorialFunction:
+
+@@ -504,6 +549,49 @@ class TestVectorialFunction(TestCase):
+         assert_array_equal(ex.nhev, nhev)
+         assert_array_equal(analit.nhev+approx.nhev, nhev)
+
++    def test_x_storage_overlap(self):
++        # VectorFunction should not store references to arrays, it should
++        # store copies - this checks that updating an array in-place causes
++        # Scalar_Function.x to be updated.
++        ex = ExVectorialFunction()
++        x0 = np.array([1.0, 0.0])
++
++        vf = VectorFunction(ex.fun, x0, '3-point', ex.hess, None, None,
++                            (-np.inf, np.inf), None)
++
++        assert x0 is not vf.x
++        assert_equal(vf.fun(x0), ex.fun(x0))
++        assert x0 is not vf.x
++
++        x0[0] = 2.
++        assert_equal(vf.fun(x0), ex.fun(x0))
++        assert x0 is not vf.x
++
++        x0[0] = 1.
++        assert_equal(vf.fun(x0), ex.fun(x0))
++        assert x0 is not vf.x
++
++        # now test with a HessianUpdate strategy specified
++        hess = BFGS()
++        x0 = np.array([1.0, 0.0])
++        vf = VectorFunction(ex.fun, x0, '3-point', hess, None, None,
++                            (-np.inf, np.inf), None)
++
++        with pytest.warns(UserWarning):
++            # filter UserWarning because ExVectorialFunction is linear and
++            # a quasi-Newton approximation is used for the Hessian.
++            assert x0 is not vf.x
++            assert_equal(vf.fun(x0), ex.fun(x0))
++            assert x0 is not vf.x
++
++            x0[0] = 2.
++            assert_equal(vf.fun(x0), ex.fun(x0))
++            assert x0 is not vf.x
++
++            x0[0] = 1.
++            assert_equal(vf.fun(x0), ex.fun(x0))
++            assert x0 is not vf.x
++
+
+ def test_LinearVectorFunction():
+     A_dense = np.array([
+diff --git a/scipy/optimize/tests/test_linprog.py b/scipy/optimize/tests/test_linprog.py
+index 01faa554e..520570662 100644
+--- a/scipy/optimize/tests/test_linprog.py
++++ b/scipy/optimize/tests/test_linprog.py
+@@ -1317,7 +1317,7 @@ class LinprogCommonTests(object):
+         o = {"disp": True}
+         o.update(self.options)
+         res = linprog(c, A_ub, b_ub, A_eq, b_eq, bounds,
+-                      method=self.method, options=self.options)
++                      method=self.method, options=o)
+         _assert_success(res, desired_x=[10, -3], desired_fun=-22)
+
+ #########################
+diff --git a/scipy/optimize/tests/test_optimize.py b/scipy/optimize/tests/test_optimize.py
+index 89626b65a..ce243ecb0 100644
+--- a/scipy/optimize/tests/test_optimize.py
++++ b/scipy/optimize/tests/test_optimize.py
+@@ -914,6 +914,50 @@ class TestOptimizeSimple(CheckOptimize):
+                 # search makes many small steps
+                 pass
+
++    @pytest.mark.parametrize('method', ['nelder-mead', 'powell', 'cg', 'bfgs', 'newton-cg',
++                                        'l-bfgs-b', 'tnc', 'cobyla', 'slsqp', 'trust-constr',
++                                        'dogleg', 'trust-ncg', 'trust-exact', 'trust-krylov'])
++    def test_nan_values(self, method):
++        # Check nan values result to failed exit status
++        np.random.seed(1234)
++
++        count = [0]
++
++        def func(x):
++            return np.nan
++
++        def func2(x):
++            count[0] += 1
++            if count[0] > 2:
++                return np.nan
++            else:
++                return np.random.rand()
++
++        def grad(x):
++            return np.array([1.0])
++
++        def hess(x):
++            return np.array([[1.0]])
++
++        x0 = np.array([1.0])
++
++        needs_grad = method in ('newton-cg', 'trust-krylov', 'trust-exact', 'trust-ncg', 'dogleg')
++        needs_hess = method in ('trust-krylov', 'trust-exact', 'trust-ncg', 'dogleg')
++
++        funcs = [func, func2]
++        grads = [grad] if needs_grad else [grad, None]
++        hesss = [hess] if needs_hess else [hess, None]
++
++        with np.errstate(invalid='ignore'), suppress_warnings() as sup:
++            sup.filter(UserWarning, "delta_grad == 0.*")
++            sup.filter(RuntimeWarning, ".*does not use Hessian.*")
++            sup.filter(RuntimeWarning, ".*does not use gradient.*")
++
++            for f, g, h in itertools.product(funcs, grads, hesss):
++                count = [0]
++                sol = optimize.minimize(f, x0, jac=g, hess=h, method=method, options=dict(maxiter=20))
++                assert_equal(sol.success, False)
++
+
+ class TestLBFGSBBounds(object):
+     def setup_method(self):
+@@ -1111,6 +1155,33 @@ class TestOptimizeScalar(object):
+         # Regression test for gh-3503
+         optimize.minimize_scalar(self.fun, args=1.5)
+
++    @pytest.mark.parametrize('method', ['brent', 'bounded', 'golden'])
++    def test_nan_values(self, method):
++        # Check nan values result to failed exit status
++        np.random.seed(1234)
++
++        count = [0]
++
++        def func(x):
++            count[0] += 1
++            if count[0] > 4:
++                return np.nan
++            else:
++                return x**2 + 0.1 * np.sin(x)
++
++        bracket = (-1, 0, 1)
++        bounds = (-1, 1)
++
++        with np.errstate(invalid='ignore'), suppress_warnings() as sup:
++            sup.filter(UserWarning, "delta_grad == 0.*")
++            sup.filter(RuntimeWarning, ".*does not use Hessian.*")
++            sup.filter(RuntimeWarning, ".*does not use gradient.*")
++
++            count = [0]
++            sol = optimize.minimize_scalar(func, bracket=bracket, bounds=bounds, method=method,
++                                           options=dict(maxiter=20))
++            assert_equal(sol.success, False)
++
+
+ def test_brent_negative_tolerance():
+     assert_raises(ValueError, optimize.brent, np.cos, tol=-.01)
+diff --git a/scipy/optimize/tests/test_zeros.py b/scipy/optimize/tests/test_zeros.py
+index a30eef680..728d1a07c 100644
+--- a/scipy/optimize/tests/test_zeros.py
++++ b/scipy/optimize/tests/test_zeros.py
+@@ -2,6 +2,7 @@ from __future__ import division, print_function, absolute_import
+ import pytest
+
+ from math import sqrt, exp, sin, cos
++from functools import lru_cache
+
+ from numpy.testing import (assert_warns, assert_,
+                            assert_allclose,
+@@ -54,6 +55,12 @@ def f2_2(x):
+     return exp(x) + cos(x)
+
+
++# lru cached function
++@lru_cache()
++def f_lrucached(x):
++    return x
++
++
+ class TestBasic(object):
+
+     def run_check_by_name(self, name, smoothness=0, **kwargs):
+@@ -83,6 +90,15 @@ class TestBasic(object):
+             assert_allclose(zero, 1.0, atol=xtol, rtol=rtol,
+                             err_msg='method %s, function %s' % (name, fname))
+
++    def run_check_lru_cached(self, method, name):
++        # check that https://github.com/scipy/scipy/issues/10846 is fixed
++        a = -1
++        b = 1
++        zero, r = method(f_lrucached, a, b, full_output=True)
++        assert_(r.converged)
++        assert_allclose(zero, 0,
++                        err_msg='method %s, function %s' % (name, 'f_lrucached'))
++
+     def _run_one_test(self, tc, method, sig_args_keys=None,
+                       sig_kwargs_keys=None, **kwargs):
+         method_args = []
+@@ -172,16 +188,19 @@ class TestBasic(object):
+
+     def test_bisect(self):
+         self.run_check(zeros.bisect, 'bisect')
++        self.run_check_lru_cached(zeros.bisect, 'bisect')
+         self.run_check_by_name('bisect')
+         self.run_collection('aps', zeros.bisect, 'bisect', smoothness=1)
+
+     def test_ridder(self):
+         self.run_check(zeros.ridder, 'ridder')
++        self.run_check_lru_cached(zeros.ridder, 'ridder')
+         self.run_check_by_name('ridder')
+         self.run_collection('aps', zeros.ridder, 'ridder', smoothness=1)
+
+     def test_brentq(self):
+         self.run_check(zeros.brentq, 'brentq')
++        self.run_check_lru_cached(zeros.brentq, 'brentq')
+         self.run_check_by_name('brentq')
+         # Brentq/h needs a lower tolerance to be specified
+         self.run_collection('aps', zeros.brentq, 'brentq', smoothness=1,
+@@ -189,12 +208,14 @@ class TestBasic(object):
+
+     def test_brenth(self):
+         self.run_check(zeros.brenth, 'brenth')
++        self.run_check_lru_cached(zeros.brenth, 'brenth')
+         self.run_check_by_name('brenth')
+         self.run_collection('aps', zeros.brenth, 'brenth', smoothness=1,
+                             xtol=1e-14, rtol=1e-14)
+
+     def test_toms748(self):
+         self.run_check(zeros.toms748, 'toms748')
++        self.run_check_lru_cached(zeros.toms748, 'toms748')
+         self.run_check_by_name('toms748')
+         self.run_collection('aps', zeros.toms748, 'toms748', smoothness=1)
+
+diff --git a/scipy/optimize/zeros.c b/scipy/optimize/zeros.c
+index 5ebf3ef1f..ffdb1c1ed 100644
+--- a/scipy/optimize/zeros.c
++++ b/scipy/optimize/zeros.c
+@@ -27,7 +27,7 @@
+
+ typedef struct {
+     PyObject *function;
+-    PyObject *args;
++    PyObject *xargs;
+     jmp_buf env;
+ } scipy_zeros_parameters;
+
+@@ -37,13 +37,34 @@ static double
+ scipy_zeros_functions_func(double x, void *params)
+ {
+     scipy_zeros_parameters *myparams = params;
+-    PyObject *args, *f, *retval=NULL;
++    PyObject *args, *xargs, *item, *f, *retval=NULL;
++    Py_ssize_t i, len;
+     double val;
+
+-    args = myparams->args;
++    xargs = myparams->xargs;
++    /* Need to create a new 'args' tuple on each call in case 'f' is
++       stateful and keeps references to it (e.g. functools.lru_cache) */
++    len = PyTuple_Size(xargs);
++    /* Make room for the double as first argument */
++    args = PyArgs(New)(len + 1);
++    if (args == NULL) {
++        PyErr_SetString(PyExc_RuntimeError, "Failed to allocate arguments");
++        longjmp(myparams->env, 1);
++    }
++    PyArgs(SET_ITEM)(args, 0, Py_BuildValue("d", x));
++    for (i = 0; i < len; i++) {
++        item = PyTuple_GetItem(xargs, i);
++        if (item == NULL) {
++            Py_DECREF(args);
++            longjmp(myparams->env, 1);
++        }
++        Py_INCREF(item);
++        PyArgs(SET_ITEM)(args, i+1, item);
++    }
++
+     f = myparams->function;
+-    PyArgs(SetItem)(args, 0, Py_BuildValue("d",x));
+     retval = PyObject_CallObject(f,args);
++    Py_DECREF(args);
+     if (retval == NULL) {
+         longjmp(myparams->env, 1);
+     }
+@@ -61,12 +82,10 @@ static PyObject *
+ call_solver(solver_type solver, PyObject *self, PyObject *args)
+ {
+     double a, b, xtol, rtol, zero;
+-    Py_ssize_t len;
+-    int iter, i, fulloutput, disp=1, flag=0;
++    int iter, fulloutput, disp=1, flag=0;
+     scipy_zeros_parameters params;
+     scipy_zeros_info solver_stats;
+-    PyObject *f, *xargs, *item;
+-    volatile PyObject *fargs = NULL;
++    PyObject *f, *xargs;
+
+     if (!PyArg_ParseTuple(args, "OddddiOi|i",
+                 &f, &a, &b, &xtol, &rtol, &iter, &xargs, &fulloutput, &disp)) {
+@@ -82,37 +101,16 @@ call_solver(solver_type solver, PyObject *self, PyObject *args)
+         return NULL;
+     }
+
+-    len = PyTuple_Size(xargs);
+-    /* Make room for the double as first argument */
+-    fargs = PyArgs(New)(len + 1);
+-    if (fargs == NULL) {
+-        PyErr_SetString(PyExc_RuntimeError, "Failed to allocate arguments");
+-        return NULL;
+-    }
+-
+-    for (i = 0; i < len; i++) {
+-        item = PyTuple_GetItem(xargs, i);
+-        if (item == NULL) {
+-            Py_DECREF(fargs);
+-            return NULL;
+-        }
+-        Py_INCREF(item);
+-        PyArgs(SET_ITEM)(fargs, i+1, item);
+-    }
+-
+     params.function = f;
+-    params.args = (PyObject *)fargs;  /* Discard the volatile attribute */
++    params.xargs = xargs;
+
+     if (!setjmp(params.env)) {
+         /* direct return */
+         solver_stats.error_num = 0;
+         zero = solver(scipy_zeros_functions_func, a, b, xtol, rtol,
+                       iter, (void*)&params, &solver_stats);
+-        Py_DECREF(fargs);
+-        fargs = NULL;
+     } else {
+         /* error return from Python function */
+-        Py_DECREF(fargs);
+         return NULL;
+     }
+
+diff --git a/scipy/signal/_peak_finding.py b/scipy/signal/_peak_finding.py
+index 6eb1b189c..f84a94eea 100644
+--- a/scipy/signal/_peak_finding.py
++++ b/scipy/signal/_peak_finding.py
+@@ -905,7 +905,7 @@ def find_peaks(x, height=None, threshold=None, distance=None,
+
+     Especially for noisy signals peaks can be easily grouped by their
+     prominence (see `peak_prominences`). E.g. we can select all peaks except
+-    for the mentioned QRS complexes by limiting the allowed prominenence to 0.6.
++    for the mentioned QRS complexes by limiting the allowed prominence to 0.6.
+
+     >>> peaks, properties = find_peaks(x, prominence=(None, 0.6))
+     >>> properties["prominences"].max()
+diff --git a/scipy/signal/signaltools.py b/scipy/signal/signaltools.py
+index 6f413dcfd..450fbad0f 100644
+--- a/scipy/signal/signaltools.py
++++ b/scipy/signal/signaltools.py
+@@ -7,7 +7,7 @@ import operator
+ import threading
+ import sys
+ import timeit
+-
++from scipy.spatial import cKDTree
+ from . import sigtools, dlti
+ from ._upfirdn import upfirdn, _output_len
+ from scipy._lib.six import callable
+@@ -1733,32 +1733,42 @@ def cmplx_sort(p):
+
+
+ def unique_roots(p, tol=1e-3, rtype='min'):
+-    """
+-    Determine unique roots and their multiplicities from a list of roots.
++    """Determine unique roots and their multiplicities from a list of roots.
+
+     Parameters
+     ----------
+     p : array_like
+         The list of roots.
+     tol : float, optional
+-        The tolerance for two roots to be considered equal. Default is 1e-3.
+-    rtype : {'max', 'min, 'avg'}, optional
++        The tolerance for two roots to be considered equal in terms of
++        the distance between them. Default is 1e-3. Refer to Notes about
++        the details on roots grouping.
++    rtype : {'max', 'maximum', 'min', 'minimum', 'avg', 'mean'}, optional
+         How to determine the returned root if multiple roots are within
+         `tol` of each other.
+
+-          - 'max': pick the maximum of those roots.
+-          - 'min': pick the minimum of those roots.
+-          - 'avg': take the average of those roots.
++          - 'max', 'maximum': pick the maximum of those roots
++          - 'min', 'minimum': pick the minimum of those roots
++          - 'avg', 'mean': take the average of those roots
++
++        When finding minimum or maximum among complex roots they are compared
++        first by the real part and then by the imaginary part.
+
+     Returns
+     -------
+-    pout : ndarray
+-        The list of unique roots, sorted from low to high.
+-    mult : ndarray
++    unique : ndarray
++        The list of unique roots.
++    multiplicity : ndarray
+         The multiplicity of each root.
+
+     Notes
+     -----
++    If we have 3 roots ``a``, ``b`` and ``c``, such that ``a`` is close to
++    ``b`` and ``b`` is close to ``c`` (distance is less than `tol`), then it
++    doesn't necessarily mean that ``a`` is close to ``c``. It means that roots
++    grouping is not unique. In this function we use "greedy" grouping going
++    through the roots in the order they are given in the input `p`.
++
+     This utility function is not specific to roots but can be used for any
+     sequence of values for which uniqueness and multiplicity has to be
+     determined. For a more general routine, see `numpy.unique`.
+@@ -1773,39 +1783,40 @@ def unique_roots(p, tol=1e-3, rtype='min'):
+
+     >>> uniq[mult > 1]
+     array([ 1.305])
+-
+     """
+     if rtype in ['max', 'maximum']:
+-        comproot = np.max
++        reduce = np.max
+     elif rtype in ['min', 'minimum']:
+-        comproot = np.min
++        reduce = np.min
+     elif rtype in ['avg', 'mean']:
+-        comproot = np.mean
++        reduce = np.mean
+     else:
+         raise ValueError("`rtype` must be one of "
+                          "{'max', 'maximum', 'min', 'minimum', 'avg', 'mean'}")
+-    p = asarray(p) * 1.0
+-    tol = abs(tol)
+-    p, indx = cmplx_sort(p)
+-    pout = []
+-    mult = []
+-    indx = -1
+-    curp = p[0] + 5 * tol
+-    sameroots = []
+-    for k in range(len(p)):
+-        tr = p[k]
+-        if abs(tr - curp) < tol:
+-            sameroots.append(tr)
+-            curp = comproot(sameroots)
+-            pout[indx] = curp
+-            mult[indx] += 1
+-        else:
+-            pout.append(tr)
+-            curp = tr
+-            sameroots = [tr]
+-            indx += 1
+-            mult.append(1)
+-    return array(pout), array(mult)
++
++    p = np.asarray(p)
++
++    points = np.empty((len(p), 2))
++    points[:, 0] = np.real(p)
++    points[:, 1] = np.imag(p)
++    tree = cKDTree(points)
++
++    p_unique = []
++    p_multiplicity = []
++    used = np.zeros(len(p), dtype=bool)
++    for i in range(len(p)):
++        if used[i]:
++            continue
++
++        group = tree.query_ball_point(points[i], tol)
++        group = [x for x in group if not used[x]]
++
++        p_unique.append(reduce(p[group]))
++        p_multiplicity.append(len(group))
++
++        used[group] = True
++
++    return np.asarray(p_unique), np.asarray(p_multiplicity)
+
+
+ def invres(r, p, k, tol=1e-3, rtype='avg'):
+diff --git a/scipy/signal/tests/test_signaltools.py b/scipy/signal/tests/test_signaltools.py
+index 36565b52f..81ce7a311 100644
+--- a/scipy/signal/tests/test_signaltools.py
++++ b/scipy/signal/tests/test_signaltools.py
+@@ -24,7 +24,7 @@ from scipy.signal import (
+     correlate, convolve, convolve2d, fftconvolve, choose_conv_method,
+     hilbert, hilbert2, lfilter, lfilter_zi, filtfilt, butter, zpk2tf, zpk2sos,
+     invres, invresz, vectorstrength, lfiltic, tf2sos, sosfilt, sosfiltfilt,
+-    sosfilt_zi, tf2zpk, BadCoefficients, detrend)
++    sosfilt_zi, tf2zpk, BadCoefficients, detrend, unique_roots)
+ from scipy.signal.windows import hann
+ from scipy.signal.signaltools import _filtfilt_gust
+
+@@ -2668,3 +2668,78 @@ class TestDetrend(object):
+         copy_array = detrend(x, overwrite_data=False)
+         inplace = detrend(x, overwrite_data=True)
+         assert_array_almost_equal(copy_array, inplace)
++
++
++class TestUniqueRoots(object):
++    def test_real_no_repeat(self):
++        p = [-1.0, -0.5, 0.3, 1.2, 10.0]
++        unique, multiplicity = unique_roots(p)
++        assert_almost_equal(unique, p, decimal=15)
++        assert_equal(multiplicity, np.ones(len(p)))
++
++    def test_real_repeat(self):
++        p = [-1.0, -0.95, -0.89, -0.8, 0.5, 1.0, 1.05]
++
++        unique, multiplicity = unique_roots(p, tol=1e-1, rtype='min')
++        assert_almost_equal(unique, [-1.0, -0.89, 0.5, 1.0], decimal=15)
++        assert_equal(multiplicity, [2, 2, 1, 2])
++
++        unique, multiplicity = unique_roots(p, tol=1e-1, rtype='max')
++        assert_almost_equal(unique, [-0.95, -0.8, 0.5, 1.05], decimal=15)
++        assert_equal(multiplicity, [2, 2, 1, 2])
++
++        unique, multiplicity = unique_roots(p, tol=1e-1, rtype='avg')
++        assert_almost_equal(unique, [-0.975, -0.845, 0.5, 1.025], decimal=15)
++        assert_equal(multiplicity, [2, 2, 1, 2])
++
++    def test_complex_no_repeat(self):
++        p = [-1.0, 1.0j, 0.5 + 0.5j, -1.0 - 1.0j, 3.0 + 2.0j]
++        unique, multiplicity = unique_roots(p)
++        assert_almost_equal(unique, p, decimal=15)
++        assert_equal(multiplicity, np.ones(len(p)))
++
++    def test_complex_repeat(self):
++        p = [-1.0, -1.0 + 0.05j, -0.95 + 0.15j, -0.90 + 0.15j, 0.0,
++             0.5 + 0.5j, 0.45 + 0.55j]
++
++        unique, multiplicity = unique_roots(p, tol=1e-1, rtype='min')
++        assert_almost_equal(unique, [-1.0, -0.95 + 0.15j, 0.0, 0.45 + 0.55j],
++                            decimal=15)
++        assert_equal(multiplicity, [2, 2, 1, 2])
++
++        unique, multiplicity = unique_roots(p, tol=1e-1, rtype='max')
++        assert_almost_equal(unique,
++                            [-1.0 + 0.05j, -0.90 + 0.15j, 0.0, 0.5 + 0.5j],
++                            decimal=15)
++        assert_equal(multiplicity, [2, 2, 1, 2])
++
++        unique, multiplicity = unique_roots(p, tol=1e-1, rtype='avg')
++        assert_almost_equal(
++            unique, [-1.0 + 0.025j, -0.925 + 0.15j, 0.0, 0.475 + 0.525j],
++            decimal=15)
++        assert_equal(multiplicity, [2, 2, 1, 2])
++
++    def test_gh_4915(self):
++        p = np.roots(np.convolve(np.ones(5), np.ones(5)))
++        true_roots = [-(-1)**(1/5), (-1)**(4/5), -(-1)**(3/5), (-1)**(2/5)]
++
++        unique, multiplicity = unique_roots(p)
++        unique = np.sort(unique)
++
++        assert_almost_equal(np.sort(unique), true_roots, decimal=7)
++        assert_equal(multiplicity, [2, 2, 2, 2])
++
++    def test_complex_roots_extra(self):
++        unique, multiplicity = unique_roots([1.0, 1.0j, 1.0])
++        assert_almost_equal(unique, [1.0, 1.0j], decimal=15)
++        assert_equal(multiplicity, [2, 1])
++
++        unique, multiplicity = unique_roots([1, 1 + 2e-9, 1e-9 + 1j], tol=0.1)
++        assert_almost_equal(unique, [1.0, 1e-9 + 1.0j], decimal=15)
++        assert_equal(multiplicity, [2, 1])
++
++    def test_single_unique_root(self):
++        p = np.random.rand(100) + 1j * np.random.rand(100)
++        unique, multiplicity = unique_roots(p, 2)
++        assert_almost_equal(unique, [np.min(p)], decimal=15)
++        assert_equal(multiplicity, [100])
+diff --git a/scipy/sparse/_index.py b/scipy/sparse/_index.py
+index 2894e0768..d5a727e27 100644
+--- a/scipy/sparse/_index.py
++++ b/scipy/sparse/_index.py
+@@ -120,10 +120,9 @@ class IndexMixin(object):
+             # Make x and i into the same shape
+             x = np.asarray(x, dtype=self.dtype)
+             x, _ = _broadcast_arrays(x, i)
+-            if x.shape != i.shape:
+-                raise ValueError("shape mismatch in assignment")
+             if x.size == 0:
+                 return
++            x = x.reshape(i.shape)
+             self._set_arrayXarray(i, j, x)
+
+     def _validate_indices(self, key):
+diff --git a/scipy/sparse/csgraph/_shortest_path.pyx b/scipy/sparse/csgraph/_shortest_path.pyx
+index 16c7c7ce2..8188ccc44 100644
+--- a/scipy/sparse/csgraph/_shortest_path.pyx
++++ b/scipy/sparse/csgraph/_shortest_path.pyx
+@@ -293,7 +293,10 @@ def floyd_warshall(csgraph, directed=True,
+     dist_matrix = validate_graph(csgraph, directed, DTYPE,
+                                  csr_output=False,
+                                  copy_if_dense=not overwrite)
+-
++    if not isspmatrix(csgraph):
++        # for dense array input, zero entries represent non-edge
++        dist_matrix[dist_matrix == 0] = INFINITY
++
+     if unweighted:
+         dist_matrix[~np.isinf(dist_matrix)] = 1
+
+@@ -337,10 +340,8 @@ cdef void _floyd_warshall(
+
+     # ----------------------------------------------------------------------
+     #  Initialize distance matrix
+-    #   - set non-edges to infinity
+     #   - set diagonal to zero
+     #   - symmetrize matrix if non-directed graph is desired
+-    dist_matrix[dist_matrix == 0] = INFINITY
+     dist_matrix.flat[::N + 1] = 0
+     if not directed:
+         for i in range(N):
+diff --git a/scipy/sparse/csgraph/tests/test_shortest_path.py b/scipy/sparse/csgraph/tests/test_shortest_path.py
+index 5e8fcb7e6..0975bc9da 100644
+--- a/scipy/sparse/csgraph/tests/test_shortest_path.py
++++ b/scipy/sparse/csgraph/tests/test_shortest_path.py
+@@ -29,6 +29,28 @@ directed_SP = [[0, 3, 3, 5, 7],
+                [1, 4, 4, 0, 8],
+                [2, 5, 5, 2, 0]]
+
++directed_sparse_zero_G = scipy.sparse.csr_matrix(([0, 1, 2, 3, 1],
++                                            ([0, 1, 2, 3, 4],
++                                             [1, 2, 0, 4, 3])),
++                                            shape = (5, 5))
++
++directed_sparse_zero_SP = [[0, 0, 1, np.inf, np.inf],
++                      [3, 0, 1, np.inf, np.inf],
++                      [2, 2, 0, np.inf, np.inf],
++                      [np.inf, np.inf, np.inf, 0, 3],
++                      [np.inf, np.inf, np.inf, 1, 0]]
++
++undirected_sparse_zero_G = scipy.sparse.csr_matrix(([0, 0, 1, 1, 2, 2, 1, 1],
++                                              ([0, 1, 1, 2, 2, 0, 3, 4],
++                                               [1, 0, 2, 1, 0, 2, 4, 3])),
++                                              shape = (5, 5))
++
++undirected_sparse_zero_SP = [[0, 0, 1, np.inf, np.inf],
++                        [0, 0, 1, np.inf, np.inf],
++                        [1, 1, 0, np.inf, np.inf],
++                        [np.inf, np.inf, np.inf, 0, 1],
++                        [np.inf, np.inf, np.inf, 1, 0]]
++
+ directed_pred = np.array([[-9999, 0, 0, 1, 1],
+                           [3, -9999, 0, 1, 1],
+                           [-9999, -9999, -9999, -9999, -9999],
+@@ -98,6 +120,31 @@ def test_undirected():
+         for directed_in in (True, False):
+             check(method, directed_in)
+
++def test_directed_sparse_zero():
++    # test directed sparse graph with zero-weight edge and two connected components
++    def check(method):
++        SP = shortest_path(directed_sparse_zero_G, method=method, directed=True,
++                           overwrite=False)
++        assert_array_almost_equal(SP, directed_sparse_zero_SP)
++
++    for method in methods:
++        check(method)
++
++def test_undirected_sparse_zero():
++    def check(method, directed_in):
++        if directed_in:
++            SP1 = shortest_path(directed_sparse_zero_G, method=method, directed=False,
++                                overwrite=False)
++            assert_array_almost_equal(SP1, undirected_sparse_zero_SP)
++        else:
++            SP2 = shortest_path(undirected_sparse_zero_G, method=method, directed=True,
++                                overwrite=False)
++            assert_array_almost_equal(SP2, undirected_sparse_zero_SP)
++
++    for method in methods:
++        for directed_in in (True, False):
++            check(method, directed_in)
++
+
+ @pytest.mark.parametrize('directed, SP_ans',
+                          ((True, directed_SP),
+diff --git a/scipy/sparse/linalg/eigen/arpack/arpack.py b/scipy/sparse/linalg/eigen/arpack/arpack.py
+index 75e65572a..d9aeed82b 100644
+--- a/scipy/sparse/linalg/eigen/arpack/arpack.py
++++ b/scipy/sparse/linalg/eigen/arpack/arpack.py
+@@ -1026,20 +1026,28 @@ class IterOpInv(LinearOperator):
+         return self.OP.dtype
+
+
+-def get_inv_matvec(M, symmetric=False, tol=0):
++def _fast_spmatrix_to_csc(A, hermitian=False):
++    """Convert sparse matrix to CSC (by transposing, if possible)"""
++    if (isspmatrix_csr(A) and hermitian
++            and not np.issubdtype(A.dtype, np.complexfloating)):
++        return A.T
++    else:
++        return A.tocsc()
++
++
++def get_inv_matvec(M, hermitian=False, tol=0):
+     if isdense(M):
+         return LuInv(M).matvec
+     elif isspmatrix(M):
+-        if isspmatrix_csr(M) and symmetric:
+-            M = M.T
++        M = _fast_spmatrix_to_csc(M, hermitian=hermitian)
+         return SpLuInv(M).matvec
+     else:
+         return IterInv(M, tol=tol).matvec
+
+
+-def get_OPinv_matvec(A, M, sigma, symmetric=False, tol=0):
++def get_OPinv_matvec(A, M, sigma, hermitian=False, tol=0):
+     if sigma == 0:
+-        return get_inv_matvec(A, symmetric=symmetric, tol=tol)
++        return get_inv_matvec(A, hermitian=hermitian, tol=tol)
+
+     if M is None:
+         #M is the identity matrix
+@@ -1053,9 +1061,8 @@ def get_OPinv_matvec(A, M, sigma, symmetric=False, tol=0):
+             return LuInv(A).matvec
+         elif isspmatrix(A):
+             A = A - sigma * eye(A.shape[0])
+-            if symmetric and isspmatrix_csr(A):
+-                A = A.T
+-            return SpLuInv(A.tocsc()).matvec
++            A = _fast_spmatrix_to_csc(A, hermitian=hermitian)
++            return SpLuInv(A).matvec
+         else:
+             return IterOpInv(_aslinearoperator_with_dtype(A),
+                               M, sigma, tol=tol).matvec
+@@ -1069,9 +1076,8 @@ def get_OPinv_matvec(A, M, sigma, symmetric=False, tol=0):
+             return LuInv(A - sigma * M).matvec
+         else:
+             OP = A - sigma * M
+-            if symmetric and isspmatrix_csr(OP):
+-                OP = OP.T
+-            return SpLuInv(OP.tocsc()).matvec
++            OP = _fast_spmatrix_to_csc(OP, hermitian=hermitian)
++            return SpLuInv(OP).matvec
+
+
+ # ARPACK is not threadsafe or reentrant (SAVE variables), so we need a
+@@ -1288,7 +1294,7 @@ def eigs(A, k=6, M=None, sigma=None, which='LM', v0=None,
+             #general eigenvalue problem
+             mode = 2
+             if Minv is None:
+-                Minv_matvec = get_inv_matvec(M, symmetric=True, tol=tol)
++                Minv_matvec = get_inv_matvec(M, hermitian=True, tol=tol)
+             else:
+                 Minv = _aslinearoperator_with_dtype(Minv)
+                 Minv_matvec = Minv.matvec
+@@ -1314,7 +1320,7 @@ def eigs(A, k=6, M=None, sigma=None, which='LM', v0=None,
+             raise ValueError("Minv should not be specified when sigma is")
+         if OPinv is None:
+             Minv_matvec = get_OPinv_matvec(A, M, sigma,
+-                                           symmetric=False, tol=tol)
++                                           hermitian=False, tol=tol)
+         else:
+             OPinv = _aslinearoperator_with_dtype(OPinv)
+             Minv_matvec = OPinv.matvec
+@@ -1603,7 +1609,7 @@ def eigsh(A, k=6, M=None, sigma=None, which='LM', v0=None,
+             #general eigenvalue problem
+             mode = 2
+             if Minv is None:
+-                Minv_matvec = get_inv_matvec(M, symmetric=True, tol=tol)
++                Minv_matvec = get_inv_matvec(M, hermitian=True, tol=tol)
+             else:
+                 Minv = _aslinearoperator_with_dtype(Minv)
+                 Minv_matvec = Minv.matvec
+@@ -1619,7 +1625,7 @@ def eigsh(A, k=6, M=None, sigma=None, which='LM', v0=None,
+             matvec = None
+             if OPinv is None:
+                 Minv_matvec = get_OPinv_matvec(A, M, sigma,
+-                                               symmetric=True, tol=tol)
++                                               hermitian=True, tol=tol)
+             else:
+                 OPinv = _aslinearoperator_with_dtype(OPinv)
+                 Minv_matvec = OPinv.matvec
+@@ -1634,7 +1640,7 @@ def eigsh(A, k=6, M=None, sigma=None, which='LM', v0=None,
+             mode = 4
+             if OPinv is None:
+                 Minv_matvec = get_OPinv_matvec(A, M, sigma,
+-                                               symmetric=True, tol=tol)
++                                               hermitian=True, tol=tol)
+             else:
+                 Minv_matvec = _aslinearoperator_with_dtype(OPinv).matvec
+             matvec = _aslinearoperator_with_dtype(A).matvec
+@@ -1646,7 +1652,7 @@ def eigsh(A, k=6, M=None, sigma=None, which='LM', v0=None,
+             matvec = _aslinearoperator_with_dtype(A).matvec
+             if OPinv is None:
+                 Minv_matvec = get_OPinv_matvec(A, M, sigma,
+-                                               symmetric=True, tol=tol)
++                                               hermitian=True, tol=tol)
+             else:
+                 Minv_matvec = _aslinearoperator_with_dtype(OPinv).matvec
+             if M is None:
+diff --git a/scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py b/scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py
+index 4d9396c2e..350cda958 100644
+--- a/scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py
++++ b/scipy/sparse/linalg/eigen/arpack/tests/test_arpack.py
+@@ -208,7 +208,7 @@ def eval_evec(symmetric, d, typ, k, which, v0=None, sigma=None,
+     ac = mattype(a)
+
+     if general:
+-        b = d['bmat'].astype(typ.lower())
++        b = d['bmat'].astype(typ)
+         bc = mattype(b)
+
+     # get exact eigenvalues
+@@ -301,6 +301,8 @@ class SymmetricParams:
+                             pos_definite=True).astype('f').astype('d')
+         Ac = generate_matrix(N, hermitian=True, pos_definite=True,
+                              complex=True).astype('F').astype('D')
++        Mc = generate_matrix(N, hermitian=True, pos_definite=True,
++                             complex=True).astype('F').astype('D')
+         v0 = np.random.random(N)
+
+         # standard symmetric problem
+@@ -329,8 +331,15 @@ class SymmetricParams:
+         GH['v0'] = v0
+         GH['eval'] = eigh(GH['mat'], GH['bmat'], eigvals_only=True)
+
++        # general hermitian problem with hermitian M
++        GHc = DictWithRepr("gen-hermitian-Mc")
++        GHc['mat'] = Ac
++        GHc['bmat'] = Mc
++        GHc['v0'] = v0
++        GHc['eval'] = eigh(GHc['mat'], GHc['bmat'], eigvals_only=True)
++
+         self.real_test_cases = [SS, GS]
+-        self.complex_test_cases = [SH, GH]
++        self.complex_test_cases = [SH, GH, GHc]
+
+
+ class NonSymmetricParams:
+diff --git a/scipy/sparse/linalg/matfuncs.py b/scipy/sparse/linalg/matfuncs.py
+index 1079166fa..148e6bb8b 100644
+--- a/scipy/sparse/linalg/matfuncs.py
++++ b/scipy/sparse/linalg/matfuncs.py
+@@ -611,7 +611,7 @@ def _expm(A, use_exact_onenorm):
+     # algorithms.
+
+     # Avoid indiscriminate asarray() to allow sparse or other strange arrays.
+-    if isinstance(A, (list, tuple)):
++    if isinstance(A, (list, tuple, np.matrix)):
+         A = np.asarray(A)
+     if len(A.shape) != 2 or A.shape[0] != A.shape[1]:
+         raise ValueError('expected a square matrix')
+diff --git a/scipy/sparse/linalg/tests/test_matfuncs.py b/scipy/sparse/linalg/tests/test_matfuncs.py
+index ff71b7c5d..150b52ced 100644
+--- a/scipy/sparse/linalg/tests/test_matfuncs.py
++++ b/scipy/sparse/linalg/tests/test_matfuncs.py
+@@ -525,6 +525,17 @@ class TestExpM(object):
+                 atol = 1e-13 * abs(expected).max()
+                 assert_allclose(got, expected, atol=atol)
+
++    def test_matrix_input(self):
++        # Large np.matrix inputs should work, gh-5546
++        A = np.zeros((200, 200))
++        A[-1,0] = 1
++        B0 = expm(A)
++        with suppress_warnings() as sup:
++            sup.filter(DeprecationWarning, "the matrix subclass.*")
++            sup.filter(PendingDeprecationWarning, "the matrix subclass.*")
++            B = expm(np.matrix(A))
++        assert_allclose(B, B0)
++
+
+ class TestOperators(object):
+
+diff --git a/scipy/sparse/tests/test_base.py b/scipy/sparse/tests/test_base.py
+index 3dfb60594..6fe082fde 100644
+--- a/scipy/sparse/tests/test_base.py
++++ b/scipy/sparse/tests/test_base.py
+@@ -2764,6 +2764,15 @@ class _TestFancyIndexing(object):
+         mat = self.spmatrix(array([[1, 0], [0, 1]]))
+         assert_raises(ValueError, mat.__setitem__, (0, 0), np.array([1,2]))
+
++    def test_fancy_indexing_2d_assign(self):
++        # regression test for gh-10695
++        mat = self.spmatrix(array([[1, 0], [2, 3]]))
++        with suppress_warnings() as sup:
++            sup.filter(SparseEfficiencyWarning,
++                       "Changing the sparsity structure")
++            mat[[0, 1], [1, 1]] = mat[[1, 0], [0, 0]]
++        assert_equal(todense(mat), array([[1, 2], [2, 1]]))
++
+     def test_fancy_indexing_empty(self):
+         B = asmatrix(arange(50).reshape(5,10))
+         B[1,:] = 0
+diff --git a/scipy/stats/_continuous_distns.py b/scipy/stats/_continuous_distns.py
+index 86f723a28..a2c5a0a6f 100644
+--- a/scipy/stats/_continuous_distns.py
++++ b/scipy/stats/_continuous_distns.py
+@@ -5202,10 +5202,19 @@ class ncf_gen(rv_continuous):
+         return val
+
+     def _stats(self, dfn, dfd, nc):
+-        mu = np.where(dfd <= 2, np.inf, dfd / (dfd-2.0)*(1+nc*1.0/dfn))
+-        mu2 = np.where(dfd <= 4, np.inf, 2*(dfd*1.0/dfn)**2.0 *
+-                       ((dfn+nc/2.0)**2.0 + (dfn+nc)*(dfd-2.0)) /
+-                       ((dfd-2.0)**2.0 * (dfd-4.0)))
++        # Note: the rv_continuous class ensures that dfn > 0 when this function
++        # is called, so we don't have  to check for division by zero with dfn
++        # in the following.
++        mu_num = dfd * (dfn + nc)
++        mu_den = dfn * (dfd - 2)
++        mu = np.full_like(mu_num, dtype=np.float64, fill_value=np.inf)
++        np.true_divide(mu_num, mu_den, where=dfd > 2, out=mu)
++
++        mu2_num = 2*((dfn + nc)**2 + (dfn + 2*nc)*(dfd - 2))*(dfd/dfn)**2
++        mu2_den = (dfd - 2)**2 * (dfd - 4)
++        mu2 = np.full_like(mu2_num, dtype=np.float64, fill_value=np.inf)
++        np.true_divide(mu2_num, mu2_den, where=dfd > 4, out=mu2)
++
+         return mu, mu2, None, None
+
+
+diff --git a/scipy/stats/morestats.py b/scipy/stats/morestats.py
+index 064b31cdb..b68e115f8 100644
+--- a/scipy/stats/morestats.py
++++ b/scipy/stats/morestats.py
+@@ -2770,9 +2770,9 @@ def wilcoxon(x, y=None, zero_method="wilcox", correction=False,
+     is that the differences are symmetric, see [2]_.
+     The two-sided test has the null hypothesis that the median of the
+     differences is zero against the alternative that it is different from
+-    zero. The one-sided test has the null that the median is positive against
+-    the alternative that the it is negative (``alternative == 'less'``),
+-    or vice versa (``alternative == 'greater.'``).
++    zero. The one-sided test has the null hypothesis that the median is
++    positive against the alternative that it is negative
++    (``alternative == 'less'``), or vice versa (``alternative == 'greater.'``).
+
+     The test uses a normal approximation to derive the p-value (if
+     ``zero_method == 'pratt'``, the approximation is adjusted as in [5]_).
+diff --git a/scipy/stats/tests/test_distributions.py b/scipy/stats/tests/test_distributions.py
+index 2b86bc941..11ca1897a 100644
+--- a/scipy/stats/tests/test_distributions.py
++++ b/scipy/stats/tests/test_distributions.py
+@@ -3664,6 +3664,17 @@ def test_argus_function():
+                      1.0 - stats.argus.sf(1.0, chi=i))
+
+
++def test_ncf_variance():
++    # Regression test for gh-10658 (incorrect variance formula for ncf).
++    # The correct value of ncf.var(2, 6, 4), 42.75, can be verified with, for
++    # example, Wolfram Alpha with the expression
++    #     Variance[NoncentralFRatioDistribution[2, 6, 4]]
++    # or with the implementation of the noncentral F distribution in the C++
++    # library Boost.
++    v = stats.ncf.var(2, 6, 4)
++    assert_allclose(v, 42.75, rtol=1e-14)
++
++
+ class TestHistogram(object):
+     def setup_method(self):
+         np.random.seed(1234)
