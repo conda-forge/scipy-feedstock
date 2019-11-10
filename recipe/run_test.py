@@ -73,4 +73,4 @@ import scipy.stats
 import scipy.special
 
 
-sys.exit(not scipy.test(verbose=2))
+sys.exit(not scipy.test(verbose=2, extra_argv=['-n3']))
