@@ -1,0 +1,72 @@
+diff --git a/scipy/_lib/tests/test__util.py b/scipy/_lib/tests/test__util.py
+index 4421d9f18..7e00a36cd 100644
+--- a/scipy/_lib/tests/test__util.py
++++ b/scipy/_lib/tests/test__util.py
+@@ -75,35 +75,35 @@ class TestMapWrapper(object):
+         with assert_raises(RuntimeError):
+             p = MapWrapper(0)
+ 
+-    def test_parallel(self):
+-        with MapWrapper(2) as p:
+-            out = p(np.sin, self.input)
+-            assert_equal(list(out), self.output)
+-
+-            assert_(p._own_pool is True)
+-            assert_(isinstance(p.pool, PWL))
+-            assert_(p._mapfunc is not None)
+-
+-        # the context manager should've closed the internal pool
+-        # check that it has by asking it to calculate again.
+-        with assert_raises(Exception) as excinfo:
+-            p(np.sin, self.input)
+-
+-        # on py27 an AssertionError is raised, on >py27 it's a ValueError
+-        err_type = excinfo.type
+-        assert_((err_type is ValueError) or (err_type is AssertionError))
+-
+-        # can also set a PoolWrapper up with a map-like callable instance
+-        try:
+-            p = Pool(2)
+-            q = MapWrapper(p.map)
+-
+-            assert_(q._own_pool is False)
+-            q.close()
+-
+-            # closing the PoolWrapper shouldn't close the internal pool
+-            # because it didn't create it
+-            out = p.map(np.sin, self.input)
+-            assert_equal(list(out), self.output)
+-        finally:
+-            p.close()
++    # def test_parallel(self):
++    #     with MapWrapper(2) as p:
++    #         out = p(np.sin, self.input)
++    #         assert_equal(list(out), self.output)
++    #
++    #         assert_(p._own_pool is True)
++    #         assert_(isinstance(p.pool, PWL))
++    #         assert_(p._mapfunc is not None)
++    #
++    #     # the context manager should've closed the internal pool
++    #     # check that it has by asking it to calculate again.
++    #     with assert_raises(Exception) as excinfo:
++    #         p(np.sin, self.input)
++    #
++    #     # on py27 an AssertionError is raised, on >py27 it's a ValueError
++    #     err_type = excinfo.type
++    #     assert_((err_type is ValueError) or (err_type is AssertionError))
++    #
++    #     # can also set a PoolWrapper up with a map-like callable instance
++    #     try:
++    #         p = Pool(2)
++    #         q = MapWrapper(p.map)
++    #
++    #         assert_(q._own_pool is False)
++    #         q.close()
++    #
++    #         # closing the PoolWrapper shouldn't close the internal pool
++    #         # because it didn't create it
++    #         out = p.map(np.sin, self.input)
++    #         assert_equal(list(out), self.output)
++    #     finally:
++    #         p.close()
