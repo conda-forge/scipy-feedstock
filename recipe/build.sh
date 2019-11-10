@@ -9,4 +9,7 @@ export OPENBLAS_NUM_THREADS=1
 # can have a G77 ABI (currently only MKL)
 export SCIPY_USE_G77_ABI_WRAPPER=1
 
-pip install . -vv
+# pip install . -vv
+# Build in parallel to help aarch finish slightly faster
+python setup.py build_ext --inplace -j4
+python setup.py install -vv
