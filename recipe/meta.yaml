@@ -48,6 +48,7 @@ requirements:
 test:
   requires:
     - pytest
+    - pytest-xdist
     - mpmath
 
 about:
