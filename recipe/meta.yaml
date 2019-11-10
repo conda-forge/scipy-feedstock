@@ -15,8 +15,8 @@ source:
     - skip_TestIDCTIVFloat_aarch64.patch  # [aarch64]
     - skip_white_tophat03.patch  # [aarch64 or ppc64le]
     # remove this patch when updating to 1.3.3
-    - scipy-1.3.2-bad-tests.patch  # [osx and PKG_VERSION=="1.3.2" and py == 38]
-    - gh11046.patch                # [ppc64le and PKG_VERSION=="1.3.2"]
+    - scipy-1.3.2-bad-tests.patch  # [osx and py == 38]
+    - gh11046.patch                # [ppc64le]
 
 
 build:
@@ -45,7 +45,7 @@ test:
   requires:
     - pytest
     - mpmath
-    - blas * netlib  # [ppc64le and PKG_VERSION=="1.3.2"]
+    - blas * netlib  # [ppc64le]
 
 about:
   home: http://www.scipy.org/
