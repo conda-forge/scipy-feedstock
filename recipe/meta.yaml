@@ -24,7 +24,7 @@ source:
 build:
   number: 0
   skip: true  # [win or py2k]
-  skip: true  # [not aarch]
+  skip: true  # [not aarch64]
 
 requirements:
   build:
