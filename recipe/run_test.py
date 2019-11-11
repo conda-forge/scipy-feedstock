@@ -72,5 +72,7 @@ import scipy.stats.statlib
 import scipy.stats
 import scipy.special
 
-cpu_count = "1" if os.getenv("CI") == "travis" else os.environ['CPU_COUNT']
-sys.exit(not scipy.test(verbose=2, extra_argv=['-n%s' % cpu_count]))
+extra_argv = []
+if os.getenv("CI") != "travis":
+  extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
+sys.exit(not scipy.test(verbose=2, extra_argv=extra_argv))
