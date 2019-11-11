@@ -73,4 +73,4 @@ import scipy.stats
 import scipy.special
 
 
-sys.exit(not scipy.test(verbose=2, extra_argv['-n4']))
+sys.exit(not scipy.test(verbose=2, extra_argv=['-n%s' % os.environ['CPU_COUNT']]))
