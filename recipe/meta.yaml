@@ -10,7 +10,7 @@ source:
   sha256: 3e3bdd41e726e35ef576e46374278e2193aa19fbf5905214355153e65c280e1f
   patches:
     - relax_gmres_error_check.patch  # [aarch64]
-    - skip_problematic_boost_test.patch  # [aarch64 or ppc64le]
+    # - skip_problematic_boost_test.patch  # [aarch64 or ppc64le]
     - skip_problematic_root_finding.patch  # [aarch64 or ppc64le]
     - skip_TestIDCTIVFloat_aarch64.patch  # [aarch64]
     - skip_white_tophat03.patch  # [aarch64 or ppc64le]
