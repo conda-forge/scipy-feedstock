@@ -1,4 +1,5 @@
 {% set version = "1.4.0" %}
+{% set ver_major_minor = ".".join(version.split(".")[:2]) %}
 
 package:
   name: scipy
@@ -14,9 +15,8 @@ source:
     - skip_problematic_root_finding.patch  # [aarch64 or ppc64le]
     - skip_TestIDCTIVFloat_aarch64.patch  # [aarch64]
     - skip_white_tophat03.patch  # [aarch64 or ppc64le]
-    # remove this patch when updating to 1.3.3
-{% if version == "1.3.2" %}
-    - scipy-1.3.2-bad-tests.patch  # [osx and py == 38]
+    # remove this patch when updating to 1.4
+{% if ver_major_minor == "1.3" %}
     - gh11046.patch                # [ppc64le]
 {% endif %}
 
@@ -48,7 +48,7 @@ test:
     - pytest
     - pytest-xdist
     - mpmath
-{% if version == "1.3.2" %}
+{% if ver_major_minor == "1.3" %}
     - blas * netlib  # [ppc64le]
 {% endif %}
 
