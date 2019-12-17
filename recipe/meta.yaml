@@ -36,6 +36,7 @@ requirements:
     - python
     - setuptools
     - cython
+    - pybind11
     - numpy
     - pip
   run:
