@@ -9,7 +9,6 @@ import scipy
 import scipy.cluster._hierarchy
 import scipy.cluster._vq
 import scipy.fft
-import scipy.fft.convolve
 import scipy.integrate._dop
 import scipy.integrate._odepack
 import scipy.integrate._quadpack
