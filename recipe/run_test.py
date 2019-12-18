@@ -73,8 +73,10 @@ import scipy.special
 
 extra_argv = []
 if os.getenv("CI") != "travis":
-  extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
+    extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
+else:
+    extra_argv.append('-n4')
 if os.getenv("CI") == "drone":
-  extra_argv.append('-k')
-  extra_argv.append('test_arnoldi')
+    extra_argv.append('-k')
+    extra_argv.append('test_arnoldi')
 sys.exit(not scipy.test(verbose=2, extra_argv=extra_argv))
