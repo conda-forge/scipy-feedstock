@@ -79,4 +79,9 @@ else:
 if os.getenv("CI") == "drone":
     extra_argv.append('-k')
     extra_argv.append('test_arnoldi')
-sys.exit(not scipy.test(verbose=2, extra_argv=extra_argv))
+
+kwargs = dict(extra_argv=extra_argv)
+if os.getenv("CI") != "travis":
+    kwargs['verbose'] = 2
+
+sys.exit(not scipy.test(**kwargs))
