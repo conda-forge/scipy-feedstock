@@ -8,8 +8,8 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 import scipy
 import scipy.cluster._hierarchy
 import scipy.cluster._vq
-# import scipy.fftpack._fftpack  # this seems to not be there as of 1.4.0
-import scipy.fftpack.convolve
+import scipy.fft
+import scipy.fft.convolve
 import scipy.integrate._dop
 import scipy.integrate._odepack
 import scipy.integrate._quadpack
