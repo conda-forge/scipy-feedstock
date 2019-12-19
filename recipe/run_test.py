@@ -8,8 +8,7 @@ os.environ["OPENBLAS_NUM_THREADS"] = "1"
 import scipy
 import scipy.cluster._hierarchy
 import scipy.cluster._vq
-import scipy.fftpack._fftpack
-import scipy.fftpack.convolve
+import scipy.fft
 import scipy.integrate._dop
 import scipy.integrate._odepack
 import scipy.integrate._quadpack
@@ -74,8 +73,15 @@ import scipy.special
 
 extra_argv = []
 if os.getenv("CI") != "travis":
-  extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
+    extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
+else:
+    extra_argv.append('-n4')
 if os.getenv("CI") == "drone":
-  extra_argv.append('-k')
-  extra_argv.append('test_arnoldi')
-sys.exit(not scipy.test(verbose=2, extra_argv=extra_argv))
+    extra_argv.append('-k')
+    extra_argv.append('test_arnoldi')
+
+kwargs = dict(extra_argv=extra_argv)
+if os.getenv("CI") != "travis":
+    kwargs['verbose'] = 2
+
+sys.exit(not scipy.test(**kwargs))
