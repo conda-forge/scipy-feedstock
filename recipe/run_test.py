@@ -74,7 +74,7 @@ import scipy.special
 
 extra_argv = []
 if os.getenv("CI") != "travis":
-    extra_argv.append('-n%s' % os.envieon['CPU_COUNT'])
+    extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
 elif platform.python_implementation() != "PyPy":
     extra_argv.append('-n4')
  
