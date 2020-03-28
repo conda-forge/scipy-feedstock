@@ -13,7 +13,7 @@ source:
 
 build:
   number: 2
-  skip: true  # [win or py2k]
+  skip: true  # [win or py2k or (python_impl=="pypy" and ppc64le)]
 
 requirements:
   build:
