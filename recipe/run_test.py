@@ -76,6 +76,8 @@ is_pypy = (platform.python_implementation() != "PyPy")
 is_ppc64le = (platform.machine() == "ppc64le")
 
 extra_argv = []
+kwargs = dict(extra_argv=extra_argv)
+
 if os.getenv("CI") != "travis":
     extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
 elif is_pypy:
@@ -91,7 +93,6 @@ if os.getenv("CI") == "drone":
     # Run only linalg tests on drone as drone timeouts
     kwargs['tests'] = ["scipy.linalg"]
 
-kwargs = dict(extra_argv=extra_argv)
 if os.getenv("CI") != "travis":
     kwargs['verbose'] = 2
 
