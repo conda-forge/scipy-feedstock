@@ -8,10 +8,12 @@ package:
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: fd8c7b907c3fc4df1830cdce1608057248deb30afa34ac4f8f31c3784b3e4e53
+  patches:
+    - gh11300.patch  # [python_impl=="pypy"]
 
 build:
-  number: 0
-  skip: true  # [win or py2k]
+  number: 2
+  skip: true  # [win or py2k or (python_impl=="pypy" and ppc64le)]
 
 requirements:
   build:
