@@ -89,7 +89,7 @@ if sys.platform.startswith("linux"):
     
 if os.getenv("CI") == "drone":
     extra_argv.append('-k')
-    extra_argv.append('not test_krandinit')
+    extra_argv.append('not (test_krandinit or test_heequb)')
     # Run only linalg tests on drone as drone timeouts
     kwargs['tests'] = ["scipy.linalg"]
 
