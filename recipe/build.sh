@@ -5,10 +5,10 @@
 export SCIPY_USE_G77_ABI_WRAPPER=1
 
 if [[ "$target_platform" == linux* ]]; then
-    export CFLAGS="$CFLAGS -fno-optimize-sibling-calls"
-    export CXXFLAGS="$CXXFLAGS -fno-optimize-sibling-calls"
-    export CPPFLAGS="$CPPFLAGS -fno-optimize-sibling-calls"
-    export FFLAGS="$FFLAGS -fno-optimize-sibling-calls"
+    export CFLAGS="$CFLAGS -mcompat-align-parm -fno-optimize-sibling-calls"
+    export CXXFLAGS="$CXXFLAGS -mcompat-align-parm -fno-optimize-sibling-calls"
+    export CPPFLAGS="$CPPFLAGS -mcompat-align-parm -fno-optimize-sibling-calls"
+    export FFLAGS="$FFLAGS -mcompat-align-parm -fno-optimize-sibling-calls"
 fi
 
 if [[ "$python_impl" == "pypy" && "$target_platform" == "linux-ppc64le" ]]; then
