@@ -12,8 +12,8 @@ source:
     - gh11300.patch  # [python_impl=="pypy"]
 
 build:
-  number: 2
-  skip: true  # [win or py2k or (python_impl=="pypy" and ppc64le)]
+  number: 3
+  skip: true  # [win or py2k]
 
 requirements:
   build:

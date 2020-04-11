@@ -72,7 +72,7 @@ import scipy.stats.statlib
 import scipy.stats
 import scipy.special
 
-is_pypy = (platform.python_implementation() != "PyPy")
+is_pypy = (platform.python_implementation() == "PyPy")
 is_ppc64le = (platform.machine() == "ppc64le")
 
 extra_argv = []
@@ -91,7 +91,11 @@ if os.getenv("CI") == "drone":
     extra_argv.append('-k')
     extra_argv.append('not (test_krandinit or test_heequb)')
     # Run only linalg tests on drone as drone timeouts
-    kwargs['tests'] = ["scipy.linalg"]
+    kwargs['tests'] = ["scipy.linalg", "scipy.fft"]
+
+if os.getenv("CI") == "travis" and is_pypy:
+    # Run only linalg, fft tests on travis with pypy as it timeouts
+    kwargs['tests'] = ["scipy.linalg", "scipy.fft"]
 
 if os.getenv("CI") != "travis":
     kwargs['verbose'] = 2
