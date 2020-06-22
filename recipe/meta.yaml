@@ -8,8 +8,6 @@ package:
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
   sha256: 28a1039b8616e4c4a5de32994f1d7a6c7281429158daa23920e9fecbbd0272e1
-  patches:
-    - gh11300.patch  # [python_impl=="pypy"]
 
 build:
   number: 0
