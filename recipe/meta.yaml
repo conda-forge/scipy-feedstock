@@ -37,7 +37,7 @@ test:
     - pytest
     - pytest-xdist
     - mpmath
-{% if ver_major_minor == "1.4" %}
+{% if ver_major_minor == "1.5" %}
     - blas * netlib  # [ppc64le]
 {% endif %}
 
