@@ -12,6 +12,9 @@ package:
   name: scipy-split
   version: {{ version }}
 
+# use 'blas_impl' in meta.yaml to ensure CI jobs get split
+# [blas_impl == "mkl"]
+
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: 01e87659402762f43bd2fee13370553a17ada367d42e7487800bf2916535aecb
@@ -229,6 +232,8 @@ outputs:
         - pytest-timeout
         - pytest-xdist
         - mpmath
+        # make sure we test with all blas implementations
+        - libblas * *{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # undiagnosed tolerance violations
