@@ -42,13 +42,13 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 test:
+  # this section will execute run_test.py
   requires:
     - pytest
     - pytest-xdist
     - mpmath
-{% if ver_major_minor == "1.5" %}
-    - blas * netlib  # [ppc64le]
-{% endif %}
+    # make sure we test with all blas implementations
+    - libblas =*=*{{ blas_impl }}
 
 about:
   home: http://www.scipy.org/
