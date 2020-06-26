@@ -7,6 +7,9 @@ package:
 # use 'python_impl' in meta.yaml so it gets picked up by rendering
 # [python_impl == "pypy"]
 
+# need to do the same for blas_impl to ensure CI jobs get split
+# [blas_impl == "mkl"]
+
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the relevant submodules; by taking the tarball from github
@@ -219,6 +222,8 @@ outputs:
         - mpmath
         # needed for scipy.datasets
         - pooch
+        # make sure we test with all blas implementations
+        - libblas =*=*{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
