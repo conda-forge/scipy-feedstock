@@ -76,6 +76,8 @@ test:
     - pytest-timeout
     - pytest-xdist
     - mpmath
+    # make sure we test with all blas implementations
+    - blas =*={{ blas_impl }}
   commands:
     # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
     # change to np.show_config() for v>=1.22.0, cf. numpy/numpy#19130
