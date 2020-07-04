@@ -23,16 +23,13 @@ libcblas:
 liblapack:
 - 3.8.0 *netlib
 numpy:
-- '1.18'
+- '1.14'
 pin_run_as_build:
   python:
     min_pin: x.x
     max_pin: x.x
 python:
-- 3.6.* *_73_pypy
-python_impl:
-- pypy
+- 3.7.* *_cpython
 zip_keys:
 - - numpy
   - python
-  - python_impl
