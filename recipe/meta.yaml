@@ -42,13 +42,17 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 test:
-  # this section will execute run_test.py
+  files:
+    - test_script.py
   requires:
     - pytest
     - pytest-xdist
     - mpmath
     # make sure we test with all blas implementations
     - libblas =*=*{{ blas_impl }}
+  commands:
+    - python test_script.py           # [python_impl != "pypy"]
+    - pypy3 --jit off test_script.py  # [python_impl == "pypy"]
 
 about:
   home: http://www.scipy.org/
