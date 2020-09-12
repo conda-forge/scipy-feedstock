@@ -1,4 +1,4 @@
-{% set version = "1.2.1" %}
+{% set version = "1.2.3" %}
 
 package:
   name: scipy
@@ -6,14 +6,14 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: d4b9c1c1dee37ffd1653fd62ea52587212d3b1570c927f16719fd7c4077c0d0a
+  sha256: 9ca9e9c8e894468b18e6112b5648d22ffc55cb7819afb16986f0fcac13a3dff7
   patches:
     # https://github.com/scipy/scipy/issues/9777
     # we build with numpy1.9, but test with numpy1.14, so that test still needs to be disabled
     # - np114.patch
 
 build:
-  number: 2
+  number: 0
   skip: true  # [win or aarch64 or ppc64le or py3k]
 
 requirements:
