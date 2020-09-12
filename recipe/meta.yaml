@@ -14,7 +14,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [win or aarch64 or ppc64le or py3k]
+  skip: true  # [win or aarch64 or ppc64le]
 
 requirements:
   build:
