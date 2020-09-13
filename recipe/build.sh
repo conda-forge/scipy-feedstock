@@ -9,7 +9,8 @@ if [[ -f $BUILD_PREFIX/bin/python ]]; then
   rm -rf $BUILD_PREFIX/venv/cross
   if [[ -f $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg ]]; then
     cat $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg
-    rsync -a -I $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/ $PREFIX/lib/python$PY_VER/site-packages/numpy/
+    rsync -a -I $PREFIX/lib/python$PY_VER/site-packages/numpy/ $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/
+    rm -rf $PREFIX/lib/python$PY_VER/site-packages/numpy/
     cat $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg
   fi
 fi
