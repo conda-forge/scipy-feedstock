@@ -7,6 +7,9 @@ if [[ -f $BUILD_PREFIX/bin/python ]]; then
       --sysconfigdata-file $PREFIX/lib/python$PY_VER/${_CONDA_PYTHON_SYSCONFIGDATA_NAME}.py
   cp $BUILD_PREFIX/venv/cross/bin/python $PREFIX/bin/python
   rm -rf $BUILD_PREFIX/venv/cross
+  if [[ -f $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg ]]; then
+    cp $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg
+  fi
 fi
 
 # Use the G77 ABI wrapper everywhere so that the underlying blas implementation
