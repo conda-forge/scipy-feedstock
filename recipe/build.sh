@@ -19,7 +19,7 @@ fi
 export SCIPY_USE_G77_ABI_WRAPPER=1
 
 if [[ "$python_impl" == "pypy" && "$target_platform" == "linux-ppc64le" ]]; then
-    python setup.py install --single-version-externally-managed --record=record.txt
+    $PYTHON setup.py install --single-version-externally-managed --record=record.txt
 else
-    pip install . -vv
+    $PYTHON -m pip install . -vv
 fi
