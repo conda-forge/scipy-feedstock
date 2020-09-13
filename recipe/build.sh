@@ -10,7 +10,7 @@ if [[ -f $BUILD_PREFIX/bin/python ]]; then
   if [[ -f $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg ]]; then
     rsync -a -I $PREFIX/lib/python$PY_VER/site-packages/ $BUILD_PREFIX/lib/python$PY_VER/site-packages/
     rm -rf $PREFIX/lib/python$PY_VER/site-packages
-    rm -rf $BUILD_PREFIX/venv/lib/python3.6/site-packages
+    rm -rf $BUILD_PREFIX/venv/lib/python$PY_VER/site-packages
     ln -s $BUILD_PREFIX/lib/python$PY_VER/site-packages $BUILD_PREFIX/venv/lib/python$PY_VER/site-packages
     export PYTHONPATH=$BUILD_PREFIX/venv/lib/python$PY_VER/site-packages
     sed -i.bak "s@$BUILD_PREFIX/venv/lib@$BUILD_PREFIX/venv/lib', '$BUILD_PREFIX/venv/lib/python$PY_VER/site-packages@g" $PYTHON
