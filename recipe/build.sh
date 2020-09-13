@@ -8,7 +8,8 @@ if [[ -f $BUILD_PREFIX/bin/python ]]; then
   cp $BUILD_PREFIX/venv/cross/bin/python $PREFIX/bin/python
   rm -rf $BUILD_PREFIX/venv/cross
   if [[ -f $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg ]]; then
-    cp $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg
+    rsync -a -v --ignore-existing $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy $PREFIX/lib/python$PY_VER/site-packages/numpy
+    rm -rf $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy*
   fi
 fi
 
