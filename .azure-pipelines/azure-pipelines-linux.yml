@@ -24,22 +24,6 @@ jobs:
         CONFIG: linux_64_numpy1.18python3.6.____73_pypytarget_platformlinux-64
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: condaforge/linux-anvil-comp7
-      linux_aarch64_numpy1.16python3.6.____cpythontarget_platformlinux-aarch64:
-        CONFIG: linux_aarch64_numpy1.16python3.6.____cpythontarget_platformlinux-aarch64
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: condaforge/linux-anvil-comp7
-      linux_aarch64_numpy1.16python3.7.____cpythontarget_platformlinux-aarch64:
-        CONFIG: linux_aarch64_numpy1.16python3.7.____cpythontarget_platformlinux-aarch64
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: condaforge/linux-anvil-comp7
-      linux_aarch64_numpy1.16python3.8.____cpythontarget_platformlinux-aarch64:
-        CONFIG: linux_aarch64_numpy1.16python3.8.____cpythontarget_platformlinux-aarch64
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: condaforge/linux-anvil-comp7
-      linux_aarch64_numpy1.18python3.6.____73_pypytarget_platformlinux-aarch64:
-        CONFIG: linux_aarch64_numpy1.18python3.6.____73_pypytarget_platformlinux-aarch64
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: condaforge/linux-anvil-comp7
       linux_ppc64le_numpy1.16python3.6.____cpythontarget_platformlinux-ppc64le:
         CONFIG: linux_ppc64le_numpy1.16python3.6.____cpythontarget_platformlinux-ppc64le
         UPLOAD_PACKAGES: 'True'
