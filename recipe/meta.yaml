@@ -18,6 +18,13 @@ requirements:
     - {{ compiler('fortran') }}
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
+    - python        # [build_platform != target_platform]
+    - setuptools    # [build_platform != target_platform]
+    - cython        # [build_platform != target_platform]
+    - pybind11      # [build_platform != target_platform]
+    - numpy         # [build_platform != target_platform]
+    - pip           # [build_platform != target_platform]
+    - crossenv      # [build_platform != target_platform]
   host:
     - libblas
     - libcblas
