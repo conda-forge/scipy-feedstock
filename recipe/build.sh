@@ -8,7 +8,9 @@ if [[ -f $BUILD_PREFIX/bin/python ]]; then
   cp $BUILD_PREFIX/venv/cross/bin/python $PREFIX/bin/python
   rm -rf $BUILD_PREFIX/venv/cross
   if [[ -f $PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg ]]; then
+    cat $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg
     cp -rf $PREFIX/lib/python$PY_VER/site-packages/numpy $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy
+    cat $BUILD_PREFIX/lib/python$PY_VER/site-packages/numpy/distutils/site.cfg
   fi
 fi
 
