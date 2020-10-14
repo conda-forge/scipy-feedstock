@@ -21,7 +21,8 @@ requirements:
     # - m2w64-gcc-fortran         # [win]
     - m2w64-toolchain            # [win]
   host:
-    - libblas
+    - openblas  # [win]
+    - libblas   # [not win]
     - libcblas
     - liblapack
     - python
@@ -32,6 +33,8 @@ requirements:
     - pip
   run:
     - python
+    - libblas * *openblas  # [win]
+    - openblas             # [win]
     - {{ pin_compatible('numpy') }}
 
 test:
