@@ -23,8 +23,8 @@ requirements:
   host:
     - openblas  # [win]
     - libblas   # [not win]
-    - libcblas
-    - liblapack
+    - libcblas  # [not win]
+    - liblapack  # [not win]
     - python
     - setuptools
     - cython
