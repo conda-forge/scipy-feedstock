@@ -11,13 +11,14 @@ source:
 
 build:
   number: 2
-  skip: true  # [win or py2k]
 
 requirements:
   build:
-    - {{ compiler('fortran') }}
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
+    - {{ compiler('fortran') }}  # [not win]
+    - {{ compiler('c') }}        # [not win]
+    - {{ compiler('cxx') }}      # [not win]
+    # - m2w64-gcc-fortran         # [win]
+    - m2w64-toolchain            # [win]
   host:
     - libblas
     - libcblas
