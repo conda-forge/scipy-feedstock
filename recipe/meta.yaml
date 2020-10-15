@@ -19,28 +19,21 @@ requirements:
     - {{ compiler('fortran') }}  # [not win]
     - {{ compiler('c') }}        # [not win]
     - {{ compiler('cxx') }}      # [not win]
-    # - m2w64-gcc-fortran         # [win]
-    # - m2w64-toolchain            # [win]
     - {{ compiler("m2w64_c") }}         # [win]
     - {{ compiler("m2w64_fortran") }}   # [win]
-    - m2w64-openblas
+    #- m2w64-openblas
   host:
-    - openblas  # [win]
-    - libblas * *openblas  # [win]
-    - libblas   # [not win]
-    - libcblas  # [not win]
-    - liblapack  # [not win]
+    - libblas
+    - libcblas
+    - liblapack
     - python
     - setuptools
     - cython
     - pybind11
-    - numpy  # [not win]
-    - numpy 1.19  # [win]
+    - numpy
     - pip
   run:
     - python
-    - libblas * *openblas  # [win]
-    - openblas             # [win]
     - {{ pin_compatible('numpy') }}
 
 test:
