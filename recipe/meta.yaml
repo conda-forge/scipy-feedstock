@@ -26,6 +26,7 @@ requirements:
     - m2w64-openblas
   host:
     - openblas  # [win]
+    - libblas * *openblas  # [win]
     - libblas   # [not win]
     - libcblas  # [not win]
     - liblapack  # [not win]
