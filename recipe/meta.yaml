@@ -12,6 +12,7 @@ source:
 build:
   number: 2
   skip: true  # [not win]
+  skip: true  # [py!=38]
 
 requirements:
   build:
