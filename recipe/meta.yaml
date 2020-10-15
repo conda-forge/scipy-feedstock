@@ -29,7 +29,8 @@ requirements:
     - setuptools
     - cython
     - pybind11
-    - numpy
+    - numpy  # [not win]
+    - numpy 1.19  # [win]
     - pip
   run:
     - python
