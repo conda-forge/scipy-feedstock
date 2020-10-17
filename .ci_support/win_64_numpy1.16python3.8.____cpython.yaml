@@ -1,27 +1,19 @@
-c_compiler:
-- gcc
-c_compiler_version:
-- '9'
 channel_sources:
 - conda-forge,defaults
 channel_targets:
 - conda-forge main
-cxx_compiler:
-- gxx
-cxx_compiler_version:
-- '9'
-docker_image:
-- condaforge/linux-anvil-comp7
-fortran_compiler:
-- gfortran
-fortran_compiler_version:
-- '9'
 libblas:
 - 3.8 *netlib
 libcblas:
 - 3.8 *netlib
 liblapack:
 - 3.8.0 *netlib
+m2w64_c_compiler:
+- m2w64-toolchain
+m2w64_cxx_compiler:
+- m2w64-toolchain
+m2w64_fortran_compiler:
+- m2w64-toolchain
 numpy:
 - '1.16'
 pin_run_as_build:
@@ -31,10 +23,7 @@ pin_run_as_build:
 python:
 - 3.8.* *_cpython
 target_platform:
-- linux-64
+- win-64
 zip_keys:
-- - c_compiler_version
-  - cxx_compiler_version
-  - fortran_compiler_version
 - - numpy
   - python
