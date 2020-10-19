@@ -1,17 +1,17 @@
+c_compiler:
+- vs2017
 channel_sources:
 - conda-forge,defaults
 channel_targets:
 - conda-forge main
+cxx_compiler:
+- vs2017
 libblas:
 - 3.8 *netlib
 libcblas:
 - 3.8 *netlib
 liblapack:
-- 3.8.0 *netlib
-m2w64_c_compiler:
-- m2w64-toolchain
-m2w64_cxx_compiler:
-- m2w64-toolchain
+- 3.8 *netlib
 m2w64_fortran_compiler:
 - m2w64-toolchain
 numpy:
