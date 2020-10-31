@@ -10,6 +10,7 @@ can safely replace this file with your own version.
 """
 
 import os
+import sys
 
 # on Windows SciPy loads important DLLs
 # and the code below aims to alleviate issues with DLL
@@ -25,8 +26,8 @@ if os.name == 'nt':
         # for Python >= 3.8, DLL resolution ignores the PATH variable
         # and the current working directory; see release notes:
         # https://docs.python.org/3/whatsnew/3.8.html#bpo-36085-whatsnew
-        # Only the system paths, the directory containing the DLL, and 
-        # directories added with add_dll_directory() are searched for 
+        # Only the system paths, the directory containing the DLL, and
+        # directories added with add_dll_directory() are searched for
         # load-time dependencies with Python >= 3.8
 
         # this module was originally added to support DLL resolution in
@@ -35,7 +36,7 @@ if os.name == 'nt':
 
         # however, we also started to receive reports of problems with DLL
         # resolution with Python 3.7 that were sometimes alleviated with
-        # inclusion of the _distributor_init.py module; see SciPy main 
+        # inclusion of the _distributor_init.py module; see SciPy main
         # repo gh-11826
 
         # we noticed in scipy-wheels repo gh-70 that inclusion of
@@ -61,3 +62,7 @@ if os.name == 'nt':
                 WinDLL(os.path.abspath(filename))
         finally:
             os.chdir(owd)
+        # For python 3.9, above doesn't seem to be enough though I can't reproduce
+        # locally. Try using add_dll_directory which is supported only in >=3.8
+        if sys.version_info[:2] >= (3, 9):
+            os.add_dll_directory(libs_path)
