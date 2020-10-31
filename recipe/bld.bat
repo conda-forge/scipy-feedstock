@@ -25,6 +25,7 @@ del scipy/_distributor_init.py
 copy %RECIPE_DIR%/_distributor_init.py scipy/_distributor_init.py
 
 %PYTHON% -m pip install . -vv
+if %ERRORLEVEL% neq 0 exit 1
 
 REM make sure these aren't packaged
 del %LIBRARY_LIB%\blas.fobjects
