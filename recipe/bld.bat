@@ -15,7 +15,9 @@ REM creates an isolated DLL for these fortran functions and therefore it doesn't
 REM see these C functions. workaround this by compiling it ourselves and
 REM sneaking it with the blas libraries
 REM TODO: rewrite wrap_g77_abi.f with iso_c_binding when the compiler supports it
-%CC -O3 scipy\_build_utils\src\wrap_g77_abi_c.c
+cl.exe scipy\_build_utils\src\wrap_g77_abi_c.c -c /MD
+echo. > scipy\_build_utils\src\wrap_g77_abi_c.c
+echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.fobjects
 echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.cobjects
 
 REM Add a file to load the fortran wrapper libraries in scipy/.libs
