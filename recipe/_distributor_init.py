@@ -22,6 +22,7 @@ if os.name == 'nt':
     # scipy/.libs/, if present
     libs_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                              '.libs'))
+    print("libs_path", libs_path)
     if os.path.isdir(libs_path):
         # for Python >= 3.8, DLL resolution ignores the PATH variable
         # and the current working directory; see release notes:
@@ -59,11 +60,14 @@ if os.name == 'nt':
             owd = os.getcwd()
             os.chdir(libs_path)
             for filename in glob.glob(os.path.join(libs_path, '*dll')):
+                print("dll", filename)
                 WinDLL(os.path.abspath(filename))
         finally:
             os.chdir(owd)
         # For python 3.9, above doesn't seem to be enough though I can't reproduce
         # locally. Try using add_dll_directory which is supported only in >=3.8
         if sys.version_info[:2] >= (3, 9):
+            print("Original PATH", os.environ['PATH'])
             os.environ['PATH'] = libs_path + os.path.pathsep + os.environ['PATH']
+            print("New PATH", os.environ['PATH'])
             os.add_dll_directory(libs_path)
