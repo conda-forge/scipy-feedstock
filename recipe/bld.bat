@@ -16,13 +16,16 @@ REM see these C functions. workaround this by compiling it ourselves and
 REM sneaking it with the blas libraries
 REM TODO: rewrite wrap_g77_abi.f with iso_c_binding when the compiler supports it
 cl.exe scipy\_build_utils\src\wrap_g77_abi_c.c -c /MD
+if %ERRORLEVEL% neq 0 exit 1
 echo. > scipy\_build_utils\src\wrap_g77_abi_c.c
 echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.fobjects
 echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.cobjects
 
 REM Add a file to load the fortran wrapper libraries in scipy/.libs
 del scipy\_distributor_init.py
+if %ERRORLEVEL% neq 0 exit 1
 copy %RECIPE_DIR%\_distributor_init.py scipy\
+if %ERRORLEVEL% neq 0 exit 1
 
 %PYTHON% -m pip install . -vv
 if %ERRORLEVEL% neq 0 exit 1
