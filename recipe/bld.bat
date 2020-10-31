@@ -27,9 +27,9 @@ cp %RECIPE_DIR%/_distributor_init.py scipy/_distributor_init.py
 %PYTHON% -m pip install . -vv
 
 REM make sure these aren't packaged
-rm %LIBRARY_LIB%\blas.fobjects
-rm %LIBRARY_LIB%\blas.cobjects
-rm %LIBRARY_LIB%\cblas.fobjects
-rm %LIBRARY_LIB%\cblas.cobjects
-rm %LIBRARY_LIB%\lapack.fobjects
-rm %LIBRARY_LIB%\lapack.cobjects
+del %LIBRARY_LIB%\blas.fobjects
+del %LIBRARY_LIB%\blas.cobjects
+del %LIBRARY_LIB%\cblas.fobjects
+del %LIBRARY_LIB%\cblas.cobjects
+del %LIBRARY_LIB%\lapack.fobjects
+del %LIBRARY_LIB%\lapack.cobjects
