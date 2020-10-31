@@ -54,6 +54,7 @@ test:
     - curl -L -O https://github.com/lucasg/Dependencies/releases/download/v1.10/Dependencies_x64_Release.zip  # [win]
     - unzip Dependencies_x64_Release.zip  # [win]
     - Dependencies.exe -imports %SP_DIR%\scipy\linalg\_fblas.cp39-win_amd64.pyd  # [win]
+    - python -c "import scipy.linalg._fblas" || python.exe --version # [win]
     - set "PATH=%SP_DIR%\scipy\.libs;%PATH%"  # [win]
     - python -c "import scipy.linalg._fblas"  # [win]
 
