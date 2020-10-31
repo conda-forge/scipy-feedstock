@@ -60,10 +60,10 @@ if os.name == 'nt':
             os.chdir(libs_path)
             for filename in glob.glob(os.path.join(libs_path, '*dll')):
                 WinDLL(os.path.abspath(filename))
-                WinDLL(os.path.basename(filename))
         finally:
             os.chdir(owd)
         # For python 3.9, above doesn't seem to be enough though I can't reproduce
         # locally. Try using add_dll_directory which is supported only in >=3.8
         if sys.version_info[:2] >= (3, 9):
+            os.environ['PATH'] = libs_path + os.path.pathsep + os.environ['PATH']
             os.add_dll_directory(libs_path)
