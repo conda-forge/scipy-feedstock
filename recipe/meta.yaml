@@ -45,9 +45,18 @@ test:
     - pytest
     - pytest-xdist
     - mpmath
+    - curl      # [win]
+    - m2-p7zip  # [win]
 {% if ver_major_minor == "1.5" %}
     - blas * netlib  # [ppc64le]
 {% endif %}
+  commands:
+    - curl -L -O https://github.com/lucasg/Dependencies/releases/download/v1.10/Dependencies_x64_Release.zip
+    - unzip Dependencies_x64_Release.zip
+    - Dependencies.exe -imports %SP_DIR%\scipy\linalg\_fblas.cp39-win_amd64.pyd
+    - python -c "import scipy.linalg._fblas" || echo "failed"
+    - set PATH="%SP_DIR%\scipy\.libs;%PATH%"
+    - python -c "import scipy.linalg._fblas" || echo "failed"
 
 about:
   home: http://www.scipy.org/
