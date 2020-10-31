@@ -1,4 +1,4 @@
-REM these re done automatically for openblas by numpy.distutils, but
+REM these are done automatically for openblas by numpy.distutils, but
 REM not for our blas libraries
 echo %LIBRARY_LIB%\blas.lib > %LIBRARY_LIB%\blas.fobjects
 echo %LIBRARY_LIB%\blas.lib > %LIBRARY_LIB%\blas.cobjects
