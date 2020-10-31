@@ -60,6 +60,7 @@ if os.name == 'nt':
             os.chdir(libs_path)
             for filename in glob.glob(os.path.join(libs_path, '*dll')):
                 WinDLL(os.path.abspath(filename))
+                WinDLL(os.path.basename(filename))
         finally:
             os.chdir(owd)
         # For python 3.9, above doesn't seem to be enough though I can't reproduce
