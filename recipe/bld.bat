@@ -21,8 +21,8 @@ echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.fobjects
 echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.cobjects
 
 REM Add a file to load the fortran wrapper libraries in scipy/.libs
-rm scipy/_distributor_init.py
-cp %RECIPE_DIR%/_distributor_init.py scipy/_distributor_init.py
+del scipy/_distributor_init.py
+copy %RECIPE_DIR%/_distributor_init.py scipy/_distributor_init.py
 
 %PYTHON% -m pip install . -vv
 
