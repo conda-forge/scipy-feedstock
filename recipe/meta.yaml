@@ -11,7 +11,7 @@ source:
 
 build:
   number: 2
-  skip: true  # [win or py2k]
+  skip: true  # [py2k]
 
 requirements:
   build:
@@ -20,7 +20,11 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
-    - {{ compiler('fortran') }}
+    - {{ compiler('fortran') }}   # [unix]
+    # WARNING: It's not recommended to use these MinGW compilers with python extensions
+    # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
+    # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
+    - {{ compiler('m2w64_fortran') }}   # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
@@ -42,6 +46,8 @@ test:
     - pytest
     - pytest-xdist
     - mpmath
+    - curl      # [win]
+    - m2-unzip  # [win]
 {% if ver_major_minor == "1.5" %}
     - blas * netlib  # [ppc64le]
 {% endif %}
