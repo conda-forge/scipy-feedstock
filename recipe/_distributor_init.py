@@ -53,7 +53,7 @@ if os.name == 'nt':
         # as done below
 
         # for python 3.8, the WinDLL loading doesn't work. Try add_dll_directory
-        if sys.version_info[:2] >= (3, 8):
+        if sys.version_info[:2] == (3, 8):
             os.add_dll_directory(libs_path)
         else:
             try:
