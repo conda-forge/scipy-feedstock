@@ -46,8 +46,6 @@ test:
     - pytest
     - pytest-xdist
     - mpmath
-    - curl      # [win]
-    - m2-unzip  # [win]
 {% if ver_major_minor == "1.5" %}
     - blas * netlib  # [ppc64le]
 {% endif %}
