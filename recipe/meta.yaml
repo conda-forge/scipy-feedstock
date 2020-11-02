@@ -1,4 +1,4 @@
-{% set version = "1.5.2" %}
+{% set version = "1.5.3" %}
 {% set ver_major_minor = ".".join(version.split(".")[:2]) %}
 
 package:
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: f2c055e286a9421135407d3cb3efd3f1f7ae9a465b5edc0be14ac8c5c63f6ea1
+  sha256: 309f66c326e2a90b1ebb1a4ea75f3dd9c56276f392ec5a1b2fe986ea662bf69f
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py2k]
 
 requirements:
@@ -46,8 +46,6 @@ test:
     - pytest
     - pytest-xdist
     - mpmath
-    - curl      # [win]
-    - m2-unzip  # [win]
 {% if ver_major_minor == "1.5" %}
     - blas * netlib  # [ppc64le]
 {% endif %}
