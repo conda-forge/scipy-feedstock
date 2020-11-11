@@ -1,4 +1,4 @@
-{% set version = "1.6.0" %}
+{% set version = "1.5.4" %}
 {% set ver_major_minor = ".".join(version.split(".")[:2]) %}
 
 package:
@@ -7,11 +7,11 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: 51bd3c4799c545b8f11232a09cd824f99a0ea4daa6df612312ff40be11451ea8
+  sha256: 0d47f253609197c77b1b14ac813e1726f5dbaac7f4d9827d7e667a6a596793ae
 
 build:
   number: 0
-  skip: true  # [py2k or py<=36]
+  skip: true  # [py2k]
 
 requirements:
   build:
