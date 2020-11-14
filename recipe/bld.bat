@@ -27,6 +27,9 @@ if %ERRORLEVEL% neq 0 exit 1
 copy %RECIPE_DIR%\_distributor_init.py scipy\
 if %ERRORLEVEL% neq 0 exit 1
 
+REM static runtime
+set "LDFLAGS=-static-libgfortran -static-libgcc"
+
 %PYTHON% -m pip install . -vv
 if %ERRORLEVEL% neq 0 exit 1
 
