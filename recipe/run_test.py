@@ -93,8 +93,8 @@ if os.getenv("CI") == "drone":
     # Run only linalg tests on drone as drone timeouts
     kwargs['tests'] = ["scipy.linalg", "scipy.fft"]
 
-if os.getenv("CI") == "travis" and is_pypy:
-    # Run only linalg, fft tests on travis with pypy as it timeouts
+if os.getenv("CI") == "travis":
+    # Run only linalg, fft tests on travis as it timeouts
     kwargs['tests'] = ["scipy.linalg", "scipy.fft"]
 
 if os.getenv("CI") != "travis":
