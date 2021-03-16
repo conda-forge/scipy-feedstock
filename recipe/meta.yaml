@@ -1,4 +1,4 @@
-{% set version = "1.6.0" %}
+{% set version = "1.6.1" %}
 
 package:
   name: scipy
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: 51bd3c4799c545b8f11232a09cd824f99a0ea4daa6df612312ff40be11451ea8
+  sha256: f1a1f5da834a7540afcc064608bcb28fbd8cdd49908973b50c2901aea4e026cf
 
 build:
   number: 0
