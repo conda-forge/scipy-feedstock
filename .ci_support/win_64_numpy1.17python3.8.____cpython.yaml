@@ -15,7 +15,7 @@ liblapack:
 m2w64_fortran_compiler:
 - m2w64-toolchain
 numpy:
-- '1.16'
+- '1.17'
 pin_run_as_build:
   python:
     min_pin: x.x
