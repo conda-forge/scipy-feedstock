@@ -4,5 +4,7 @@ provider: {linux_aarch64: default, linux_ppc64le: default}
 test_on_native_only: true
 azure:
   settings_win:
+    pool:
+      vmImage: windows-2019
     variables:
       CONDA_BLD_PATH: "C:\\\\bld\\\\"
