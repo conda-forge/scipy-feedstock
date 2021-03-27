@@ -52,14 +52,10 @@ if os.name == 'nt':
         # robustness or security advantages over changing working directories
         # as done below
 
-        # for python 3.8, the WinDLL loading doesn't work. Try add_dll_directory
-        if sys.version_info[:2] == (3, 8):
-            os.add_dll_directory(libs_path)
-        else:
-            try:
-                owd = os.getcwd()
-                os.chdir(libs_path)
-                for filename in glob.glob(os.path.join(libs_path, '*dll')):
-                    WinDLL(os.path.abspath(filename))
-            finally:
-                os.chdir(owd)
+        try:
+            owd = os.getcwd()
+            os.chdir(libs_path)
+            for filename in glob.glob(os.path.join(libs_path, '*dll')):
+                WinDLL(os.path.abspath(filename))
+        finally:
+            os.chdir(owd)
