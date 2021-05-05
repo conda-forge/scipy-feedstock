@@ -9,3 +9,7 @@ if [[ "$python_impl" == "pypy" && "$target_platform" == "linux-ppc64le" ]]; then
 else
     $PYTHON -m pip install . -vv
 fi
+
+if [[ "$PKG_NAME" == "scipy" ]]; then
+  rm -r ${SP_DIR}/scipy/tests
+fi

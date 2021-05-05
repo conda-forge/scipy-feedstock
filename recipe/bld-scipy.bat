@@ -37,3 +37,7 @@ del %LIBRARY_LIB%\cblas.fobjects
 del %LIBRARY_LIB%\cblas.cobjects
 del %LIBRARY_LIB%\lapack.fobjects
 del %LIBRARY_LIB%\lapack.cobjects
+
+if [%PKG_NAME%] == [scipy] (
+    rd /s /q %SP_DIR%\scipy\tests
+)
