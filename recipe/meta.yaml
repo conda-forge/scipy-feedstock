@@ -92,9 +92,10 @@ outputs:
         - {{ pin_compatible('numpy') }}
         - {{ pin_subpackage('scipy', exact=True) }}
     test:
+      files:
+        - run_scipy_test.py
       commands:
-        - python ${RECIPE_DIR}/run_scipy_test.py  # [not win]
-        - python %RECIPE_DIR%\\run_scipy_test.py  # [win]
+        - python run_scipy_test.py
       requires:
         - pytest
         - pytest-xdist
