@@ -10,6 +10,7 @@ source:
 
 build:
   number: 1
+  skip: true  # [py2k or py<=36]
 
 outputs:
   - name: scipy
