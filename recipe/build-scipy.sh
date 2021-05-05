@@ -11,5 +11,5 @@ else
 fi
 
 if [[ "$PKG_NAME" == "scipy" ]]; then
-  rm -r ${SP_DIR}/scipy/tests
+  find ${SP_DIR}/scipy -name tests -type d | xargs rm -r
 fi
