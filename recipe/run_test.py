@@ -4,10 +4,6 @@ import platform
 
 import scipy
 
-# Use OpenBLAS with 1 thread only as it seems to be using too many
-# on the CIs apparently.
-os.environ["OPENBLAS_NUM_THREADS"] = "1"
-
 is_pypy = (platform.python_implementation() == "PyPy")
 is_ppc64le = (platform.machine() == "ppc64le")
 
