@@ -75,21 +75,20 @@ import scipy.special
 is_pypy = (platform.python_implementation() == "PyPy")
 is_ppc64le = (platform.machine() == "ppc64le")
 
-extra_argv = []
-kwargs = dict(extra_argv=extra_argv)
+# for signature of scipy.test see here:
+# https://github.com/scipy/scipy/blob/v1.6.3/scipy/_lib/_testutils.py#L27
+kwargs = {"verbose": 1, "extra_argv": []}
 
 if os.getenv("CI") != "travis":
-    extra_argv.append('-n%s' % os.environ['CPU_COUNT'])
+    kwargs["extra_argv"].append(f"-n{os.environ['CPU_COUNT']}")
 elif is_pypy:
-    extra_argv.append('-n4')
+    kwargs["extra_argv"].append("-n4")
 
 if sys.platform.startswith("linux"):
-    extra_argv.append('-k')
-    extra_argv.append('not test_curvefit_covariance')
-    
+    kwargs["extra_argv"].append("-k not test_curvefit_covariance")
+
 if os.getenv("CI") == "drone":
-    extra_argv.append('-k')
-    extra_argv.append('not (test_krandinit or test_heequb)')
+    kwargs["extra_argv"].append("-k not (test_krandinit or test_heequb)")
     # Run only linalg tests on drone as drone timeouts
     kwargs['tests'] = ["scipy.linalg", "scipy.fft"]
 
