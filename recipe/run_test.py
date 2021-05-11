@@ -11,10 +11,10 @@ is_ppc64le = (platform.machine() == "ppc64le")
 # https://github.com/scipy/scipy/blob/v1.6.3/scipy/_lib/_testutils.py#L27
 kwargs = {"verbose": 1, "extra_argv": []}
 
-if os.getenv("CI") != "travis":
-    kwargs["extra_argv"].append(f"-n{os.environ['CPU_COUNT']}")
-elif is_pypy:
+if os.getenv("CI") == "travis" and is_pypy:
     kwargs["extra_argv"].append("-n4")
+else:
+    kwargs["extra_argv"].append(f"-n{os.environ['CPU_COUNT']}")
 
 if (os.getenv("CI") == "drone") or ((os.getenv("CI") == "travis") and is_pypy):
     # Run only linalg, fft tests on drone as it timeouts, same for travis + pypy
