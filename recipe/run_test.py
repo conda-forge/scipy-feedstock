@@ -9,18 +9,10 @@ is_ppc64le = (platform.machine() == "ppc64le")
 
 # for signature of scipy.test see here:
 # https://github.com/scipy/scipy/blob/v1.6.3/scipy/_lib/_testutils.py#L27
-kwargs = {"verbose": 1, "extra_argv": []}
+kwargs = {"verbose": 2, "extra_argv": [f"-n{os.environ['CPU_COUNT']}"]}
 
-if os.getenv("CI") == "travis" and is_pypy:
-    kwargs["extra_argv"].append("-n4")
-else:
-    kwargs["extra_argv"].append(f"-n{os.environ['CPU_COUNT']}")
-
-if (os.getenv("CI") == "drone") or ((os.getenv("CI") == "travis") and is_pypy):
-    # Run only linalg, fft tests on drone as it timeouts, same for travis + pypy
+if os.getenv("CI") == "drone":
+    # Run only linalg, fft tests on drone as it times out
     kwargs['tests'] = ["scipy.linalg", "scipy.fft"]
-
-if os.getenv("CI") != "travis":
-    kwargs['verbose'] = 2
 
 sys.exit(not scipy.test(**kwargs))
