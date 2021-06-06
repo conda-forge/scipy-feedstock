@@ -1,4 +1,4 @@
-{% set version = "1.6.3" %}
+{% set version = "1.7.0rc1" %}
 
 package:
   name: scipy
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: 6cdb9d3aabe46c1602d9fd2f34812700068eddfe3ffd1dafcbd7e7960a874e1c
+  sha256: a342725429d2683a5e3e485d34996fc763ef6e2943268775418b1bf6165597f6
 
 build:
   number: 0
@@ -34,6 +34,7 @@ requirements:
     - setuptools
     - cython
     - pybind11
+    - pythran
     - numpy
     - pip
   run:
