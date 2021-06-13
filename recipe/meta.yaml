@@ -29,6 +29,8 @@ requirements:
     # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
     # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
     - {{ compiler('m2w64_fortran') }}   # [win]
+    # pythran code needs clang-cl on windows
+    - clang                             # [win]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
   host:
