@@ -24,15 +24,15 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
-    - {{ compiler('fortran') }}   # [unix]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    # pythran code needs clang-cl on windows
+    - clang                                  # [win]
+    - {{ compiler('fortran') }}              # [unix]
     # WARNING: It's not recommended to use these MinGW compilers with python extensions
     # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
     # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-    - {{ compiler('m2w64_fortran') }}   # [win]
-    # pythran code needs clang-cl on windows
-    - clang                             # [win]
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
+    - {{ compiler('m2w64_fortran') }}        # [win]
   host:
     - libblas
     - libcblas
