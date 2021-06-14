@@ -1,4 +1,4 @@
-{% set version = "1.7.0rc1" %}
+{% set version = "1.7.0rc2" %}
 
 package:
   name: scipy
@@ -6,9 +6,9 @@ package:
 
 source:
   - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-    sha256: a342725429d2683a5e3e485d34996fc763ef6e2943268775418b1bf6165597f6
+    sha256: 51bbd113d2ab3a272708e605343c82fe1c5dbcaca5a33c979f1037117daacf1d
   # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
-  # https://github.com/scipy/scipy/tree/v1.7.0rc1/scipy/_lib
+  # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
     folder: scipy/_lib/boost
