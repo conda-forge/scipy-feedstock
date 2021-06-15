@@ -62,6 +62,8 @@ outputs:
       doc_url: http://www.scipy.org/docs.html
       dev_url: https://github.com/scipy/scipy
   - name: scipy-tests
+    script: build-scipy.sh  # [not win]
+    script: bld-scipy.bat  # [win]
     requirements:
       build:
         - python                                 # [build_platform != target_platform]
