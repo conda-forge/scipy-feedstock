@@ -1,4 +1,4 @@
-{% set version = "1.7.0rc2" %}
+{% set version = "1.7.0" %}
 
 package:
   name: scipy
@@ -11,9 +11,9 @@ source:
   # on PPC & AARCH, which are _very_ prone to timeouts already, so
   # every minute saved helps
   - url: https://github.com/scipy/scipy/releases/download/v{{ version }}/scipy-{{ version }}.tar.gz  # [aarch64 or ppc64le]
-    sha256: bb5598f8e349e77a9f05d2be605a75b5752648669a0886379b257a449fce244b                         # [aarch64 or ppc64le]
+    sha256: 998c5e6ea649489302de2c0bc026ed34284f531df89d2bdc8df3a0d44d165739                         # [aarch64 or ppc64le]
   - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz                   # [not (aarch64 or ppc64le)]
-    sha256: 51bbd113d2ab3a272708e605343c82fe1c5dbcaca5a33c979f1037117daacf1d            # [not (aarch64 or ppc64le)]
+    sha256: f1093296fcda1692aee16880528f6763a0a5bc45bbb3f052d3fcb66dbc92118e            # [not (aarch64 or ppc64le)]
   # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git                            # [not (aarch64 or ppc64le)]
