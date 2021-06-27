@@ -1,12 +1,24 @@
-{% set version = "1.6.3" %}
+{% set version = "1.7.0" %}
 
 package:
   name: scipy
   version: {{ version }}
 
 source:
-  url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: 6cdb9d3aabe46c1602d9fd2f34812700068eddfe3ffd1dafcbd7e7960a874e1c
+  # The sdist distributed by scipy contains pre-compiled pythran sources,
+  # as well as the boost-headers submodule (since 1.7.0). While it's
+  # preferable to compile from source in general, we make use of this
+  # on PPC & AARCH, which are _very_ prone to timeouts already, so
+  # every minute saved helps
+  - url: https://github.com/scipy/scipy/releases/download/v{{ version }}/scipy-{{ version }}.tar.gz  # [aarch64 or ppc64le]
+    sha256: 998c5e6ea649489302de2c0bc026ed34284f531df89d2bdc8df3a0d44d165739                         # [aarch64 or ppc64le]
+  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz                   # [not (aarch64 or ppc64le)]
+    sha256: f1093296fcda1692aee16880528f6763a0a5bc45bbb3f052d3fcb66dbc92118e            # [not (aarch64 or ppc64le)]
+  # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
+  # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
+  - git_url: https://github.com/scipy/boost-headers-only.git                            # [not (aarch64 or ppc64le)]
+    git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662                                   # [not (aarch64 or ppc64le)]
+    folder: scipy/_lib/boost                                                            # [not (aarch64 or ppc64le)]
 
 build:
   number: 0
@@ -19,13 +31,15 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
-    - {{ compiler('fortran') }}   # [unix]
+    - {{ compiler('c') }}
+    - {{ compiler('cxx') }}
+    # pythran code needs clang-cl on windows
+    - clang                                  # [win]
+    - {{ compiler('fortran') }}              # [unix]
     # WARNING: It's not recommended to use these MinGW compilers with python extensions
     # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
     # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-    - {{ compiler('m2w64_fortran') }}   # [win]
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
+    - {{ compiler('m2w64_fortran') }}        # [win]
   host:
     - libblas
     - libcblas
@@ -34,6 +48,7 @@ requirements:
     - setuptools
     - cython
     - pybind11
+    - pythran
     - numpy
     - pip
   run:
@@ -41,10 +56,76 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 test:
+  # this section will execute run_test.py
   requires:
     - pytest
     - pytest-xdist
     - mpmath
+  imports:
+    - scipy
+    - scipy.cluster._hierarchy
+    - scipy.cluster._vq
+    - scipy.fft
+    - scipy.integrate._dop
+    - scipy.integrate._odepack
+    - scipy.integrate._quadpack
+    - scipy.integrate._test_multivariate
+    - scipy.integrate._test_odeint_banded
+    - scipy.integrate.lsoda
+    - scipy.integrate.vode
+    - scipy.interpolate._fitpack
+    - scipy.interpolate._ppoly
+    - scipy.interpolate.dfitpack
+    - scipy.interpolate.interpnd
+    - scipy.io.matlab.mio5_utils
+    - scipy.io.matlab.mio_utils
+    - scipy.io.matlab.streams
+    - scipy.linalg._decomp_update
+    - scipy.linalg._fblas
+    - scipy.linalg._flapack
+    - scipy.linalg._flinalg
+    - scipy.linalg._interpolative
+    - scipy.linalg._solve_toeplitz
+    - scipy.linalg.cython_blas
+    - scipy.linalg.cython_lapack
+    - scipy.ndimage._nd_image
+    - scipy.ndimage._ni_label
+    - scipy.odr.__odrpack
+    - scipy.optimize._cobyla
+    - scipy.optimize._group_columns
+    - scipy.optimize._lbfgsb
+    - scipy.optimize._lsq.givens_elimination
+    - scipy.optimize._minpack
+    - scipy.optimize._nnls
+    - scipy.optimize._slsqp
+    - scipy.optimize._zeros
+    - scipy.optimize.minpack2
+    - scipy.optimize.moduleTNC
+    - scipy.signal._max_len_seq_inner
+    - scipy.signal._spectral
+    - scipy.signal.sigtools
+    - scipy.signal.spline
+    - scipy.sparse._csparsetools
+    - scipy.sparse._sparsetools
+    - scipy.sparse.csgraph._min_spanning_tree
+    - scipy.sparse.csgraph._reordering
+    - scipy.sparse.csgraph._shortest_path
+    - scipy.sparse.csgraph._tools
+    - scipy.sparse.csgraph._traversal
+    - scipy.sparse.linalg.dsolve._superlu
+    - scipy.sparse.linalg.eigen.arpack._arpack
+    - scipy.sparse.linalg.isolve._iterative
+    - scipy.spatial._distance_wrap
+    - scipy.spatial.ckdtree
+    - scipy.spatial.qhull
+    - scipy.special
+    - scipy.special._ellip_harm_2
+    - scipy.special._ufuncs
+    - scipy.special._ufuncs_cxx
+    - scipy.special.specfun
+    - scipy.stats
+    - scipy.stats.mvn
+    - scipy.stats.statlib
 
 about:
   home: http://www.scipy.org/
@@ -63,3 +144,4 @@ extra:
     - msarahan
     - rgommers
     - ocefpaf
+    - h-vetinari
