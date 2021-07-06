@@ -1,5 +1,9 @@
 @echo on
 
+
+set
+
+exit 1
 REM these are done automatically for openblas by numpy.distutils, but
 REM not for our blas libraries
 echo %LIBRARY_LIB%\blas.lib > %LIBRARY_LIB%\blas.fobjects
@@ -8,6 +12,14 @@ echo %LIBRARY_LIB%\cblas.lib > %LIBRARY_LIB%\cblas.fobjects
 echo %LIBRARY_LIB%\cblas.lib > %LIBRARY_LIB%\cblas.cobjects
 echo %LIBRARY_LIB%\lapack.lib > %LIBRARY_LIB%\lapack.fobjects
 echo %LIBRARY_LIB%\lapack.lib > %LIBRARY_LIB%\lapack.cobjects
+
+REM Set a few environment variables that are not set due to
+REM https://github.com/conda/conda-build/issues/3993
+set PIP_NO_BUILD_ISOLATION=False
+set PIP_NO_DEPENDENCIES=True
+set PIP_IGNORE_INSTALLED=True
+set PIP_NO_INDEX=True
+set PYTHONDONTWRITEBYTECODE=True
 
 REM Use the G77 ABI wrapper everywhere so that the underlying blas implementation
 REM can have a G77 ABI (currently only MKL)
@@ -52,3 +64,8 @@ del %LIBRARY_LIB%\cblas.fobjects
 del %LIBRARY_LIB%\cblas.cobjects
 del %LIBRARY_LIB%\lapack.fobjects
 del %LIBRARY_LIB%\lapack.cobjects
+
+if [%PKG_NAME%] == [scipy] (
+    dir %SP_DIR%\scipy
+    rd /s /q %SP_DIR%\scipy\tests
+)

@@ -1,7 +1,7 @@
 {% set version = "1.7.0" %}
 
 package:
-  name: scipy
+  name: scipy-split
   version: {{ version }}
 
 source:
@@ -22,110 +22,177 @@ source:
 
 build:
   number: 0
-  skip: true  # [py2k or py<=36]
+  skip: true  # [py<=36]
 
-requirements:
-  build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - cython                                 # [build_platform != target_platform]
-    - numpy                                  # [build_platform != target_platform]
-    - pybind11                               # [build_platform != target_platform]
-    - {{ compiler('c') }}
-    - {{ compiler('cxx') }}
-    # pythran code needs clang-cl on windows
-    - clang                                  # [win]
-    - {{ compiler('fortran') }}              # [unix]
-    # WARNING: It's not recommended to use these MinGW compilers with python extensions
-    # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
-    # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-    - {{ compiler('m2w64_fortran') }}        # [win]
-  host:
-    - libblas
-    - libcblas
-    - liblapack
-    - python
-    - setuptools
-    - cython
-    - pybind11
-    - pythran
-    - numpy
-    - pip
-  run:
-    - python
-    - {{ pin_compatible('numpy') }}
-
-test:
-  # this section will execute run_test.py
-  requires:
-    - pytest
-    - pytest-xdist
-    - mpmath
-  imports:
-    - scipy
-    - scipy.cluster._hierarchy
-    - scipy.cluster._vq
-    - scipy.fft
-    - scipy.integrate._dop
-    - scipy.integrate._odepack
-    - scipy.integrate._quadpack
-    - scipy.integrate._test_multivariate
-    - scipy.integrate._test_odeint_banded
-    - scipy.integrate.lsoda
-    - scipy.integrate.vode
-    - scipy.interpolate._fitpack
-    - scipy.interpolate._ppoly
-    - scipy.interpolate.dfitpack
-    - scipy.interpolate.interpnd
-    - scipy.io.matlab.mio5_utils
-    - scipy.io.matlab.mio_utils
-    - scipy.io.matlab.streams
-    - scipy.linalg._decomp_update
-    - scipy.linalg._fblas
-    - scipy.linalg._flapack
-    - scipy.linalg._flinalg
-    - scipy.linalg._interpolative
-    - scipy.linalg._solve_toeplitz
-    - scipy.linalg.cython_blas
-    - scipy.linalg.cython_lapack
-    - scipy.ndimage._nd_image
-    - scipy.ndimage._ni_label
-    - scipy.odr.__odrpack
-    - scipy.optimize._cobyla
-    - scipy.optimize._group_columns
-    - scipy.optimize._lbfgsb
-    - scipy.optimize._lsq.givens_elimination
-    - scipy.optimize._minpack
-    - scipy.optimize._nnls
-    - scipy.optimize._slsqp
-    - scipy.optimize._zeros
-    - scipy.optimize.minpack2
-    - scipy.optimize.moduleTNC
-    - scipy.signal._max_len_seq_inner
-    - scipy.signal._spectral
-    - scipy.signal.sigtools
-    - scipy.signal.spline
-    - scipy.sparse._csparsetools
-    - scipy.sparse._sparsetools
-    - scipy.sparse.csgraph._min_spanning_tree
-    - scipy.sparse.csgraph._reordering
-    - scipy.sparse.csgraph._shortest_path
-    - scipy.sparse.csgraph._tools
-    - scipy.sparse.csgraph._traversal
-    - scipy.sparse.linalg.dsolve._superlu
-    - scipy.sparse.linalg.eigen.arpack._arpack
-    - scipy.sparse.linalg.isolve._iterative
-    - scipy.spatial._distance_wrap
-    - scipy.spatial.ckdtree
-    - scipy.spatial.qhull
-    - scipy.special
-    - scipy.special._ellip_harm_2
-    - scipy.special._ufuncs
-    - scipy.special._ufuncs_cxx
-    - scipy.special.specfun
-    - scipy.stats
-    - scipy.stats.mvn
-    - scipy.stats.statlib
+outputs:
+  - name: scipy
+    script: build-scipy.sh  # [not win]
+    script: bld-scipy.bat  # [win]
+    version: {{ version }}
+    requirements:
+      build:
+        - python                                 # [build_platform != target_platform]
+        - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+        - cython                                 # [build_platform != target_platform]
+        - numpy                                  # [build_platform != target_platform]
+        - pybind11                               # [build_platform != target_platform]
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        # pythran code needs clang-cl on windows
+        - clang                                  # [win]
+        - {{ compiler('fortran') }}              # [unix]
+        # WARNING: It's not recommended to use these MinGW compilers with python extensions
+        # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
+        # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
+        - {{ compiler('m2w64_fortran') }}        # [win]
+      host:
+        - libblas
+        - libcblas
+        - liblapack
+        - python
+        - setuptools
+        - cython
+        - pybind11
+        - pythran
+        - numpy
+        - pip
+      run:
+        - python
+        - {{ pin_compatible('numpy') }}
+    test:
+      requires:
+        - pip
+      commands:
+        - pip check
+      imports:
+        - scipy
+    about:
+      home: http://www.scipy.org/
+      license: BSD-3-Clause
+      license_file: LICENSE.txt
+      summary: Scientific Library for Python
+      description: |
+        SciPy is a Python-based ecosystem of open-source software for mathematics,
+        science, and engineering.
+      doc_url: http://www.scipy.org/docs.html
+      dev_url: https://github.com/scipy/scipy
+  - name: scipy-tests
+    script: build-scipy.sh  # [not win]
+    script: bld-scipy.bat  # [win]
+    requirements:
+      build:
+        - python                                 # [build_platform != target_platform]
+        - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+        - cython                                 # [build_platform != target_platform]
+        - numpy                                  # [build_platform != target_platform]
+        - pybind11                               # [build_platform != target_platform]
+        - {{ compiler('c') }}
+        - {{ compiler('cxx') }}
+        # pythran code needs clang-cl on windows
+        - clang                                  # [win]
+        - {{ compiler('fortran') }}              # [unix]
+        # WARNING: It's not recommended to use these MinGW compilers with python extensions
+        # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
+        # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
+        - {{ compiler('m2w64_fortran') }}        # [win]
+      host:
+        - libblas
+        - libcblas
+        - liblapack
+        - python
+        - setuptools
+        - cython
+        - pybind11
+        - pythran
+        - numpy
+        - pip
+        - {{ pin_subpackage('scipy', exact=True) }}
+      run:
+        - python
+        - {{ pin_compatible('numpy') }}
+        - {{ pin_subpackage('scipy', exact=True) }}
+    test:
+      # this section will execute run_test.py
+      requires:
+        - pytest
+        - pytest-xdist
+        - mpmath
+      files:
+        - run_scipy_test.py
+      commands:
+        - python run_scipy_test.py
+      imports:
+        - scipy
+        - scipy.cluster._hierarchy
+        - scipy.cluster._vq
+        - scipy.fft
+        - scipy.integrate._dop
+        - scipy.integrate._odepack
+        - scipy.integrate._quadpack
+        - scipy.integrate._test_multivariate
+        - scipy.integrate._test_odeint_banded
+        - scipy.integrate.lsoda
+        - scipy.integrate.vode
+        - scipy.interpolate._fitpack
+        - scipy.interpolate._ppoly
+        - scipy.interpolate.dfitpack
+        - scipy.interpolate.interpnd
+        - scipy.io.matlab.mio5_utils
+        - scipy.io.matlab.mio_utils
+        - scipy.io.matlab.streams
+        - scipy.linalg._decomp_update
+        - scipy.linalg._fblas
+        - scipy.linalg._flapack
+        - scipy.linalg._flinalg
+        - scipy.linalg._interpolative
+        - scipy.linalg._solve_toeplitz
+        - scipy.linalg.cython_blas
+        - scipy.linalg.cython_lapack
+        - scipy.ndimage._nd_image
+        - scipy.ndimage._ni_label
+        - scipy.odr.__odrpack
+        - scipy.optimize._cobyla
+        - scipy.optimize._group_columns
+        - scipy.optimize._lbfgsb
+        - scipy.optimize._lsq.givens_elimination
+        - scipy.optimize._minpack
+        - scipy.optimize._nnls
+        - scipy.optimize._slsqp
+        - scipy.optimize._zeros
+        - scipy.optimize.minpack2
+        - scipy.optimize.moduleTNC
+        - scipy.signal._max_len_seq_inner
+        - scipy.signal._spectral
+        - scipy.signal.sigtools
+        - scipy.signal.spline
+        - scipy.sparse._csparsetools
+        - scipy.sparse._sparsetools
+        - scipy.sparse.csgraph._min_spanning_tree
+        - scipy.sparse.csgraph._reordering
+        - scipy.sparse.csgraph._shortest_path
+        - scipy.sparse.csgraph._tools
+        - scipy.sparse.csgraph._traversal
+        - scipy.sparse.linalg.dsolve._superlu
+        - scipy.sparse.linalg.eigen.arpack._arpack
+        - scipy.sparse.linalg.isolve._iterative
+        - scipy.spatial._distance_wrap
+        - scipy.spatial.ckdtree
+        - scipy.spatial.qhull
+        - scipy.special
+        - scipy.special._ellip_harm_2
+        - scipy.special._ufuncs
+        - scipy.special._ufuncs_cxx
+        - scipy.special.specfun
+        - scipy.stats
+        - scipy.stats.mvn
+        - scipy.stats.statlib
+    about:
+      home: http://www.scipy.org/
+      license: BSD-3-Clause
+      license_file: LICENSE.txt
+      summary: Scientific Library for Python (tests)
+      doc_url: http://www.scipy.org/docs.html
+      dev_url: https://github.com/scipy/scipy
 
 about:
   home: http://www.scipy.org/
@@ -139,6 +206,7 @@ about:
   dev_url: https://github.com/scipy/scipy
 
 extra:
+  feedstock-name: scipy
   recipe-maintainers:
     - jakirkham
     - msarahan

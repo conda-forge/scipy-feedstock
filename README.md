@@ -49,6 +49,13 @@ Current build status
         <table>
           <thead><tr><th>Variant</th><th>Status</th></tr></thead>
           <tbody><tr>
+              <td>linux_64_numpy1.17python3.6.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=linux&configuration=linux_64_numpy1.17python3.6.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
               <td>linux_64_numpy1.17python3.7.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
@@ -74,6 +81,13 @@ Current build status
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=linux&configuration=linux_64_numpy1.19python3.9.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>linux_aarch64_numpy1.17python3.6.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=linux&configuration=linux_aarch64_numpy1.17python3.6.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -105,6 +119,13 @@ Current build status
                 </a>
               </td>
             </tr><tr>
+              <td>linux_ppc64le_numpy1.17python3.6.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=linux&configuration=linux_ppc64le_numpy1.17python3.6.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
               <td>linux_ppc64le_numpy1.17python3.7.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
@@ -130,6 +151,13 @@ Current build status
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=linux&configuration=linux_ppc64le_numpy1.19python3.9.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
+              <td>osx_64_numpy1.17python3.6.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=osx&configuration=osx_64_numpy1.17python3.6.____cpython" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -175,6 +203,13 @@ Current build status
                 </a>
               </td>
             </tr><tr>
+              <td>win_64_numpy1.17python3.6.____cpython</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=master&jobName=win&configuration=win_64_numpy1.17python3.6.____cpython" alt="variant">
+                </a>
+              </td>
+            </tr><tr>
               <td>win_64_numpy1.17python3.7.____cpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=master">
@@ -209,6 +244,7 @@ Current release info
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-scipy-green.svg)](https://anaconda.org/conda-forge/scipy) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/scipy.svg)](https://anaconda.org/conda-forge/scipy) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/scipy.svg)](https://anaconda.org/conda-forge/scipy) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/scipy.svg)](https://anaconda.org/conda-forge/scipy) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-scipy--tests-green.svg)](https://anaconda.org/conda-forge/scipy-tests) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/scipy-tests.svg)](https://anaconda.org/conda-forge/scipy-tests) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/scipy-tests.svg)](https://anaconda.org/conda-forge/scipy-tests) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/scipy-tests.svg)](https://anaconda.org/conda-forge/scipy-tests) |
 
 Installing scipy
 ================
@@ -220,10 +256,10 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `scipy` can be installed with:
+Once the `conda-forge` channel has been enabled, `scipy, scipy-tests` can be installed with:
 
 ```
-conda install scipy
+conda install scipy scipy-tests
 ```
 
 It is possible to list all of the versions of `scipy` available on your platform with:
