@@ -22,7 +22,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py2k or py<=36]
+  skip: true  # [not win]
 
 requirements:
   build:

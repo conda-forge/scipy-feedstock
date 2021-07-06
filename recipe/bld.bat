@@ -1,5 +1,9 @@
 @echo on
 
+set
+
+exit 1
+
 REM these are done automatically for openblas by numpy.distutils, but
 REM not for our blas libraries
 echo %LIBRARY_LIB%\blas.lib > %LIBRARY_LIB%\blas.fobjects
