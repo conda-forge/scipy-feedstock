@@ -12,6 +12,7 @@ echo %LIBRARY_LIB%\lapack.lib > %LIBRARY_LIB%\lapack.cobjects
 REM Use the G77 ABI wrapper everywhere so that the underlying blas implementation
 REM can have a G77 ABI (currently only MKL)
 set SCIPY_USE_G77_ABI_WRAPPER=1
+if %python_impl% == "pypy" set SCIPY_USE_PYTHRAN=0
 REM This builds a Fortran file which calls a C function, but numpy.distutils
 REM creates an isolated DLL for these fortran functions and therefore it doesn't
 REM see these C functions. workaround this by compiling it ourselves and
