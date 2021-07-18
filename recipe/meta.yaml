@@ -4,6 +4,9 @@ package:
   name: scipy
   version: {{ version }}
 
+# use 'python_impl' in meta.yaml so it gets picked up by rendering
+# [python_impl == "pypy"]
+
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the boost-headers submodule (since 1.7.0). While it's
