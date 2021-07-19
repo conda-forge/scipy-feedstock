@@ -1,8 +1,14 @@
 #!/bin/bash
 
+set -x
+
 # Use the G77 ABI wrapper everywhere so that the underlying blas implementation
 # can have a G77 ABI (currently only MKL)
 export SCIPY_USE_G77_ABI_WRAPPER=1
+
+if [[ "$python_impl" == "pypy" ]]; then
+    export SCIPY_USE_PYTHRAN=0
+fi
 
 if [[ "$python_impl" == "pypy" && "$target_platform" == "linux-ppc64le" ]]; then
     $PYTHON setup.py install --single-version-externally-managed --record=record.txt
