@@ -1,4 +1,4 @@
-{% set version = "1.7.0" %}
+{% set version = "1.7.1" %}
 
 package:
   name: scipy
@@ -14,21 +14,21 @@ source:
   # on PPC & AARCH, which are _very_ prone to timeouts already, so
   # every minute saved helps
   - url: https://github.com/scipy/scipy/releases/download/v{{ version }}/scipy-{{ version }}.tar.gz  # [aarch64 or ppc64le]
-    sha256: 998c5e6ea649489302de2c0bc026ed34284f531df89d2bdc8df3a0d44d165739                         # [aarch64 or ppc64le]
-    patches:                                                                                         # [aarch64 or ppc64le]
+    sha256: 6b47d5fa7ea651054362561a28b1ccc8da9368a39514c1bbf6c0977a1c376764  # [aarch64 or ppc64le]
+    patches:   # [aarch64 or ppc64le]
       - patches/sobol_stack_smash.patch                                                              # [aarch64 or ppc64le]
-  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz                   # [not (aarch64 or ppc64le)]
-    sha256: f1093296fcda1692aee16880528f6763a0a5bc45bbb3f052d3fcb66dbc92118e            # [not (aarch64 or ppc64le)]
-    patches:                                                                            # [not (aarch64 or ppc64le)]
+  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz  # [not (aarch64 or ppc64le)]
+    sha256: 4c155376b5488ab596db3efedf7cf5d1598dfe17acffaf256a4814b2059b6fe2  # [not (aarch64 or ppc64le)]
+    patches:   # [not (aarch64 or ppc64le)]
       - patches/sobol_stack_smash.patch                                                 # [not (aarch64 or ppc64le)]
   # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
-  - git_url: https://github.com/scipy/boost-headers-only.git                            # [not (aarch64 or ppc64le)]
-    git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662                                   # [not (aarch64 or ppc64le)]
-    folder: scipy/_lib/boost                                                            # [not (aarch64 or ppc64le)]
+  - git_url: https://github.com/scipy/boost-headers-only.git  # [not (aarch64 or ppc64le)]
+    git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662  # [not (aarch64 or ppc64le)]
+    folder: scipy/_lib/boost  # [not (aarch64 or ppc64le)]
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py2k or py<=36]
 
 requirements:
