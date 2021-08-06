@@ -1,0 +1,35 @@
+From c2e955e16edb4d40def0b24a6c6d08e7fed8bf7d Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Thu, 5 Aug 2021 20:03:24 +0200
+Subject: [PATCH 3/3] add break_cycles for mmapped file in test_wavfile
+
+---
+ scipy/io/tests/test_wavfile.py | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/scipy/io/tests/test_wavfile.py b/scipy/io/tests/test_wavfile.py
+index ddf682c15..b02049c91 100644
+--- a/scipy/io/tests/test_wavfile.py
++++ b/scipy/io/tests/test_wavfile.py
+@@ -4,7 +4,7 @@ from io import BytesIO
+ 
+ import numpy as np
+ from numpy.testing import (assert_equal, assert_, assert_array_equal,
+-                           suppress_warnings)
++                           break_cycles, suppress_warnings, IS_PYPY)
+ import pytest
+ from pytest import raises, warns
+ 
+@@ -408,3 +408,9 @@ def test_write_roundtrip(realfile, mmap, rate, channels, dt_str, tmpdir):
+     else:
+         with pytest.raises(ValueError, match='read-only'):
+             data2[0] = 0
++
++    if realfile and mmap and IS_PYPY and sys.platform == 'win32':
++        # windows cannot remove a dead file held by a mmap but not collected in PyPy;
++        # since the same filename gets reused in this test over and over, clean it up
++        break_cycles()
++        break_cycles()
+-- 
+2.31.1.windows.1
+
