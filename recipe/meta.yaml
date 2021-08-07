@@ -9,6 +9,7 @@ package:
 
 # need to do the same for blas_impl to ensure CI jobs get split
 # [blas_impl == "mkl"]
+# [enforce_avx512 == "True"]
 
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
@@ -269,6 +270,8 @@ outputs:
         {% endif %}
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F? AVX512CD?' in numpy.lib.utils._opt_info() else 1)"  # [enforce_avx512 == "absent" and blas_impl in ("mkl", "openblas")]
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F* AVX512CD*' in numpy.lib.utils._opt_info() else 1)"  # [enforce_avx512 == "present" and blas_impl in ("mkl", "openblas")]
         # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
         # since this takes much longer, do not run the most heavy-weight tests, i.e. use
         # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'
