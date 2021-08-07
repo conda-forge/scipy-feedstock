@@ -11,6 +11,7 @@ package:
 
 # use 'blas_impl' in meta.yaml to ensure CI jobs get split
 # [blas_impl == "mkl"]
+# [enforce_avx512 == "True"]
 
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
@@ -268,6 +269,8 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F? AVX512CD?' in numpy.lib._utils_impl._opt_info() else 1)"  # [enforce_avx512 == "absent" and blas_impl in ("mkl", "openblas")]
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F* AVX512CD*' in numpy.lib._utils_impl._opt_info() else 1)"  # [enforce_avx512 == "present" and blas_impl in ("mkl", "openblas")]
         # tests for ppc64le and aarch64 are run in emulation through QEMU; as this takes
         # much longer, do not run the most heavy-weight tests, i.e. use label='fast'
         {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
