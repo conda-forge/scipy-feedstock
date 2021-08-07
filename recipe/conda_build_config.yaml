@@ -2,4 +2,18 @@ blas_impl:
   - netlib
   - openblas
   - mkl          # [x86_64]
-  - blis         # [x86_64]
+  - blis         # [x86_64 and osx]
+  - blis         # [x86_64 and not osx]
+  - blis         # [x86_64 and not osx]
+
+enforce_avx512:
+  - None
+  - None
+  - None         # [x86_64]
+  - None         # [x86_64 and osx]
+  - present      # [x86_64 and not osx]
+  - absent       # [x86_64 and not osx]
+
+zip_keys:
+  - - blas_impl
+    - enforce_avx512
