@@ -28,7 +28,7 @@ source:
     folder: scipy/_lib/boost                                                                         # [not aarch64]
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py2k or py<=36]
 
 requirements:
