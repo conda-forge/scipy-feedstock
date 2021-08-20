@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-  sha256: 309f66c326e2a90b1ebb1a4ea75f3dd9c56276f392ec5a1b2fe986ea662bf69f
+  sha256: 4a453d5e5689de62e5d38edf40af3f17560bfd63c9c5bd228c18c1f99afa155b
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py2k]
 
 requirements:
