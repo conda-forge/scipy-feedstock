@@ -9,23 +9,18 @@ package:
 
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
-  # as well as the boost-headers submodule (since 1.7.0). While it's
-  # preferable to compile from source in general, we make use of this
-  # on AARCH, which is _very_ prone to timeouts already, so
-  # every minute saved helps
-  - url: https://github.com/scipy/scipy/releases/download/v{{ version }}/scipy-{{ version }}.tar.gz  # [aarch64]
-    sha256: 6b47d5fa7ea651054362561a28b1ccc8da9368a39514c1bbf6c0977a1c376764                         # [aarch64]
-  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz                                # [not aarch64]
-    sha256: 4c155376b5488ab596db3efedf7cf5d1598dfe17acffaf256a4814b2059b6fe2                         # [not aarch64]
+  # as well as the boost-headers submodule (since 1.7.0).
+  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
+    sha256: 4c155376b5488ab596db3efedf7cf5d1598dfe17acffaf256a4814b2059b6fe2
     patches:
       - patches/0001-add-break_cycles-for-mmapped-file-in-test_netcdf.patch
       - patches/0002-parametrize-test_wavfile.test_write_roundtrip.patch
       - patches/0003-add-break_cycles-for-mmapped-file-in-test_wavfile.patch
   # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
-  - git_url: https://github.com/scipy/boost-headers-only.git                                         # [not aarch64]
-    git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662                                                # [not aarch64]
-    folder: scipy/_lib/boost                                                                         # [not aarch64]
+  - git_url: https://github.com/scipy/boost-headers-only.git
+    git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
+    folder: scipy/_lib/boost
 
 build:
   number: 0
