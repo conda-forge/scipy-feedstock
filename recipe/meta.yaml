@@ -23,7 +23,7 @@ source:
     folder: scipy/_lib/boost
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py2k or py<=36]
 
 requirements:
