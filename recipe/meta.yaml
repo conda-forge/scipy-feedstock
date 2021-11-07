@@ -58,6 +58,8 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
+# some problem loading _flapack DLL
+{% set tests_to_skip = tests_to_skip + " or TestF77Mismatch" %}                 # [aarch64]
 # skip some tests that hang/fail on pypy
 {% if python_impl == "pypy" %}
   # hangs
