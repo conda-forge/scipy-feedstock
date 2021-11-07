@@ -83,7 +83,10 @@ test:
     {% set label = "'fast'" if (aarch64 or ppc64le or python_impl == "pypy") else "'full'" %}
     # PPC apparently runs into a QEMU bug that's triggered by sparse matrix code, causing
     # lots of test failures; we therefore reduce the number of modules, see also issue #186.
-    {% set tests = "['scipy.cluster', 'scipy.fft', 'scipy.misc', 'scipy.odr']" if (ppc64le) else "None" %}
+    {% set tests = "['scipy.cluster', 'scipy.fft', 'scipy.misc', 'scipy.odr']" if ppc64le else "None" %}
+    # aarch tests ran in reduced form on drone due to timing constraints;
+    # going back to the full test suite will need some debugging of hangs
+    {% set tests = "['scipy.linalg', 'scipy.fft']" if aarch64 else tests %}
     # for signature of scipy.test see below (note default: label='fast'):
     # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
     - python -c "import scipy; scipy.test(verbose=2, label={{ label }}, tests={{ tests }}, extra_argv=['-k', 'not ({{ tests_to_skip }})', '--durations=50'])"
