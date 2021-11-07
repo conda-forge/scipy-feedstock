@@ -67,8 +67,8 @@ test:
     # change to np.show_config() for v>=1.22.0, cf. numpy/numpy#19130
     - python -c "import numpy; numpy._pytesttester._show_numpy_info()"
     # Run only fast tests for key modules on drone as it times out; otherwise set label='full' (note default: label='fast')
-    {% set label = "'fast'" if aarch64 else "'full'" %}
-    {% set tests = "['scipy.linalg', 'scipy.fft']" if aarch64 else "None" %}
+    {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
+    {% set tests = "['scipy.linalg', 'scipy.fft']" if (aarch64 or ppc64le) else "None" %}
     # for signature, see https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
     - python -c "import scipy; scipy.test(verbose=2, label={{ label }}, tests={{ tests }}, extra_argv=['--durations=50'])"
   imports:
