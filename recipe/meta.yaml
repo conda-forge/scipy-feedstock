@@ -1,4 +1,4 @@
-{% set version = "1.7.1" %}
+{% set version = "1.7.2" %}
 
 package:
   name: scipy
@@ -11,7 +11,7 @@ source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the boost-headers submodule (since 1.7.0).
   - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-    sha256: 4c155376b5488ab596db3efedf7cf5d1598dfe17acffaf256a4814b2059b6fe2
+    sha256: f7334611b9ad640862ba7921bee8fbe61333463f1ac1dab346433cad508455e7
     patches:
       - patches/0001-add-break_cycles-for-mmapped-file-in-test_netcdf.patch
       - patches/0002-parametrize-test_wavfile.test_write_roundtrip.patch
@@ -57,6 +57,19 @@ requirements:
     - python
     - {{ pin_compatible('numpy') }}
 
+{% set tests_to_skip = "_not_a_real_test" %}
+# some problem loading _flapack DLL
+{% set tests_to_skip = tests_to_skip + " or TestF77Mismatch" %}                 # [aarch64]
+# skip some tests that hang/fail on pypy
+{% if python_impl == "pypy" %}
+  # hangs
+  {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}  # [aarch64 or ppc64le]
+  {% set tests_to_skip = tests_to_skip + " or TestNQuad" %}                     # [win]
+  # failures
+  {% set tests_to_skip = tests_to_skip + " or test_cdist_refcount" %}           # [unix]
+  {% set tests_to_skip = tests_to_skip + " or test_boost_eval_issue_14606" %}   # [unix]
+{% endif %}
+
 test:
   requires:
     - pytest
@@ -66,11 +79,20 @@ test:
     # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
     # change to np.show_config() for v>=1.22.0, cf. numpy/numpy#19130
     - python -c "import numpy; numpy._pytesttester._show_numpy_info()"
-    # Run only fast tests for key modules on drone as it times out; otherwise set label='full' (note default: label='fast')
-    {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
-    {% set tests = "['scipy.linalg', 'scipy.fft']" if (aarch64 or ppc64le) else "None" %}
-    # for signature, see https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
-    - python -c "import scipy; scipy.test(verbose=2, label={{ label }}, tests={{ tests }}, extra_argv=['--durations=50'])"
+    # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
+    # since this takes much longer, do not run the most heavy-weight tests, i.e. use
+    # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'
+    {% set label = "'fast'" if (aarch64 or ppc64le or python_impl == "pypy") else "'full'" %}
+    # aarch tests ran in reduced form on drone due to timing constraints;
+    # going back to the full test suite will need some debugging of hangs
+    {% set tests = "['scipy.linalg', 'scipy.fft']" if aarch64 else "None" %}
+    # for signature of scipy.test see below (note default: label='fast'):
+    # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
+    {% set param = "verbose=2, label=" + label + ", tests=" + tests %}
+    {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '--durations=50']" %}
+    - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"  # [not ppc64le]
+    # NOTE: test suite is skipped on ppc due to bugs in QEMU code that cause
+    # CI to fail, even though the tests would run through on native hardware
   imports:
     - scipy
     - scipy.cluster._hierarchy
