@@ -13,9 +13,12 @@ source:
   - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
     sha256: efbc8e96339d794ea8c62f6652345e96d5283df75badbe18887838ecf5dd5bcc
     patches:
+      # win+pypy fixes (scipy/scipy#14549), can be dropped for v>=1.8
       - patches/0001-add-break_cycles-for-mmapped-file-in-test_netcdf.patch
       - patches/0002-parametrize-test_wavfile.test_write_roundtrip.patch
       - patches/0003-add-break_cycles-for-mmapped-file-in-test_wavfile.patch
+      # backport of scipy/scipy#15010 to avoid test skip
+      - patches/0004-TST-remove-fragile-test-which-checks-if-g77-is-linke.patch
   # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
@@ -58,8 +61,6 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
-# some problem loading _flapack DLL
-{% set tests_to_skip = tests_to_skip + " or TestF77Mismatch" %}                 # [aarch64]
 # skip some tests that hang/fail on pypy
 {% if python_impl == "pypy" %}
   # hangs
