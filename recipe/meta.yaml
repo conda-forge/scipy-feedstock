@@ -1,4 +1,4 @@
-{% set version = "1.7.2" %}
+{% set version = "1.7.3" %}
 
 package:
   name: scipy
@@ -11,11 +11,14 @@ source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the boost-headers submodule (since 1.7.0).
   - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-    sha256: f7334611b9ad640862ba7921bee8fbe61333463f1ac1dab346433cad508455e7
+    sha256: efbc8e96339d794ea8c62f6652345e96d5283df75badbe18887838ecf5dd5bcc
     patches:
+      # win+pypy fixes (scipy/scipy#14549), can be dropped for v>=1.8
       - patches/0001-add-break_cycles-for-mmapped-file-in-test_netcdf.patch
       - patches/0002-parametrize-test_wavfile.test_write_roundtrip.patch
       - patches/0003-add-break_cycles-for-mmapped-file-in-test_wavfile.patch
+      # backport of scipy/scipy#15010 to avoid test skip
+      - patches/0004-TST-remove-fragile-test-which-checks-if-g77-is-linke.patch
   # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
@@ -58,13 +61,10 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
-# some problem loading _flapack DLL
-{% set tests_to_skip = tests_to_skip + " or TestF77Mismatch" %}                 # [aarch64]
 # skip some tests that hang/fail on pypy
 {% if python_impl == "pypy" %}
   # hangs
   {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}  # [aarch64 or ppc64le]
-  {% set tests_to_skip = tests_to_skip + " or TestNQuad" %}                     # [win]
   # failures
   {% set tests_to_skip = tests_to_skip + " or test_cdist_refcount" %}           # [unix]
   {% set tests_to_skip = tests_to_skip + " or test_boost_eval_issue_14606" %}   # [unix]
@@ -73,6 +73,7 @@ requirements:
 test:
   requires:
     - pytest
+    - pytest-timeout
     - pytest-xdist
     - mpmath
   commands:
@@ -89,7 +90,7 @@ test:
     # for signature of scipy.test see below (note default: label='fast'):
     # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
     {% set param = "verbose=2, label=" + label + ", tests=" + tests %}
-    {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '--durations=50']" %}
+    {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '--timeout=1200', '--durations=50']" %}
     - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"  # [not ppc64le]
     # NOTE: test suite is skipped on ppc due to bugs in QEMU code that cause
     # CI to fail, even though the tests would run through on native hardware

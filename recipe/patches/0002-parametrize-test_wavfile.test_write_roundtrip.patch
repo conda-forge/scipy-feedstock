@@ -1,7 +1,7 @@
-From b6736f013101ea43b4e2ace134d46eba431be175 Mon Sep 17 00:00:00 2001
+From cc94c1a06240b277a49e898836d3e239b5d7f016 Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Thu, 5 Aug 2021 19:54:33 +0200
-Subject: [PATCH 2/3] parametrize test_wavfile.test_write_roundtrip
+Subject: [PATCH 2/4] parametrize test_wavfile.test_write_roundtrip
 
 ---
  scipy/io/tests/test_wavfile.py | 47 +++++++++++++++-------------------
@@ -72,5 +72,5 @@ index 712ba4fd8..ddf682c15 100644
 -                    dt = np.dtype(dt_str)
 -                    _check_roundtrip(realfile, rate, dt, channels, tmpdir)
 -- 
-2.31.1.windows.1
+2.32.0.windows.2
 
