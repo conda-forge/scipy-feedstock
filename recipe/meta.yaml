@@ -60,8 +60,9 @@ requirements:
     - python
     - {{ pin_compatible('numpy') }}
 
-{% set tests_to_skip = "_not_a_real_test" %}                         # [python_impl != "pypy"]
-{% set tests_to_skip = "_not_a_real_test or test_cdist_refcounti or test_boost_eval_issue_14606" %}  # [python_impl == "pypy"]
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set tests_to_skip = " or test_cdist_refcount" %}          # [python_impl == "pypy"]
+{% set tests_to_skip = " or test_boost_eval_issue_14606" %}  # [python_impl == "pypy"]
 
 test:
   requires:
