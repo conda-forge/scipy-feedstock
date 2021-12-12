@@ -1,4 +1,4 @@
-{% set version = "1.7.3" %}
+{% set version = "1.8.0rc1" %}
 
 package:
   name: scipy
@@ -9,25 +9,26 @@ package:
 
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
-  # as well as the boost-headers submodule (since 1.7.0).
-  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-    sha256: efbc8e96339d794ea8c62f6652345e96d5283df75badbe18887838ecf5dd5bcc
-    patches:
-      # win+pypy fixes (scipy/scipy#14549), can be dropped for v>=1.8
-      - patches/0001-add-break_cycles-for-mmapped-file-in-test_netcdf.patch
-      - patches/0002-parametrize-test_wavfile.test_write_roundtrip.patch
-      - patches/0003-add-break_cycles-for-mmapped-file-in-test_wavfile.patch
-      # backport of scipy/scipy#15010 to avoid test skip
-      - patches/0004-TST-remove-fragile-test-which-checks-if-g77-is-linke.patch
-  # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
+  # as well as the relevant submodules; by taking the tarball from github
+  # we can compile pythran ourselves (or not), but manually need to include
+  # the submodules (not in tarball due to dear-github/dear-github#214)
+  - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 83b6e9e16b5c20335704c6d402f2d814833979dc74ea8334c2af1ffe0a806dea
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
     folder: scipy/_lib/boost
+  - git_url: https://github.com/scipy/unuran.git
+    git_rev: 993f84a70ea4788f85b2343eb6eaef2204e94ec1
+    folder: scipy/_lib/unuran
+  # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
+  - git_url: https://github.com/scipy/PROPACK.git
+    git_rev: fb21d62f0167bf07aa3a48f6169c29ddc314f046
+    folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
   number: 0
-  skip: true  # [py2k or py<=36]
+  skip: true  # [py<=37]
 
 requirements:
   build:
