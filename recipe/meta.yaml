@@ -67,6 +67,8 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
+# skip a test that fails on linux + MKL + AVX512 (non-AVX512 passes)
+{% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}     # [unix]
 # skip some tests that hang/fail on pypy
 {% if python_impl == "pypy" %}
   # hangs
