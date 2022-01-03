@@ -86,8 +86,7 @@ test:
     - mpmath
   commands:
     # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
-    # change to np.show_config() for v>=1.22.0, cf. numpy/numpy#19130
-    - python -c "import numpy; numpy._pytesttester._show_numpy_info()"
+    - python -c "import numpy; numpy.show_config()"
     # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
     # since this takes much longer, do not run the most heavy-weight tests, i.e. use
     # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'
