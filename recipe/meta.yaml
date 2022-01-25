@@ -1,4 +1,4 @@
-{% set version = "1.8.0rc2" %}
+{% set version = "1.8.0rc3" %}
 
 package:
   name: scipy
@@ -13,12 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: c3af04db451ffb89e3cc0d1bcc31876dbf28b9a7cf69421d1640c55f6f9f566c
-    patches:
-      - patches/0001-DEBUG-Carry-scipy-15301.patch
-      - patches/0002-DEBUG-Carry-scipy-15249.patch
-      # backport #15271
-      - patches/0003-TST-slightly-bump-test-tolerance-for-a-new-lobpcg-te.patch
+    sha256: 3e5f72eb2d491af1383f1d83af96817ff19a881015d6dad79b00ff0ddf413888
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
@@ -28,7 +23,7 @@ source:
     folder: scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
-    git_rev: 615c3a0e54b228bdd16e9b2576a642cfbc55b8cd
+    git_rev: e7b342ca2f7a7fb16eed7f621832fec995dc59f1
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
