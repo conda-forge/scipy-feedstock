@@ -37,6 +37,7 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
+    - setuptools <60                         # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     # pythran code needs clang-cl on windows
@@ -51,7 +52,7 @@ requirements:
     - libcblas
     - liblapack
     - python
-    - setuptools
+    - setuptools <60
     - cython
     - pybind11
     - pythran
