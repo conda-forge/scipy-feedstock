@@ -63,6 +63,8 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
+# this test occasionally hangs in emulation
+{% set tests_to_skip = tests_to_skip + " or test_multiprocess[fft]" %}       # [aarch64 or ppc64le]
 {% set tests_to_skip = tests_to_skip + " or test_cdist_refcount" %}          # [python_impl == "pypy"]
 {% set tests_to_skip = tests_to_skip + " or test_boost_eval_issue_14606" %}  # [python_impl == "pypy"]
 
