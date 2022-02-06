@@ -14,6 +14,9 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 0c5a87bfa416d38f0ab33c8604703db50b74034d0631cae5777dbda4ce365c86
+    patches:
+      # backport scipy/scipy#15531 to fix pythran on windows
+      - patches/0001-BUG-Fix-importing-scipy.lib._pep440.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
