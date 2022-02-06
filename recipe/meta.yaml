@@ -1,4 +1,4 @@
-{% set version = "1.7.3" %}
+{% set version = "1.8.0" %}
 
 package:
   name: scipy
@@ -9,25 +9,26 @@ package:
 
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
-  # as well as the boost-headers submodule (since 1.7.0).
-  - url: https://github.com/scipy/scipy/archive/v{{ version }}.tar.gz
-    sha256: efbc8e96339d794ea8c62f6652345e96d5283df75badbe18887838ecf5dd5bcc
-    patches:
-      # win+pypy fixes (scipy/scipy#14549), can be dropped for v>=1.8
-      - patches/0001-add-break_cycles-for-mmapped-file-in-test_netcdf.patch
-      - patches/0002-parametrize-test_wavfile.test_write_roundtrip.patch
-      - patches/0003-add-break_cycles-for-mmapped-file-in-test_wavfile.patch
-      # backport of scipy/scipy#15010 to avoid test skip
-      - patches/0004-TST-remove-fragile-test-which-checks-if-g77-is-linke.patch
-  # include submodule (not in github tarball due to dear-github/dear-github#214), c.f.
+  # as well as the relevant submodules; by taking the tarball from github
+  # we can compile pythran ourselves (or not), but manually need to include
+  # the submodules (not in tarball due to dear-github/dear-github#214)
+  - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
+    sha256: 0c5a87bfa416d38f0ab33c8604703db50b74034d0631cae5777dbda4ce365c86
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
     folder: scipy/_lib/boost
+  - git_url: https://github.com/scipy/unuran.git
+    git_rev: 993f84a70ea4788f85b2343eb6eaef2204e94ec1
+    folder: scipy/_lib/unuran
+  # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
+  - git_url: https://github.com/scipy/PROPACK.git
+    git_rev: 92f466393256df649fc8542c39dd647816dded25
+    folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
   number: 0
-  skip: true  # [py2k or py<=36]
+  skip: true  # [py<=37]
 
 requirements:
   build:
@@ -36,6 +37,7 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
+    - setuptools <60                         # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     # pythran code needs clang-cl on windows
@@ -50,7 +52,7 @@ requirements:
     - libcblas
     - liblapack
     - python
-    - setuptools
+    - setuptools <60
     - cython
     - pybind11
     - pythran
@@ -72,8 +74,7 @@ test:
     - mpmath
   commands:
     # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
-    # change to np.show_config() for v>=1.22.0, cf. numpy/numpy#19130
-    - python -c "import numpy; numpy._pytesttester._show_numpy_info()"
+    - python -c "import numpy; numpy.show_config()"
     # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
     # since this takes much longer, do not run the most heavy-weight tests, i.e. use
     # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'
@@ -88,69 +89,45 @@ test:
     - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
   imports:
     - scipy
-    - scipy.cluster._hierarchy
-    - scipy.cluster._vq
+    # reference for public API is effectively
+    # https://github.com/scipy/scipy/blob/master/scipy/_lib/tests/test_public_api.py
+    - scipy.cluster
+    - scipy.cluster.hierarchy
+    - scipy.cluster.vq
+    - scipy.constants
     - scipy.fft
-    - scipy.integrate._dop
-    - scipy.integrate._odepack
-    - scipy.integrate._quadpack
-    - scipy.integrate._test_multivariate
-    - scipy.integrate._test_odeint_banded
-    - scipy.integrate.lsoda
-    - scipy.integrate.vode
-    - scipy.interpolate._fitpack
-    - scipy.interpolate._ppoly
-    - scipy.interpolate.dfitpack
-    - scipy.interpolate.interpnd
-    - scipy.io.matlab.mio5_utils
-    - scipy.io.matlab.mio_utils
-    - scipy.io.matlab.streams
-    - scipy.linalg._decomp_update
-    - scipy.linalg._fblas
-    - scipy.linalg._flapack
-    - scipy.linalg._flinalg
-    - scipy.linalg._interpolative
-    - scipy.linalg._solve_toeplitz
+    - scipy.fftpack
+    - scipy.integrate
+    - scipy.interpolate
+    - scipy.io
+    - scipy.io.arff
+    - scipy.io.matlab
+    - scipy.io.wavfile
+    - scipy.linalg
+    - scipy.linalg.blas
     - scipy.linalg.cython_blas
     - scipy.linalg.cython_lapack
-    - scipy.ndimage._nd_image
-    - scipy.ndimage._ni_label
-    - scipy.odr.__odrpack
-    - scipy.optimize._cobyla
-    - scipy.optimize._group_columns
-    - scipy.optimize._lbfgsb
-    - scipy.optimize._lsq.givens_elimination
-    - scipy.optimize._minpack
-    - scipy.optimize._nnls
-    - scipy.optimize._slsqp
-    - scipy.optimize._zeros
-    - scipy.optimize.minpack2
-    - scipy.optimize.moduleTNC
-    - scipy.signal._max_len_seq_inner
-    - scipy.signal._spectral
-    - scipy.signal.sigtools
-    - scipy.signal.spline
-    - scipy.sparse._csparsetools
-    - scipy.sparse._sparsetools
-    - scipy.sparse.csgraph._min_spanning_tree
-    - scipy.sparse.csgraph._reordering
-    - scipy.sparse.csgraph._shortest_path
-    - scipy.sparse.csgraph._tools
-    - scipy.sparse.csgraph._traversal
-    - scipy.sparse.linalg.dsolve._superlu
-    - scipy.sparse.linalg.eigen.arpack._arpack
-    - scipy.sparse.linalg.isolve._iterative
-    - scipy.spatial._distance_wrap
-    - scipy.spatial.ckdtree
-    - scipy.spatial.qhull
+    - scipy.linalg.interpolative
+    - scipy.linalg.lapack
+    - scipy.misc
+    - scipy.ndimage
+    - scipy.odr
+    - scipy.optimize
+    - scipy.signal
+    - scipy.signal.windows
+    - scipy.sparse
+    - scipy.sparse.csgraph
+    - scipy.sparse.linalg
+    - scipy.spatial
+    - scipy.spatial.distance
+    - scipy.spatial.transform
     - scipy.special
-    - scipy.special._ellip_harm_2
-    - scipy.special._ufuncs
-    - scipy.special._ufuncs_cxx
-    - scipy.special.specfun
     - scipy.stats
-    - scipy.stats.mvn
-    - scipy.stats.statlib
+    - scipy.stats.contingency
+    - scipy.stats.distributions
+    - scipy.stats.mstats
+    - scipy.stats.qmc
+    - scipy.stats.sampling
 
 about:
   home: http://www.scipy.org/
