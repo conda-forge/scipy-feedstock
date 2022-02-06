@@ -45,8 +45,6 @@ set "LDFLAGS="
 REM don't add d1trimfile option because clang doesn't recognize it.
 set "SRC_DIR="
 
-if "%python_impl%" == "pypy" set SCIPY_USE_PYTHRAN=0
-
 %PYTHON% -m pip install . -vv
 if %ERRORLEVEL% neq 0 exit 1
 
