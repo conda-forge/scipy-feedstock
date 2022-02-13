@@ -5,27 +5,89 @@
 jobs:
 - job: win
   pool:
-    vmImage: vs2017-win2016
+    vmImage: windows-2019
   strategy:
     matrix:
-      win_64_numpy1.18python3.7.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy1.18python3.7.____cpythonpython_implcpython
+      win_64_blas_implblisenforce_avx512absentnumpy1.18python3.7.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512absentnumpy1.18python3.7.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
-      win_64_numpy1.18python3.8.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy1.18python3.8.____cpythonpython_implcpython
+      win_64_blas_implblisenforce_avx512absentnumpy1.18python3.8.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512absentnumpy1.18python3.8.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
-      win_64_numpy1.19python3.7.____73_pypypython_implpypy:
-        CONFIG: win_64_numpy1.19python3.7.____73_pypypython_implpypy
+      win_64_blas_implblisenforce_avx512absentnumpy1.19python3.7.____73_pypypython_implpypy:
+        CONFIG: win_64_blas_implblisenforce_avx512absentnumpy1.19python3.7.____73_pypypython_implpypy
         UPLOAD_PACKAGES: 'True'
-      win_64_numpy1.19python3.9.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy1.19python3.9.____cpythonpython_implcpython
+      win_64_blas_implblisenforce_avx512absentnumpy1.19python3.9.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512absentnumpy1.19python3.9.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
-      win_64_numpy1.21python3.10.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy1.21python3.10.____cpythonpython_implcpython
+      win_64_blas_implblisenforce_avx512absentnumpy1.21python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512absentnumpy1.21python3.10.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
+      win_64_blas_implblisenforce_avx512presentnumpy1.18python3.7.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512presentnumpy1.18python3.7.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implblisenforce_avx512presentnumpy1.18python3.8.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512presentnumpy1.18python3.8.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implblisenforce_avx512presentnumpy1.19python3.7.____73_pypypython_implpypy:
+        CONFIG: win_64_blas_implblisenforce_avx512presentnumpy1.19python3.7.____73_pypypython_implpypy
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implblisenforce_avx512presentnumpy1.19python3.9.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512presentnumpy1.19python3.9.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implblisenforce_avx512presentnumpy1.21python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisenforce_avx512presentnumpy1.21python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklenforce_avx512Nonenumpy1.18python3.7.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklenforce_avx512Nonenumpy1.18python3.7.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklenforce_avx512Nonenumpy1.18python3.8.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklenforce_avx512Nonenumpy1.18python3.8.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklenforce_avx512Nonenumpy1.19python3.7.____73_pypypython_implpypy:
+        CONFIG: win_64_blas_implmklenforce_avx512Nonenumpy1.19python3.7.____73_pypypython_implpypy
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklenforce_avx512Nonenumpy1.19python3.9.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklenforce_avx512Nonenumpy1.19python3.9.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklenforce_avx512Nonenumpy1.21python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklenforce_avx512Nonenumpy1.21python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibenforce_avx512Nonenumpy1.18python3.7.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibenforce_avx512Nonenumpy1.18python3.7.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibenforce_avx512Nonenumpy1.18python3.8.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibenforce_avx512Nonenumpy1.18python3.8.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibenforce_avx512Nonenumpy1.19python3.7.____73_pypypython_implpypy:
+        CONFIG: win_64_blas_implnetlibenforce_avx512Nonenumpy1.19python3.7.____73_pypypython_implpypy
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibenforce_avx512Nonenumpy1.19python3.9.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibenforce_avx512Nonenumpy1.19python3.9.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibenforce_avx512Nonenumpy1.21python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibenforce_avx512Nonenumpy1.21python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasenforce_avx512Nonenumpy1.18python3.7.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasenforce_avx512Nonenumpy1.18python3.7.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasenforce_avx512Nonenumpy1.18python3.8.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasenforce_avx512Nonenumpy1.18python3.8.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasenforce_avx512Nonenumpy1.19python3.7.____73_pypypython_implpypy:
+        CONFIG: win_64_blas_implopenblasenforce_avx512Nonenumpy1.19python3.7.____73_pypypython_implpypy
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasenforce_avx512Nonenumpy1.19python3.9.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasenforce_avx512Nonenumpy1.19python3.9.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasenforce_avx512Nonenumpy1.21python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasenforce_avx512Nonenumpy1.21python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+    maxParallel: 13
   timeoutInMinutes: 360
   variables:
     CONDA_BLD_PATH: C:\\bld\\
+    SET_PAGEFILE: 'True'
 
   steps:
     - script: |
