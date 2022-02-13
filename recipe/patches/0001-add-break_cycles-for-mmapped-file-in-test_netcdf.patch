@@ -1,0 +1,47 @@
+From f90619ce9de42e13b68ded3b625a32056e05f29a Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Thu, 5 Aug 2021 19:37:38 +0200
+Subject: [PATCH 1/4] add break_cycles for mmapped file in test_netcdf
+
+---
+ scipy/io/tests/test_netcdf.py | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/scipy/io/tests/test_netcdf.py b/scipy/io/tests/test_netcdf.py
+index 3030b27bf..478dbc1af 100644
+--- a/scipy/io/tests/test_netcdf.py
++++ b/scipy/io/tests/test_netcdf.py
+@@ -10,10 +10,10 @@ from contextlib import contextmanager
+ 
+ import numpy as np
+ from numpy.testing import (assert_, assert_allclose, assert_equal,
+-                           suppress_warnings)
++                           break_cycles, suppress_warnings, IS_PYPY)
+ from pytest import raises as assert_raises
+ 
+-from scipy.io.netcdf import netcdf_file, IS_PYPY
++from scipy.io.netcdf import netcdf_file
+ from scipy._lib._tmpdirs import in_tempdir
+ 
+ TEST_DATA_PATH = pjoin(dirname(__file__), 'data')
+@@ -131,12 +131,13 @@ def test_read_write_files():
+             check_simple(f)
+             assert_equal(f.variables['app_var'][:], 42)
+ 
+-    except:  # noqa: E722
++    finally:
++        if IS_PYPY:
++            # windows cannot remove a dead file held by a mmap but not collected in PyPy
++            break_cycles()
++            break_cycles()
+         os.chdir(cwd)
+         shutil.rmtree(tmpdir)
+-        raise
+-    os.chdir(cwd)
+-    shutil.rmtree(tmpdir)
+ 
+ 
+ def test_read_write_sio():
+-- 
+2.32.0.windows.2
+
