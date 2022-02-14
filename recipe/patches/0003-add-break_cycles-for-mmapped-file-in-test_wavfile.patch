@@ -1,7 +1,7 @@
-From 6d9c9754c9e303b85db49676b909b49065b8f6d5 Mon Sep 17 00:00:00 2001
+From c2e955e16edb4d40def0b24a6c6d08e7fed8bf7d Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Thu, 5 Aug 2021 20:03:24 +0200
-Subject: [PATCH 3/4] add break_cycles for mmapped file in test_wavfile
+Subject: [PATCH 3/3] add break_cycles for mmapped file in test_wavfile
 
 ---
  scipy/io/tests/test_wavfile.py | 8 +++++++-
@@ -31,5 +31,5 @@ index ddf682c15..b02049c91 100644
 +        break_cycles()
 +        break_cycles()
 -- 
-2.32.0.windows.2
+2.31.1.windows.1
 
