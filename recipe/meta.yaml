@@ -15,10 +15,8 @@ source:
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: fb6936f0c4a4f94bd2af7922cd1a94577ec472d4626a29aa95d8c228cdb45b94
     patches:
-      # backport scipy/scipy#15531 to fix pythran on windows
-      - patches/0001-BUG-Fix-importing-scipy.lib._pep440.patch
       # backport scipy/scipy#15532 to fix timeout of a long-running test
-      - patches/0002-parametrize-test_ldl_type_size_combinations.patch
+      - patches/0001-parametrize-test_ldl_type_size_combinations.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
