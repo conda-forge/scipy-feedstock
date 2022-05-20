@@ -1,4 +1,4 @@
-{% set version = "1.8.0" %}
+{% set version = "1.8.1" %}
 
 package:
   name: scipy
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 0c5a87bfa416d38f0ab33c8604703db50b74034d0631cae5777dbda4ce365c86
+    sha256: fb6936f0c4a4f94bd2af7922cd1a94577ec472d4626a29aa95d8c228cdb45b94
     patches:
       # backport scipy/scipy#15531 to fix pythran on windows
       - patches/0001-BUG-Fix-importing-scipy.lib._pep440.patch
@@ -24,7 +24,7 @@ source:
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
     folder: scipy/_lib/boost
   - git_url: https://github.com/scipy/unuran.git
-    git_rev: 993f84a70ea4788f85b2343eb6eaef2204e94ec1
+    git_rev: a63d39160e5ecc4402e7ed0e8417f4c3ff9634cb
     folder: scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
@@ -32,7 +32,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<=37]
 
 requirements:
