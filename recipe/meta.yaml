@@ -1,4 +1,4 @@
-{% set version = "1.8.1" %}
+{% set version = "1.9.0rc1" %}
 
 package:
   name: scipy
@@ -13,16 +13,17 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: fb6936f0c4a4f94bd2af7922cd1a94577ec472d4626a29aa95d8c228cdb45b94
+    sha256: 16aca9a6691174d4d3735ddc18dc08b12d16c0e3db8d28f81061e6cf3ef02065
     patches:
-      # backport scipy/scipy#15532 to fix timeout of a long-running test
-      - patches/0001-parametrize-test_ldl_type_size_combinations.patch
       # small tweaksor too-restrictive tests to get pypy to pass
-      - patches/0002-test-fixes-for-pypy.patch
+      - patches/0001-test-fixes-for-pypy.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
-    git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
+    git_rev: 2a1a7e920f39c44440d6908a080810abe9510f42
     folder: scipy/_lib/boost
+  - git_url: https://github.com/scipy/highs.git
+    git_rev: 885c5de95a2b73269b0f885ea27234bb0c29c2a3
+    folder: scipy/_lib/highs
   - git_url: https://github.com/scipy/unuran.git
     git_rev: a63d39160e5ecc4402e7ed0e8417f4c3ff9634cb
     folder: scipy/_lib/unuran
