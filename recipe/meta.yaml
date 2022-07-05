@@ -1,4 +1,4 @@
-{% set version = "1.9.0rc1" %}
+{% set version = "1.9.0rc2" %}
 
 package:
   name: scipy
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 16aca9a6691174d4d3735ddc18dc08b12d16c0e3db8d28f81061e6cf3ef02065
+    sha256: 04dbfba08f50e57ffaa95f5d6220e24a1d834a023b73d27e91c60900200bfb62
     patches:
       # small tweaksor too-restrictive tests to get pypy to pass
       - patches/0001-test-fixes-for-pypy.patch
