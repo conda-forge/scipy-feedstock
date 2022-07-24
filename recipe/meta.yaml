@@ -1,4 +1,4 @@
-{% set version = "1.9.0rc2" %}
+{% set version = "1.9.0rc3" %}
 
 package:
   name: scipy
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 04dbfba08f50e57ffaa95f5d6220e24a1d834a023b73d27e91c60900200bfb62
+    sha256: 6ecbce5fa704cd5f8894d7bec933a338cc593f6fd4488b1a6ab47382449d51a3
     patches:
       # small tweaksor too-restrictive tests to get pypy to pass
       - patches/0001-test-fixes-for-pypy.patch
@@ -22,7 +22,7 @@ source:
     git_rev: 2a1a7e920f39c44440d6908a080810abe9510f42
     folder: scipy/_lib/boost
   - git_url: https://github.com/scipy/highs.git
-    git_rev: 885c5de95a2b73269b0f885ea27234bb0c29c2a3
+    git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
   - git_url: https://github.com/scipy/unuran.git
     git_rev: a63d39160e5ecc4402e7ed0e8417f4c3ff9634cb
