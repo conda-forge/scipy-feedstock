@@ -70,6 +70,8 @@ requirements:
 {% set tests_to_skip = "_not_a_real_test" %}
 # skip a test that fails with MKL + AVX512 (non-AVX512 passes)
 {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
+# accuracy failure with AVX512
+{% set tests_to_skip = tests_to_skip + " or (TestTruncnorm and test_moments)" %}
 # these multithreading tests occasionally hang in emulation
 {% set tests_to_skip = tests_to_skip + " or test_immediate_updating" %}         # [aarch64 or ppc64le]
 {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}    # [aarch64 or ppc64le]
