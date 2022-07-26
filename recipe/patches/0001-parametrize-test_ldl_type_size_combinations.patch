@@ -1,7 +1,7 @@
 From 8c7fb0d91f4b2b2ae7fa2430035785d6fcac35f4 Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Sun, 6 Feb 2022 19:09:53 +1100
-Subject: [PATCH] * parametrize test_ldl_type_size_combinations
+Subject: [PATCH 1/2] * parametrize test_ldl_type_size_combinations
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -122,5 +122,5 @@ index ce6b7c05f..3f08e529a 100644
 +    assert_allclose(l.dot(d1).dot(l.T), x, rtol=rtol, err_msg=msg2)
 +    assert_allclose(u.dot(d2).dot(u.T), x, rtol=rtol, err_msg=msg2)
 -- 
-2.35.3.windows.1
+2.37.0.windows.1
 
