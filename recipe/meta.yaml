@@ -236,8 +236,6 @@ outputs:
         - libblas * *{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # sign errors
-        {% set tests_to_skip = tests_to_skip + " or (TestSystematic and test_spherical)" %}               # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]
