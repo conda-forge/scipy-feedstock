@@ -236,17 +236,6 @@ outputs:
         - libblas * *{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # undiagnosed tolerance violations
-        {% set tests_to_skip = tests_to_skip + " or test_log1mexp" %}                                     # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestBatch and (test_solve or test_lu_solve))" %}     # [win]
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or test_null_space or test_small_sigma2" %}              # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [aarch64 or ppc64le]
@@ -265,25 +254,6 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}            # [aarch64 or ppc64le]
-        # hangs on windows for old CPUs: https://github.com/scipy/scipy/issues/23527
-        {% set tests_to_skip = tests_to_skip + " or test_variation_ddof" %}                         # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_warning_calls_filters" %}                  # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestFBLAS2Simple and test_spr_hpr)" %}         # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestSVD_GESDD and test_crash_1580)" %}         # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestSVD_GESVD and test_crash_1580)" %}         # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestVariation and test_neg_inf_nan)" %}        # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_combined_edge_cases" %}                    # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_exact)" %}           # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_complex_exact)" %}   # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_more_nan_policy_omit_tests" %}             # [win]
-        # catastrophic failures on windows for old CPUs: https://github.com/scipy/scipy/issues/23527
-        {% set tests_to_skip = tests_to_skip + " or test_ldl_type_size_combinations_real" %}        # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_isf_of_sf_sqrtn" %}                        # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_ppf_of_cdf_sqrtn" %}                       # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_solve_continuous_are" %}                   # [win]
-        {% set tests_to_skip = tests_to_skip + " or test_various_drivers_standard" %}               # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestKSTwo and test_ppf)" %}                    # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestSVD_GESVD and test_random_complex)" %}     # [win]
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
         # tests for ppc64le and aarch64 are run in emulation through QEMU; as this takes
