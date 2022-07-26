@@ -87,6 +87,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_cont_basic[500" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}       # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or (TestBrute and test_workers)" %}          # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or test_gh12922" %}                          # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 test:
