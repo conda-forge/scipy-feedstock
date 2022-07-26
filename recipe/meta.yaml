@@ -83,6 +83,11 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_cdist_refcount" %}             # [python_impl == "pypy"]
 # unclear why a warning isn't raised. Might be related to scipy/scipy#15121
 {% set tests_to_skip = tests_to_skip + " or test_boost_eval_issue_14606" %}     # [python_impl == "pypy"]
+# very slow tests for pypy in emulation
+{% set tests_to_skip = tests_to_skip + " or test_cont_basic[500" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}       # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_gh12922" %}                          # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 test:
   requires:
