@@ -35,6 +35,8 @@ source:
 build:
   number: 0
   skip: true  # [py<=37]
+  # temporary
+  skip: true  # [python_impl == "pypy"]
 
 requirements:
   build:
