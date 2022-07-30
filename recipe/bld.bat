@@ -43,7 +43,7 @@ set "LDFLAGS="
 REM don't add d1trimfile option because clang doesn't recognize it.
 set "SRC_DIR="
 
-%PYTHON% -m pip install . -vv
+%PYTHON% setup.py install --single-version-externally-managed --record=record.txt
 if %ERRORLEVEL% neq 0 exit 1
 
 REM make sure these aren't packaged
