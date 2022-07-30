@@ -30,9 +30,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 0
-  # temporary
-  skip: true  # [python_impl == "pypy"]
+  number: 2
 
 requirements:
   build:
