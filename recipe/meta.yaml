@@ -16,7 +16,8 @@ source:
     sha256: 6ad2df96f141be7bf661461daf15c8d7d8032d77a0d772a52cb9feb236248eae
     patches:
       # small tweaks for too-restrictive tests to get pypy to pass
-      - patches/0001-test-fixes-for-pypy.patch
+      # backport of scipy/scipy#16756
+      - patches/0001-TST-test-fixes-for-pypy.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2a1a7e920f39c44440d6908a080810abe9510f42

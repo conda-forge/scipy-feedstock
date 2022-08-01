@@ -1,0 +1,162 @@
+From a52198512e96f7b98b2f04472785dd1b1b20749a Mon Sep 17 00:00:00 2001
+From: Matti Picus <matti.picus@gmail.com>
+Date: Mon, 25 Jul 2022 22:34:45 +0300
+Subject: [PATCH] TST: test fixes for pypy
+
+Co-Authored-By: H. Vetinari <h.vetinari@gmx.com>
+---
+ scipy/optimize/tests/test_direct.py     |  2 +-
+ scipy/sparse/tests/test_construct.py    |  4 ++--
+ scipy/spatial/tests/test_distance.py    |  5 ++++-
+ scipy/special/tests/test_sf_error.py    |  3 ++-
+ scipy/stats/tests/test_distributions.py |  5 +++--
+ scipy/stats/tests/test_sampling.py      | 10 ++++++++--
+ 6 files changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/scipy/optimize/tests/test_direct.py b/scipy/optimize/tests/test_direct.py
+index 96e8ede8b..80ee266c3 100644
+--- a/scipy/optimize/tests/test_direct.py
++++ b/scipy/optimize/tests/test_direct.py
+@@ -198,7 +198,7 @@ class TestDIRECT:
+         assert result.success
+ 
+     @pytest.mark.parametrize("locally_biased", [True, False])
+-    def test_segmentation_fault(self, locally_biased):
++    def test_no_segmentation_fault(self, locally_biased):
+         # test that an excessive number of function evaluations
+         # does not result in segmentation fault
+         bounds = [(-5., 20.)] * 100
+diff --git a/scipy/sparse/tests/test_construct.py b/scipy/sparse/tests/test_construct.py
+index dfc9ec8b4..d71935a68 100644
+--- a/scipy/sparse/tests/test_construct.py
++++ b/scipy/sparse/tests/test_construct.py
+@@ -430,7 +430,7 @@ class TestConstructUtils:
+ 
+         with assert_raises(ValueError) as excinfo:
+             construct.bmat([[A.tocsc()], [B.tocsc()]])
+-        excinfo.match(r'Mismatching dimensions along axis 1: {1, 2}')
++        excinfo.match(r'Mismatching dimensions along axis 1: ({1, 2}|{2, 1})')
+ 
+         with assert_raises(ValueError) as excinfo:
+             construct.bmat([[A, C]])
+@@ -438,7 +438,7 @@ class TestConstructUtils:
+ 
+         with assert_raises(ValueError) as excinfo:
+             construct.bmat([[A.tocsr(), C.tocsr()]])
+-        excinfo.match(r'Mismatching dimensions along axis 0: {1, 2}')
++        excinfo.match(r'Mismatching dimensions along axis 0: ({1, 2}|{2, 1})')
+ 
+         with assert_raises(ValueError) as excinfo:
+             construct.bmat([[A.tocsc(), C.tocsc()]])
+diff --git a/scipy/spatial/tests/test_distance.py b/scipy/spatial/tests/test_distance.py
+index 779f0cdfd..798ff814e 100644
+--- a/scipy/spatial/tests/test_distance.py
++++ b/scipy/spatial/tests/test_distance.py
+@@ -44,7 +44,7 @@ from numpy.linalg import norm
+ from numpy.testing import (verbose, assert_,
+                            assert_array_equal, assert_equal,
+                            assert_almost_equal, assert_allclose,
+-                           suppress_warnings)
++                           break_cycles, suppress_warnings, IS_PYPY)
+ import pytest
+ from pytest import raises as assert_raises
+ 
+@@ -659,6 +659,9 @@ class TestCdist:
+             # references, the arrays should be deallocated.
+             weak_refs = [weakref.ref(v) for v in (x1, x2, out)]
+             del x1, x2, out
++
++            if IS_PYPY:
++                break_cycles()
+             assert all(weak_ref() is None for weak_ref in weak_refs)
+ 
+ 
+diff --git a/scipy/special/tests/test_sf_error.py b/scipy/special/tests/test_sf_error.py
+index 701ff34fe..371cdec40 100644
+--- a/scipy/special/tests/test_sf_error.py
++++ b/scipy/special/tests/test_sf_error.py
+@@ -1,7 +1,7 @@
+ import sys
+ import warnings
+ 
+-from numpy.testing import assert_, assert_equal
++from numpy.testing import assert_, assert_equal, IS_PYPY
+ import pytest
+ from pytest import raises as assert_raises
+ 
+@@ -67,6 +67,7 @@ def test_seterr():
+         sc.seterr(**entry_err)
+ 
+ 
++@pytest.mark.skipif(IS_PYPY, reason="Test not meaningful on PyPy")
+ def test_sf_error_special_refcount():
+     # Regression test for gh-16233.
+     # Check that the reference count of scipy.special is not increased
+diff --git a/scipy/stats/tests/test_distributions.py b/scipy/stats/tests/test_distributions.py
+index b06a52998..35dbf7c29 100644
+--- a/scipy/stats/tests/test_distributions.py
++++ b/scipy/stats/tests/test_distributions.py
+@@ -13,7 +13,7 @@ import platform
+ from numpy.testing import (assert_equal, assert_array_equal,
+                            assert_almost_equal, assert_array_almost_equal,
+                            assert_allclose, assert_, assert_warns,
+-                           assert_array_less, suppress_warnings)
++                           assert_array_less, suppress_warnings, IS_PYPY)
+ import pytest
+ from pytest import raises as assert_raises
+ 
+@@ -3155,6 +3155,7 @@ class TestBeta:
+         a, b = 0.2, 3
+         assert_equal(stats.beta.pdf(0, a, b), np.inf)
+ 
++    @pytest.mark.xfail(IS_PYPY, reason="Does not convert boost warning")
+     def test_boost_eval_issue_14606(self):
+         q, a, b = 0.995, 1.0e11, 1.0e13
+         with pytest.warns(RuntimeWarning):
+@@ -7088,7 +7089,7 @@ def test_rvs_no_size_error():
+ 
+     rvs_no_size = rvs_no_size_gen(name='rvs_no_size')
+ 
+-    with assert_raises(TypeError, match=re.escape("_rvs() got an unexpected")):
++    with assert_raises(TypeError, match=r"_rvs\(\) got (an|\d) unexpected"):
+         rvs_no_size.rvs()
+ 
+ 
+diff --git a/scipy/stats/tests/test_sampling.py b/scipy/stats/tests/test_sampling.py
+index 65a1a4c64..b16c5425c 100644
+--- a/scipy/stats/tests/test_sampling.py
++++ b/scipy/stats/tests/test_sampling.py
+@@ -48,6 +48,12 @@ all_methods = [
+     ("SimpleRatioUniforms", {"dist": StandardNormal(), "mode": 0})
+ ]
+ 
++if (sys.implementation.name == 'pypy'
++        and sys.implementation.version < (7, 3, 10)):
++    # changed in PyPy for v7.3.10
++    floaterr = r"unsupported operand type for float\(\): 'list'"
++else:
++    floaterr = r"must be real number, not list"
+ # Make sure an internal error occurs in UNU.RAN when invalid callbacks are
+ # passed. Moreover, different generators throw different error messages.
+ # So, in case of an `UNURANError`, we do not validate the error message.
+@@ -55,7 +61,7 @@ bad_pdfs_common = [
+     # Negative PDF
+     (lambda x: -x, UNURANError, r"..."),
+     # Returning wrong type
+-    (lambda x: [], TypeError, r"must be real number, not list"),
++    (lambda x: [], TypeError, floaterr),
+     # Undefined name inside the function
+     (lambda x: foo, NameError, r"name 'foo' is not defined"),  # type: ignore[name-defined]  # noqa
+     # Infinite value returned => Overflow error.
+@@ -75,7 +81,7 @@ bad_dpdf_common = [
+     # NaN value => internal error in UNU.RAN
+     (lambda x: np.nan, UNURANError, r"..."),
+     # Returning wrong type
+-    (lambda x: [], TypeError, r"must be real number, not list"),
++    (lambda x: [], TypeError, floaterr),
+     # Undefined name inside the function
+     (lambda x: foo, NameError, r"name 'foo' is not defined"),  # type: ignore[name-defined]  # noqa
+     # signature of dPDF wrong
+-- 
+2.38.1.windows.1
+
