@@ -17,8 +17,9 @@ source:
     patches:
       # backport scipy/scipy#15532 to fix timeout of a long-running test
       - patches/0001-parametrize-test_ldl_type_size_combinations.patch
-      # small tweaksor too-restrictive tests to get pypy to pass
-      - patches/0002-test-fixes-for-pypy.patch
+      # small tweaks for too-restrictive tests to get pypy to pass
+      # backport of scipy/scipy#16756
+      - patches/0002-TST-test-fixes-for-pypy.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 2110ce20e59917b85b12059b3ddd8b133549f662
