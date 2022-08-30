@@ -1,4 +1,4 @@
-{% set version = "1.9.0" %}
+{% set version = "1.9.1" %}
 
 package:
   name: scipy
@@ -13,9 +13,9 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: dd773d72500bbe607fe05251a8dd2439b6b38fe3133a7fc05ced82303ca73e95
+    sha256: 1e59e624eb99aeb88cfddd0ccc6bc774ffe203820b98dd89d54b40bcb062f45d
     patches:
-      # small tweaksor too-restrictive tests to get pypy to pass
+      # small tweaks for too-restrictive tests to get pypy to pass
       - patches/0001-test-fixes-for-pypy.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
@@ -71,8 +71,12 @@ requirements:
     - {{ pin_compatible('numpy') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
-# skip a test that fails with MKL + AVX512 (non-AVX512 passes)
+# skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
 {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
+# scipy/scipy#16926
+{% set tests_to_skip = tests_to_skip + " or test_solve_discrete_are" %}         # [linux]
+# scipy/scipy#16927
+{% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
 # accuracy failure with AVX512
 {% set tests_to_skip = tests_to_skip + " or (TestTruncnorm and test_moments)" %}
 # these multithreading tests occasionally hang in emulation
@@ -82,6 +86,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or (test__differential_evolution and test_parallel)" %}  # [aarch64 or ppc64le]
 # on the slowest agents, these tests take more than 20min in emulation
 {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
+{% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
 # needs one or two gc.collect()
 {% set tests_to_skip = tests_to_skip + " or test_cdist_refcount" %}             # [python_impl == "pypy"]
 # unclear why a warning isn't raised. Might be related to scipy/scipy#15121
