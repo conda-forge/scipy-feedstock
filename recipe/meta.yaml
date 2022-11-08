@@ -68,6 +68,11 @@ requirements:
     - {{ pin_compatible('numpy', upper_bound='1.25') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
+# appeared on v1.7 & v1.8 when using more modern support libs
+{% set tests_to_skip = tests_to_skip + " or (TestSchur and test_sort)" %}       # [unix]
+{% set tests_to_skip = tests_to_skip + " or test_solve_discrete_are" %}         # [linux]
+{% set tests_to_skip = tests_to_skip + " or test_gges_tgexc[float32]" %}        # [osx]
+{% set tests_to_skip = tests_to_skip + " or (TestQZ and test_qz_single)" %}     # [osx]
 # skip a test that fails with MKL + AVX512 (non-AVX512 passes)
 {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
 # accuracy failure with AVX512
