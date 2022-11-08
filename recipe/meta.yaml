@@ -27,8 +27,6 @@ source:
 
 build:
   number: 0
-  # debug: temporarily skip everything
-  skip: true
 
 requirements:
   build:
