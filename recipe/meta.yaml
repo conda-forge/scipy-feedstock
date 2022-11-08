@@ -27,7 +27,8 @@ source:
 
 build:
   number: 0
-  skip: true  # [py2k or py<=36]
+  # debug: temporarily skip everything
+  skip: true
 
 requirements:
   build:
