@@ -33,8 +33,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 1
-  skip: true  # [py<=37]
+  number: 2
   # temporary
   skip: true  # [python_impl == "pypy"]
 
@@ -68,7 +67,8 @@ requirements:
     - pip
   run:
     - python
-    - {{ pin_compatible('numpy') }}
+    # see np_maxversion in https://github.com/scipy/scipy/blob/v{{ version }}/setup.py
+    - {{ pin_compatible('numpy', upper_bound='1.26') }}
 
 {% set tests_to_skip = "_not_a_real_test" %}
 # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
