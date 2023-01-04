@@ -1,4 +1,4 @@
-{% set version = "1.10.0rc1" %}
+{% set version = "1.10.0" %}
 
 package:
   name: scipy
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 79c16925bca1954666d5ed15ff85b9ae180252087b0d8a24ea329f9a8a8cd115
+    sha256: 3f9e587a96844a9b4ee7f998cfe4dc3964dc95c4ca94d7de6a77bffb99f873da
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 3af99e6d566043072e95bc882d32c9c26f37e0ba
