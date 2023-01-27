@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-# Use the G77 ABI wrapper everywhere so that the underlying blas implementation
-# can have a G77 ABI (currently only MKL)
-export SCIPY_USE_G77_ABI_WRAPPER=1
-
-$PYTHON -m pip install . -vv
+# -wnx flags mean: --wheel --no-isolation --skip-dependency-check
+$PYTHON -m build -w -n -x  -Csetup-args=-Dblas=blas -Csetup-args=-Dlapack=lapack -Csetup-args=-Duse-g77-abi=true
+pip install dist/scipy*.whl
