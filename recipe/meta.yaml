@@ -72,12 +72,8 @@ requirements:
 {% set tests_to_skip = "_not_a_real_test" %}
 # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
 {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
-# scipy/scipy#16926
-{% set tests_to_skip = tests_to_skip + " or test_solve_discrete_are" %}         # [linux]
 # scipy/scipy#16927
 {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
-# accuracy failure with AVX512
-{% set tests_to_skip = tests_to_skip + " or (TestTruncnorm and test_moments)" %}
 # these multithreading tests occasionally hang in emulation
 {% set tests_to_skip = tests_to_skip + " or test_immediate_updating" %}         # [aarch64 or ppc64le]
 {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}    # [aarch64 or ppc64le]
@@ -89,10 +85,6 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
 # tests that run into timeouts (set in scipy test suite) in emulation
 {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
-# needs one or two gc.collect()
-{% set tests_to_skip = tests_to_skip + " or test_cdist_refcount" %}             # [python_impl == "pypy"]
-# unclear why a warning isn't raised. Might be related to scipy/scipy#15121
-{% set tests_to_skip = tests_to_skip + " or test_boost_eval_issue_14606" %}     # [python_impl == "pypy"]
 # very slow tests for pypy in emulation
 {% set tests_to_skip = tests_to_skip + " or test_cont_basic[500" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}       # [(python_impl == "pypy") and (aarch64 or ppc64le)]
