@@ -61,6 +61,7 @@ requirements:
     - meson-python    # [unix]
     - ninja           # [unix]
     - pkg-config      # [unix]
+    - python-build    # [unix]
     - pybind11
     - pythran
     - numpy
