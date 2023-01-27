@@ -117,9 +117,7 @@ test:
     # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
     {% set param = "verbose=1, label=" + label + ", tests=None" %}
     {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '-nauto', '--timeout=1200', '--durations=50']" %}
-    - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"  # [not ppc64le]
-    # NOTE: test suite is skipped on ppc due to bugs in QEMU code that cause
-    # CI to fail, even though the tests would run through on native hardware
+    - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
   imports:
     - scipy
     # reference for public API is effectively
