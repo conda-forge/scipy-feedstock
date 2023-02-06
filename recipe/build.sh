@@ -4,7 +4,7 @@ set -ex
 mkdir builddir
 
 # need to run meson first for cross-compilation case
-meson ${MESON_ARGS} builddir
+meson ${MESON_ARGS} builddir || (cat builddir/meson-logs/meson-log.txt && exit 1)
 
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 $PYTHON -m build -w -n -x \
