@@ -1,9 +1,15 @@
 #!/bin/bash
+set -ex
 
-set -x
+mkdir builddir
 
-# Use the G77 ABI wrapper everywhere so that the underlying blas implementation
-# can have a G77 ABI (currently only MKL)
-export SCIPY_USE_G77_ABI_WRAPPER=1
+# need to run meson first for cross-compilation case
+meson setup ${MESON_ARGS} \
+    -Dblas=blas \
+    -Dlapack=lapack \
+    -Duse-g77-abi=true \
+    builddir || (cat builddir/meson-logs/meson-log.txt && exit 1)
 
-$PYTHON setup.py install --single-version-externally-managed --record=record.txt
+# -wnx flags mean: --wheel --no-isolation --skip-dependency-check
+$PYTHON -m build -w -n -x -Cbuilddir=builddir
+pip install dist/scipy*.whl
