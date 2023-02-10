@@ -4,7 +4,7 @@ set -ex
 mkdir builddir
 
 # need to run meson first for cross-compilation case
-meson ${MESON_ARGS} \
+meson setup ${MESON_ARGS} \
     -Dblas=blas \
     -Dlapack=lapack \
     -Duse-g77-abi=true \
