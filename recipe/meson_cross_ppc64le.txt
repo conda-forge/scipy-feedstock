@@ -1,0 +1,5 @@
+[host_machine]
+system = 'linux'
+cpu = 'ppc64le'
+cpu_family = 'ppc64le'
+endian = 'little'
