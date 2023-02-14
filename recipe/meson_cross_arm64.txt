@@ -1,0 +1,12 @@
+[binaries]
+cmake = 'REPLACE_BUILD_PREFIX/bin/cmake'
+pkgconfig = 'REPLACE_BUILD_PREFIX/bin/pkg-config'
+
+[host_machine]
+system = 'darwin'
+cpu = 'arm64'
+cpu_family = 'aarch64'
+endian = 'little'
+
+[properties]
+pkg_config_libdir = 'REPLACE_PREFIX/lib'

@@ -12,6 +12,9 @@ if [[ "$target_platform" == "linux-aarch64" ]]; then
 elif [[ "$target_platform" == "linux-ppc64le" ]]; then
     cp $RECIPE_DIR/meson_cross_ppc64le.txt ${BUILD_PREFIX}/meson_cross_file.txt
     export MESON_ARGS="${MESON_ARGS} --cross-file=${BUILD_PREFIX}/meson_cross_file.txt"
+elif [[ "$target_platform" == "osx-arm64" ]]; then
+    cp $RECIPE_DIR/meson_cross_arm64.txt ${BUILD_PREFIX}/meson_cross_file.txt
+    # already adds --cross-file to MESON_ARGS
 fi
 
 # debug
