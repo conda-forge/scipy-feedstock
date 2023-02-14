@@ -1,9 +1,12 @@
 [binaries]
-cmake = '$PREFIX/bin/cmake'
-pkgconfig = '$PREFIX/bin/pkg-config'
+cmake = 'REPLACE_BUILD_PREFIX/bin/cmake'
+pkgconfig = 'REPLACE_BUILD_PREFIX/bin/pkg-config'
 
 [host_machine]
 system = 'linux'
 cpu = 'ppc64le'
 cpu_family = 'ppc64le'
 endian = 'little'
+
+[properties]
+pkg_config_libdir = 'REPLACE_PREFIX/lib'

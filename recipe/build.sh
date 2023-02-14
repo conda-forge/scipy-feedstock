@@ -15,7 +15,12 @@ elif [[ "$target_platform" == "linux-ppc64le" ]]; then
 fi
 
 # debug
-cat ${BUILD_PREFIX}/meson_cross_file.txt || true
+if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
+    cat ${BUILD_PREFIX}/meson_cross_file.txt
+    sed -i 's#REPLACE_BUILD_PREFIX#'${BUILD_PREFIX}'#g' ${BUILD_PREFIX}/meson_cross_file.txt
+    sed -i 's#REPLACE_PREFIX#'${PREFIX}'#g' ${BUILD_PREFIX}/meson_cross_file.txt
+    cat ${BUILD_PREFIX}/meson_cross_file.txt
+fi
 
 # need to run meson first for cross-compilation case
 meson setup ${MESON_ARGS} \
