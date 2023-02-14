@@ -1,3 +1,7 @@
+[binaries]
+cmake = '$PREFIX/bin/cmake'
+pkgconfig = '$PREFIX/bin/pkg-config'
+
 [host_machine]
 system = 'linux'
 cpu = 'ppc64le'
