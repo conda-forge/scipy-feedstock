@@ -80,6 +80,14 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
 # tests that run into timeouts (set in scipy test suite) in emulation
 {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
+# very slow tests for pypy in emulation
+{% set tests_to_skip = tests_to_skip + " or test_triple_integral_improper" %}                     # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}              # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_cont_basic[500" %}                               # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_gh12922 or test_modules_importable" %}           # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_random_complex_exact" %}                         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 test:
   requires:
