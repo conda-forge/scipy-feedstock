@@ -4,7 +4,7 @@ set -ex
 mkdir builddir
 
 # need to run meson first for cross-compilation case
-meson setup ${MESON_ARGS} \
+$PREFIX/bin/python $BUILD_PREFIX/bin/meson setup ${MESON_ARGS} \
     -Dblas=blas \
     -Dlapack=lapack \
     -Duse-g77-abi=true \
