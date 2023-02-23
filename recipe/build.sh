@@ -26,13 +26,13 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
 fi
 
 # need to run meson first for cross-compilation case
-meson setup ${MESON_ARGS} \
+$PREFIX/bin/python $BUILD_PREFIX/bin/meson setup ${MESON_ARGS} \
     -Dblas=blas \
     -Dlapack=lapack \
     -Duse-g77-abi=true \
     builddir || (cat builddir/meson-logs/meson-log.txt && exit 1)
 
-meson install -C builddir
+$PREFIX/bin/python $BUILD_PREFIX/bin/meson install -C builddir
 
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 # $PYTHON -m build -w -n -x -Cbuilddir=builddir
