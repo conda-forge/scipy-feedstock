@@ -77,24 +77,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_aarch64_numpy1.20python3.8.____73_pypypython_implpypy</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_aarch64_numpy1.20python3.8.____73_pypypython_implpypy" alt="variant">
-                </a>
-              </td>
-            </tr><tr>
               <td>linux_aarch64_numpy1.20python3.8.____cpythonpython_implcpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_aarch64_numpy1.20python3.8.____cpythonpython_implcpython" alt="variant">
-                </a>
-              </td>
-            </tr><tr>
-              <td>linux_aarch64_numpy1.20python3.9.____73_pypypython_implpypy</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_aarch64_numpy1.20python3.9.____73_pypypython_implpypy" alt="variant">
                 </a>
               </td>
             </tr><tr>
@@ -119,24 +105,10 @@ Current build status
                 </a>
               </td>
             </tr><tr>
-              <td>linux_ppc64le_numpy1.20python3.8.____73_pypypython_implpypy</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_ppc64le_numpy1.20python3.8.____73_pypypython_implpypy" alt="variant">
-                </a>
-              </td>
-            </tr><tr>
               <td>linux_ppc64le_numpy1.20python3.8.____cpythonpython_implcpython</td>
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_ppc64le_numpy1.20python3.8.____cpythonpython_implcpython" alt="variant">
-                </a>
-              </td>
-            </tr><tr>
-              <td>linux_ppc64le_numpy1.20python3.9.____73_pypypython_implpypy</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=1887&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/scipy-feedstock?branchName=main&jobName=linux&configuration=linux%20linux_ppc64le_numpy1.20python3.9.____73_pypypython_implpypy" alt="variant">
                 </a>
               </td>
             </tr><tr>
