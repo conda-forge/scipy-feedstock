@@ -31,8 +31,6 @@ source:
 
 build:
   number: 0
-  # TODO: fix unknown build error
-  skip: true  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 requirements:
   build:
