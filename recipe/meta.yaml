@@ -34,6 +34,8 @@ source:
 
 build:
   number: 0
+  # debug: only working on meson for unix ATM; skip pypy due to speed
+  skip: true  # [win or python_impl == "pypy"]
 
 requirements:
   build:
