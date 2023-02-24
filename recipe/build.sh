@@ -32,8 +32,6 @@ $PYTHON $(which meson) setup ${MESON_ARGS} \
     -Duse-g77-abi=true \
     builddir || (cat builddir/meson-logs/meson-log.txt && exit 1)
 
-$PYTHON $(which meson) install -C builddir
-
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
-# $PYTHON -m build -w -n -x -Cbuilddir=builddir
+$PYTHON -m build -w -n -x -Cbuilddir=builddir
 pip install dist/scipy*.whl
