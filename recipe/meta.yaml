@@ -17,6 +17,8 @@ source:
     patches:
       # backport https://github.com/scipy/scipy/pull/18006
       - patches/0001-BLD-use-a-relative-path-to-numpy-pybind11-pythran-in.patch
+      # backport https://github.com/scipy/scipy/pull/18034
+      - patches/0002-BLD-avoid-running-run_command-py3-.-for-better-cross.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 3af99e6d566043072e95bc882d32c9c26f37e0ba

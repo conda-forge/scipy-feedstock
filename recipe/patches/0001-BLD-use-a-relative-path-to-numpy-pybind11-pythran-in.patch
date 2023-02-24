@@ -1,8 +1,8 @@
 From 66ccdf8520ec803cfd00371833170008f3b0f666 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Sun, 19 Feb 2023 22:13:39 +0000
-Subject: [PATCH] BLD: use a relative path to numpy/pybind11/pythran include
- and lib dirs
+Subject: [PATCH 1/2] BLD: use a relative path to numpy/pybind11/pythran
+ include and lib dirs
 
 This should make things work with in-tree virtual envs, as well as some
 situations with Docker that had issues before.
