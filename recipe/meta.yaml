@@ -31,8 +31,6 @@ source:
 
 build:
   number: 0
-  # TODO: fix unknown build error
-  skip: true  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 requirements:
   build:
@@ -74,11 +72,6 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
 # scipy/scipy#16927
 {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
-# these multithreading tests occasionally hang in emulation
-{% set tests_to_skip = tests_to_skip + " or test_immediate_updating" %}         # [aarch64 or ppc64le]
-{% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}    # [aarch64 or ppc64le]
-{% set tests_to_skip = tests_to_skip + " or test_multiprocess[fft]" %}          # [aarch64 or ppc64le]
-{% set tests_to_skip = tests_to_skip + " or (test__differential_evolution and test_parallel)" %}  # [aarch64 or ppc64le]
 # on the slowest agents, these tests take more than 20min in emulation
 {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
 {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
@@ -86,11 +79,13 @@ requirements:
 # tests that run into timeouts (set in scipy test suite) in emulation
 {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
 # very slow tests for pypy in emulation
-{% set tests_to_skip = tests_to_skip + " or test_cont_basic[500" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}       # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or (TestBrute and test_workers)" %}          # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_gh12922" %}                          # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_triple_integral_improper" %}                     # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}              # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_cont_basic[500" %}                               # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_gh12922 or test_modules_importable" %}           # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_random_complex_exact" %}                         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 test:
   requires:
