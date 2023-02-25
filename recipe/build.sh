@@ -23,6 +23,8 @@ if [[ "$CONDA_BUILD_CROSS_COMPILATION" == "1" ]]; then
     sed -i 's#REPLACE_BUILD_PREFIX#'${BUILD_PREFIX}'#g' ${BUILD_PREFIX}/meson_cross_file.txt
     sed -i 's#REPLACE_PREFIX#'${PREFIX}'#g' ${BUILD_PREFIX}/meson_cross_file.txt
     sed -i 's#REPLACE_SP_DIR#'${SP_DIR}'#g' ${BUILD_PREFIX}/meson_cross_file.txt
+    # $SP_DIR inserts another "$PREFIX"
+    sed -i 's#\$PREFIX#'${PREFIX}'#g' ${BUILD_PREFIX}/meson_cross_file.txt
     cat ${BUILD_PREFIX}/meson_cross_file.txt
 fi
 
