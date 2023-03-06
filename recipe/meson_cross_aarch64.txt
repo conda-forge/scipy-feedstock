@@ -10,6 +10,3 @@ endian = 'little'
 
 [properties]
 pkg_config_libdir = 'REPLACE_PREFIX/lib'
-numpy-include-dir = 'REPLACE_PREFIX/lib/python3.9/site-packages/numpy/core/include'
-pybind11-include-dir = 'REPLACE_PREFIX/lib/python3.9/site-packages/pybind11/include'
-pythran-include-dir = 'REPLACE_PREFIX/lib/python3.9/site-packages/pythran'
