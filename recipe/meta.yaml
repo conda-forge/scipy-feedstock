@@ -98,6 +98,7 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_random_complex_exact" %}                         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}                      # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 
 test:
   requires:
