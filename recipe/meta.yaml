@@ -90,6 +90,8 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
 # tests that run into timeouts (set in scipy test suite) in emulation
 {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
+# occasionally runs out of memory on windows + pypy
+{% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
 # very slow tests for pypy in emulation
 {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers or test_basic_fit_mle" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or test_cdf_against_tables or test_pdf_integration" %}   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
@@ -103,8 +105,8 @@ requirements:
 {% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or test_modules_importable or test_neldermead_limit" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}    # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestTRF or TestNQuad" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver" %}                   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}        # [(python_impl == "pypy") and (aarch64 or ppc64le)]
+{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver or TestTRF" %}        # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}                      # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}                    # [(python_impl == "pypy") and (aarch64 or ppc64le)]
 {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}       # [(python_impl == "pypy") and (aarch64 or ppc64le)]
