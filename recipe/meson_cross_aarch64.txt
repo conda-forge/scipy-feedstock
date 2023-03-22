@@ -7,6 +7,3 @@ system = 'linux'
 cpu = 'aarch64'
 cpu_family = 'aarch64'
 endian = 'little'
-
-[properties]
-pkg_config_libdir = 'REPLACE_PREFIX/lib'

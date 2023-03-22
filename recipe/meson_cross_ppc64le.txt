@@ -7,6 +7,3 @@ system = 'linux'
 cpu = 'ppc64le'
 cpu_family = 'ppc64le'
 endian = 'little'
-
-[properties]
-pkg_config_libdir = 'REPLACE_PREFIX/lib'
