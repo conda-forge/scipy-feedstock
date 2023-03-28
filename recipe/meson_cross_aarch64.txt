@@ -1,9 +1,0 @@
-[binaries]
-cmake = 'REPLACE_BUILD_PREFIX/bin/cmake'
-pkgconfig = 'REPLACE_BUILD_PREFIX/bin/pkg-config'
-
-[host_machine]
-system = 'linux'
-cpu = 'aarch64'
-cpu_family = 'aarch64'
-endian = 'little'
