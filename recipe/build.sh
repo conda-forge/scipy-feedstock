@@ -3,13 +3,12 @@ set -ex
 
 mkdir builddir
 
-# need to run meson first for cross-compilation case
-$PYTHON $(which meson) setup ${MESON_ARGS} \
-    -Dblas=blas \
-    -Dlapack=lapack \
-    -Duse-g77-abi=true \
-    builddir || (cat builddir/meson-logs/meson-log.txt && exit 1)
-
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
-$PYTHON -m build -w -n -x -Cbuilddir=builddir
+$PYTHON -m build -w -n -x \
+    -Cbuilddir=builddir \
+    -Csetup-args=-Dblas=blas \
+    -Csetup-args=-Dlapack=lapack \
+    -Csetup-args=-Duse-g77-abi=true \
+    -Csetup-args=${MESON_ARGS// / -Csetup-args=} \
+    || (cat builddir/meson-logs/meson-log.txt && exit 1)
 pip install dist/scipy*.whl
