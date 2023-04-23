@@ -1,0 +1,38 @@
+blas_impl:
+- mkl
+c_compiler:
+- vs2019
+channel_sources:
+- conda-forge
+channel_targets:
+- conda-forge main
+cxx_compiler:
+- vs2019
+enforce_avx512:
+- absent
+libblas:
+- 3.9 *netlib
+libcblas:
+- 3.9 *netlib
+liblapack:
+- 3.9 *netlib
+m2w64_fortran_compiler:
+- m2w64-toolchain
+numpy:
+- '1.21'
+pin_run_as_build:
+  python:
+    min_pin: x.x
+    max_pin: x.x
+python:
+- 3.8.* *_cpython
+python_impl:
+- cpython
+target_platform:
+- win-64
+zip_keys:
+- - blas_impl
+  - enforce_avx512
+- - python
+  - numpy
+  - python_impl
