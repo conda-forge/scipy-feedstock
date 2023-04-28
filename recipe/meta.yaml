@@ -15,20 +15,9 @@ source:
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 8f08e1742c9b09eb58640fa5a56031d6e1844806899e883fbe7447ca86fe8c55
     patches:
-      # backport https://github.com/scipy/scipy/pull/18006
-      - patches/0001-BLD-use-a-relative-path-to-numpy-pybind11-pythran-in.patch
-      # backport https://github.com/scipy/scipy/pull/18034
-      - patches/0002-BLD-avoid-running-run_command-py3-.-for-better-cross.patch
-      # backport https://github.com/scipy/scipy/pull/18263
-      - patches/0003-BUG-some-tweaks-to-PROPACK-f2py-wrapper-and-build-fl.patch  # [not win]
-      # backport https://github.com/scipy/scipy/pull/18264 (3 commits)
-      - patches/0004-MAINT-remove-from-numpy.math-cimport-usages.patch           # [not win]
-      - patches/0005-MAINT-sync-changes-to-npy_blas.h-and-npy_blas_base.h.patch  # [not win]
-      - patches/0006-BUG-include-npy_common.h-in-npy_cblas.h.patch               # [not win]
-      # backport https://github.com/scipy/scipy/pull/18426
-      - patches/0007-BLD-fix-two-regressions-for-Duse-g77-abi.patch              # [not win]
-      - patches/0008-Revert-MAINT-add-SCIPY_USE_PROPACK-env-variable-1636.patch
-      - patches/0009-Revert-MAINT-skip-complex128-propack-tests-on-window.patch
+      # re-enable PROPACK support
+      - patches/0001-Revert-MAINT-add-SCIPY_USE_PROPACK-env-variable-1636.patch
+      - patches/0002-Revert-MAINT-skip-complex128-propack-tests-on-window.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 3af99e6d566043072e95bc882d32c9c26f37e0ba
@@ -54,10 +43,7 @@ requirements:
     - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
-    - meson-python                           # [build_platform != target_platform]
-    - cmake                                  # [build_platform != target_platform]
-    - ninja                                  # [build_platform != target_platform]
-    - pkg-config                             # [build_platform != target_platform]
+    - setuptools <60                         # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     # pythran code needs clang-cl on windows
@@ -72,12 +58,8 @@ requirements:
     - libcblas
     - liblapack
     - python
-    - setuptools <60  # [win]
+    - setuptools <60
     - cython
-    - meson-python    # [unix]
-    - ninja           # [unix]
-    - pkg-config      # [unix]
-    - python-build    # [unix]
     - pybind11
     - pythran
     - numpy
