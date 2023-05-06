@@ -21,4 +21,3 @@ $PYTHON -m build -w -n -x \
     -Csetup-args=-Duse-g77-abi=true \
     -Csetup-args=${MESON_ARGS_REDUCED// / -Csetup-args=} \
     || (cat builddir/meson-logs/meson-log.txt && exit 1)
-pip install dist/scipy*.whl

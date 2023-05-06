@@ -1,4 +1,5 @@
 @echo on
+setlocal enabledelayedexpansion
 
 REM these are done automatically for openblas by numpy.distutils, but
 REM not for our blas libraries
@@ -8,6 +9,14 @@ echo %LIBRARY_LIB%\cblas.lib > %LIBRARY_LIB%\cblas.fobjects
 echo %LIBRARY_LIB%\cblas.lib > %LIBRARY_LIB%\cblas.cobjects
 echo %LIBRARY_LIB%\lapack.lib > %LIBRARY_LIB%\lapack.fobjects
 echo %LIBRARY_LIB%\lapack.lib > %LIBRARY_LIB%\lapack.cobjects
+
+REM Set a few environment variables that are not set due to
+REM https://github.com/conda/conda-build/issues/3993
+set PIP_NO_BUILD_ISOLATION=True
+set PIP_NO_DEPENDENCIES=True
+set PIP_IGNORE_INSTALLED=True
+set PIP_NO_INDEX=True
+set PYTHONDONTWRITEBYTECODE=True
 
 REM Use the G77 ABI wrapper everywhere so that the underlying blas implementation
 REM can have a G77 ABI (currently only MKL)
@@ -61,3 +70,17 @@ del %LIBRARY_LIB%\cblas.fobjects
 del %LIBRARY_LIB%\cblas.cobjects
 del %LIBRARY_LIB%\lapack.fobjects
 del %LIBRARY_LIB%\lapack.cobjects
+
+REM delete tests from baseline output "scipy"
+if "%PKG_NAME%"=="scipy" (
+    REM folders in test_folders_to_delete.txt are relative to %SP_DIR%\scipy
+    REM the contents of this are validated in build-output.sh
+    for /F %%f in (%RECIPE_DIR%\test_folders_to_delete.txt) do (
+        set "g=%%f"
+        rmdir /s /q %SP_DIR%\scipy\!g:/=\!
+    )
+)
+
+:: clean up between invocations
+rmdir /s /q build
+del wrap_g77_abi_c.obj
