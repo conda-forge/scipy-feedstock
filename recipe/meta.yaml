@@ -76,39 +76,6 @@ requirements:
     - numpy
     - pip
 
-{% set tests_to_skip = "_not_a_real_test" %}
-# skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
-{% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
-# scipy/scipy#16927
-{% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
-# on the slowest agents, these tests take more than 20min in emulation
-{% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
-{% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
-{% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
-# tests that run into timeouts (set in scipy test suite) in emulation
-{% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
-# occasionally runs out of memory on windows + pypy
-{% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
-# very slow tests for pypy in emulation
-{% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}        # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver or TestTRF" %}        # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}                      # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}                    # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}       # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers or test_basic_fit_mle" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_cdf_against_tables or test_pdf_integration" %}   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_cdist_ and (refcount or calling_convention)" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}              # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_cont_basic[500 or test_cython_api[elliprj]" %}   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_filtfilt_gust or test_kappa3_array_gh13582" %}   # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_fitstart[genexpon-shapes28] or test_gh12922" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}        # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}         # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_modules_importable or test_neldermead_limit" %}  # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-{% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}    # [(python_impl == "pypy") and (aarch64 or ppc64le)]
-
-
 # for unix, the top-level build.sh builds scipy, and then build-output.sh
 # installs the files for the respective component; on windows, we currently
 # don't have a nice separation into build & install steps, so build twice...
@@ -251,6 +218,39 @@ outputs:
         - pytest-xdist
         - mpmath
       commands:
+        {% set tests_to_skip = "_not_a_real_test" %}
+        # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
+        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
+        # scipy/scipy#16927
+        {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
+        # on the slowest agents, these tests take more than 20min in emulation
+        {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
+        # tests that run into timeouts (set in scipy test suite) in emulation
+        {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
+        # occasionally runs out of memory on windows + pypy
+        {% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
+        # very slow tests for pypy in emulation
+        {% if (python_impl == "pypy") and (aarch64 or ppc64le) %}
+            {% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}
+            {% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver or TestTRF" %}
+            {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}
+            {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}
+            {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}
+            {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers or test_basic_fit_mle" %}
+            {% set tests_to_skip = tests_to_skip + " or test_cdf_against_tables or test_pdf_integration" %}
+            {% set tests_to_skip = tests_to_skip + " or test_cdist_ and (refcount or calling_convention)" %}
+            {% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}
+            {% set tests_to_skip = tests_to_skip + " or test_cont_basic[500 or test_cython_api[elliprj]" %}
+            {% set tests_to_skip = tests_to_skip + " or test_filtfilt_gust or test_kappa3_array_gh13582" %}
+            {% set tests_to_skip = tests_to_skip + " or test_fitstart[genexpon-shapes28] or test_gh12922" %}
+            {% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}
+            {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}
+            {% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}
+            {% set tests_to_skip = tests_to_skip + " or test_modules_importable or test_neldermead_limit" %}
+            {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}
+        {% endif %}
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
         # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
