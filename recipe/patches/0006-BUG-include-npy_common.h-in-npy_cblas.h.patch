@@ -1,7 +1,7 @@
 From 578b57b0f40da9d4aa07f21445aa9e19d00a4f77 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Sun, 9 Apr 2023 13:00:51 +0100
-Subject: [PATCH 6/7] BUG: include `npy_common.h` in `npy_cblas.h`
+Subject: [PATCH 6/9] BUG: include `npy_common.h` in `npy_cblas.h`
 
 This is necessary, because it uses `npy_int64` & co. The implicit
 assumption previously was that this was made available in the
