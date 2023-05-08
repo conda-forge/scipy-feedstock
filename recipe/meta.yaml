@@ -122,6 +122,8 @@ outputs:
         # needed for scipy.datasets
         - pooch
     test:
+      requires:
+        - pytest
       imports:
         - scipy
         # reference for public API is effectively
@@ -177,6 +179,14 @@ outputs:
         - test ! -d $SP_DIR/scipy/{{ each_folder }}                               # [unix]
         - if exist %SP_DIR%\scipy\{{ "\\".join(each_folder.split("/")) }} exit 1  # [win]
         {% endfor %}
+
+        # test that scipy.test raises an informative error
+        - python -c "import scipy; throw_away_the_return_value = scipy.test()" > testlog
+        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
+        # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
+        - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
+        - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
+        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
 
   - name: scipy-tests
     script: build-output.sh   # [not win]

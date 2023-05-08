@@ -83,6 +83,9 @@ if "%PKG_NAME%"=="scipy" (
         rmdir /s /q %SP_DIR%\scipy\!g:/=\!
     )
 
+    REM copy "test" with informative error message into installation
+    copy %RECIPE_DIR%\test_conda_forge_packaging.py %SP_DIR%\scipy\_lib
+
     REM hard-reset %SRC_DIR%\base to original state; see prep in bld.bat
     cd ..
     rmdir /s /q base

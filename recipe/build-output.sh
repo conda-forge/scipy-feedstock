@@ -34,4 +34,7 @@ if [[ "$PKG_NAME" == "scipy" ]]; then
 
     # do the actual deletion
     find ${SP_DIR}/scipy -name tests -type d | xargs rm -r
+
+    # copy "test" with informative error message into installation
+    cp $RECIPE_DIR/test_conda_forge_packaging.py $SP_DIR/scipy/_lib
 fi
