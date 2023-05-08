@@ -14,6 +14,8 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 8f08e1742c9b09eb58640fa5a56031d6e1844806899e883fbe7447ca86fe8c55
+    # need separate folder to do full reset on windows, see build-output.bat
+    folder: base
     patches:
       # backport https://github.com/scipy/scipy/pull/18006
       - patches/0001-BLD-use-a-relative-path-to-numpy-pybind11-pythran-in.patch
@@ -32,17 +34,17 @@ source:
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 3af99e6d566043072e95bc882d32c9c26f37e0ba
-    folder: scipy/_lib/boost
+    folder: base/scipy/_lib/boost
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
-    folder: scipy/_lib/highs
+    folder: base/scipy/_lib/highs
   - git_url: https://github.com/scipy/unuran.git
     git_rev: a63d39160e5ecc4402e7ed0e8417f4c3ff9634cb
-    folder: scipy/_lib/unuran
+    folder: base/scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
     git_rev: cc32f3ba6cf941e4f9f96d96e2fc5762ea0c1014
-    folder: scipy/sparse/linalg/_propack/PROPACK
+    folder: base/scipy/sparse/linalg/_propack/PROPACK
 
 build:
   number: 2
@@ -266,7 +268,7 @@ outputs:
 about:
   home: http://www.scipy.org/
   license: BSD-3-Clause
-  license_file: LICENSE.txt
+  license_file: base/LICENSE.txt
   summary: Scientific Library for Python
   description: |
     SciPy is a Python-based ecosystem of open-source software for mathematics,

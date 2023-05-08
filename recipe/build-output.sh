@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# for reason see source section in meta.yaml
+cd base
+
 # Set a few environment variables that are not set due to
 # https://github.com/conda/conda-build/issues/3993
 export PIP_NO_BUILD_ISOLATION=True

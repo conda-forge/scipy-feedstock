@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# for reason see source section in meta.yaml
+cd base
+
 mkdir builddir
 
 # HACK: extend $CONDA_PREFIX/meson_cross_file that's created in
