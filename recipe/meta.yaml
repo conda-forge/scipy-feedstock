@@ -180,6 +180,21 @@ outputs:
         - if exist %SP_DIR%\scipy\{{ "\\".join(each_folder.split("/")) }} exit 1  # [win]
         {% endfor %}
 
+        # absence of testing DSOs (selection from test_libraries_to_delete.txt)
+        {% set test_libraries = [
+            "_lib/_test_ccallback", "integrate/_test_multivariate", "io/_test_fortran",
+            "ndimage/_ctest", "ndimage/_cytest", "special/_test_internal"
+        ] %}
+        {% set PY_ABI = "cpython-" ~ PY_VER.replace(".", "") %}                         # [unix and python_impl == "cpython"]
+        {% set PY_ABI = "cp" ~ PY_VER.replace(".", "") %}                               # [win and python_impl == "cpython"]
+        {% set PY_ABI = "pypy" ~ PY_VER.replace(".", "") ~ "-pp73" %}                   # [python_impl == "pypy"]
+        {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else "powerpc64le")%}  # [linux]
+        {% for each_lib in test_libraries %}
+        - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-{{ ARCH }}-linux-gnu.so                     # [linux]
+        - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-darwin.so                                   # [osx]
+        - if exist %SP_DIR%\scipy\{{ "\\".join(each_lib.split("/")) }}.{{ PY_ABI }}-win_amd64.pyd exit 1  # [win]
+        {% endfor %}
+
         # test that scipy.test raises an informative error
         - python -c "import scipy; throw_away_the_return_value = scipy.test()" > testlog
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"

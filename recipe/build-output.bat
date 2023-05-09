@@ -74,6 +74,10 @@ del %LIBRARY_LIB%\cblas.cobjects
 del %LIBRARY_LIB%\lapack.fobjects
 del %LIBRARY_LIB%\lapack.cobjects
 
+FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"`) DO (
+    SET EXT_SUFFIX=%%F
+)
+
 REM delete tests from baseline output "scipy"
 if "%PKG_NAME%"=="scipy" (
     REM folders in test_folders_to_delete.txt are relative to %SP_DIR%\scipy
@@ -81,6 +85,14 @@ if "%PKG_NAME%"=="scipy" (
     for /F %%f in (%RECIPE_DIR%\test_folders_to_delete.txt) do (
         set "g=%%f"
         rmdir /s /q %SP_DIR%\scipy\!g:/=\!
+    )
+
+    REM same for test_libraries_to_delete.txt
+    for /F %%f in (%RECIPE_DIR%\test_libraries_to_delete.txt) do (
+        set "g=%%f"
+        REM replace suffix marker with python ABI
+        set "h=!g:SUFFIX_MARKER=%EXT_SUFFIX%!"
+        del /f %SP_DIR%\scipy\!h:/=\!
     )
 
     REM copy "test" with informative error message into installation
