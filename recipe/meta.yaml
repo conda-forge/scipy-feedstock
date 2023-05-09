@@ -202,6 +202,8 @@ outputs:
         - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
         - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
+        # ensure only one test is left (namely, our hint)
+        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed in ' in x for x in lines) else 1)"
 
   - name: scipy-tests
     script: build-output.sh   # [not win]

@@ -86,6 +86,8 @@ if "%PKG_NAME%"=="scipy" (
         set "g=%%f"
         rmdir /s /q %SP_DIR%\scipy\!g:/=\!
     )
+    REM additionally delete folder not found on linux
+    rmdir /s /q %SP_DIR%\scipy\_build_utils\tests
 
     REM same for test_libraries_to_delete.txt
     for /F %%f in (%RECIPE_DIR%\test_libraries_to_delete.txt) do (
