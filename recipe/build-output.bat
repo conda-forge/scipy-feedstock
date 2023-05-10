@@ -103,6 +103,9 @@ if "%PKG_NAME%"=="scipy" (
     REM hard-reset %SRC_DIR%\base to original state; see prep in bld.bat
     cd ..
     rmdir /s /q base
-    REM `move` can spuriously fail with "Access Denied"; use `robocopy /MOVE` instead
-    robocopy backup base /E /MOVE >nul
+    REM both `move` and `robocopy` may spuriously fail to copy for some inane reason;
+    REM use `robocopy` because it should fail less than `move`, and it provides a log.
+    REM return code 1 means success, for anything else show log (though we'll know
+    REM anyway, because if the copy fails, compilation for `scipy-tests` will break).
+    (robocopy backup base /E /MOVE >copylog) || if !ERRORLEVEL! neq 1 type copylog
 )
