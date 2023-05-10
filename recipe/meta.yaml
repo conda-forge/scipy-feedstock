@@ -20,13 +20,15 @@ source:
       # backport https://github.com/scipy/scipy/pull/18034
       - patches/0002-BLD-avoid-running-run_command-py3-.-for-better-cross.patch
       # backport https://github.com/scipy/scipy/pull/18263
-      - patches/0003-BUG-some-tweaks-to-PROPACK-f2py-wrapper-and-build-fl.patch  # [not win]
+      - patches/0003-BUG-some-tweaks-to-PROPACK-f2py-wrapper-and-build-fl.patch
       # backport https://github.com/scipy/scipy/pull/18264 (3 commits)
-      - patches/0004-MAINT-remove-from-numpy.math-cimport-usages.patch           # [not win]
-      - patches/0005-MAINT-sync-changes-to-npy_blas.h-and-npy_blas_base.h.patch  # [not win]
-      - patches/0006-BUG-include-npy_common.h-in-npy_cblas.h.patch               # [not win]
-      # backport https://github.com/scipy/scipy/pull/18426
-      - patches/0007-BLD-fix-two-regressions-for-Duse-g77-abi.patch              # [not win]
+      - patches/0004-MAINT-remove-from-numpy.math-cimport-usages.patch
+      - patches/0005-MAINT-sync-changes-to-npy_blas.h-and-npy_blas_base.h.patch
+      - patches/0006-BUG-include-npy_common.h-in-npy_cblas.h.patch
+      # backport https://github.com/scipy/scipy/pull/18426 (3 commits)
+      - patches/0007-BLD-fix-two-regressions-for-Duse-g77-abi.patch
+      - patches/0008-BLD-add-numpy-and-python-include-dirs-to-propack-sta.patch
+      - patches/0009-BLD-fix-yet-another-PROPACK-build-issue.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/scipy/boost-headers-only.git
     git_rev: 3af99e6d566043072e95bc882d32c9c26f37e0ba
@@ -43,7 +45,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 1
+  number: 2
 
 requirements:
   build:

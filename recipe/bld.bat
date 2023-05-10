@@ -13,12 +13,20 @@ REM Use the G77 ABI wrapper everywhere so that the underlying blas implementatio
 REM can have a G77 ABI (currently only MKL)
 set SCIPY_USE_G77_ABI_WRAPPER=1
 
+REM Need to get numpy include paths, which also requires the one for Python
+FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "import numpy; print(numpy.get_include())"`) DO (
+    SET "NP_INC=%%F"
+)
+FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "import sysconfig; print(sysconfig.get_path('include'))"`) DO (
+    SET "PY_INC=%%F"
+)
+
 REM This builds a Fortran file which calls a C function, but numpy.distutils
 REM creates an isolated DLL for these fortran functions and therefore it doesn't
 REM see these C functions. workaround this by compiling it ourselves and
 REM sneaking it with the blas libraries
 REM TODO: rewrite wrap_g77_abi.f with iso_c_binding when the compiler supports it
-cl.exe scipy\_build_utils\src\wrap_g77_abi_c.c -c /MD
+cl.exe /I%NP_INC% /I%PY_INC% scipy\_build_utils\src\wrap_g77_abi_c.c -c /MD
 if %ERRORLEVEL% neq 0 exit 1
 echo. > scipy\_build_utils\src\wrap_g77_abi_c.c
 echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.fobjects
