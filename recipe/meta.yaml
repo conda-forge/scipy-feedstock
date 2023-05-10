@@ -47,7 +47,7 @@ source:
     folder: base/scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 2
+  number: 3
 
 requirements:
   build:
