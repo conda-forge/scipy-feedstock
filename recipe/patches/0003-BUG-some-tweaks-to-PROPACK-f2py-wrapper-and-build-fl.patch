@@ -1,7 +1,7 @@
 From c1ed688ccb326fe8b95a33d55f8c4a3851343236 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Sat, 8 Apr 2023 20:11:36 +0100
-Subject: [PATCH 3/7] BUG: some tweaks to PROPACK f2py wrapper and build flags
+Subject: [PATCH 3/9] BUG: some tweaks to PROPACK f2py wrapper and build flags
 
 Still far from fixed, but it should be closer - and prepares
 for removal of `setup.py` and re-introduction of Accelerate.

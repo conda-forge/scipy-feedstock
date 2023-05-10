@@ -1,7 +1,7 @@
 From 60c26eccbd97de83d0cba143146365527667d0f8 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Thu, 23 Feb 2023 14:43:52 +0000
-Subject: [PATCH 2/7] BLD: avoid running `run_command(py3, ...)`, for better
+Subject: [PATCH 2/9] BLD: avoid running `run_command(py3, ...)`, for better
  cross-compiling
 
 Adding the ability to specify the paths to the numpy, pybind11 and

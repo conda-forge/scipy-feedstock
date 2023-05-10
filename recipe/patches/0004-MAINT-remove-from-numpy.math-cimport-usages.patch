@@ -1,7 +1,7 @@
 From ad526ed010333ffcac566a5a6bc43589fd389e82 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Sat, 8 Apr 2023 22:45:37 +0100
-Subject: [PATCH 4/7] MAINT: remove `from numpy.math cimport` usages
+Subject: [PATCH 4/9] MAINT: remove `from numpy.math cimport` usages
 
 We'd like to get rid of `libnpymath`, and the (unrelated)
 `numpy.math` in the Python API was also just deprecated.

@@ -1,7 +1,7 @@
 From 36b3d3c49103b1ca57234fd399edda5fcc942d10 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Fri, 5 May 2023 08:49:59 +0200
-Subject: [PATCH 7/7] BLD: fix two regressions for `-Duse-g77-abi`
+Subject: [PATCH 7/9] BLD: fix two regressions for `-Duse-g77-abi`
 
 The first was caused by gh-18264 and caused a build issue,
 the second was a missing CBLAS issue when building against Netlib BLAS
