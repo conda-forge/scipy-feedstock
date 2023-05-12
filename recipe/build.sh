@@ -1,6 +1,9 @@
 #!/bin/bash
 set -ex
 
+# for reason see source section in meta.yaml
+cd base
+
 mkdir builddir
 
 # HACK: extend $CONDA_PREFIX/meson_cross_file that's created in
@@ -21,4 +24,3 @@ $PYTHON -m build -w -n -x \
     -Csetup-args=-Duse-g77-abi=true \
     -Csetup-args=${MESON_ARGS_REDUCED// / -Csetup-args=} \
     || (cat builddir/meson-logs/meson-log.txt && exit 1)
-pip install dist/scipy*.whl
