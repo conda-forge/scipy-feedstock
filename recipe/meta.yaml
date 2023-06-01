@@ -1,4 +1,4 @@
-{% set version = "1.10.1" %}
+{% set version = "1.11.0rc1" %}
 
 package:
   name: scipy-split
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 8f08e1742c9b09eb58640fa5a56031d6e1844806899e883fbe7447ca86fe8c55
+    sha256: 2448d14abea42034b2134fea458b48a11f2d1686968c8c8a601019d96c02aee4
     # need separate folder to do full reset on windows, see build-output.bat
     folder: base
     patches:
@@ -47,7 +47,7 @@ source:
     folder: base/scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 3
+  number: 0
 
 requirements:
   build:
