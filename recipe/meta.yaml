@@ -235,7 +235,7 @@ outputs:
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
+        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab" %}
         # scipy/scipy#16927
         {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
         # on the slowest agents, these tests take more than 20min in emulation
