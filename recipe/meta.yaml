@@ -104,7 +104,7 @@ outputs:
       run:
         - python
         # see np_maxversion in https://github.com/scipy/scipy/blob/v{{ version }}/setup.py
-        - {{ pin_compatible('numpy', upper_bound='1.27') }}
+        - {{ pin_compatible('numpy', upper_bound='1.28') }}
         # needed for scipy.datasets
         - pooch
     test:
