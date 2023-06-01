@@ -108,4 +108,11 @@ if "%PKG_NAME%"=="scipy" (
     REM return code 1 means success, for anything else show log (though we'll know
     REM anyway, because if the copy fails, compilation for `scipy-tests` will break).
     (robocopy backup base /E /MOVE >copylog) || if !ERRORLEVEL! neq 1 type copylog
+) else (
+    REM the artefacts built by gfortran on windows contain a hash (for example
+    REM liblapack.5QFP43TP7SQZWGC7PX3VWUMNJLCPJGN3.gfortran-win_amd64.dll), and This
+    REM hash will change between the two times we build scipy here. Even though conda
+    REM doesn't like it to delete DSOs from other outputs, delete all of
+    REM %SP_DIR%\scipy\.libs here to ensure we don't pick up any redundant fortran libs.
+    rmdir /s /q %SP_DIR%\scipy\.libs
 )
