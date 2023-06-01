@@ -16,21 +16,6 @@ source:
     sha256: 2448d14abea42034b2134fea458b48a11f2d1686968c8c8a601019d96c02aee4
     # need separate folder to do full reset on windows, see build-output.bat
     folder: base
-    patches:
-      # backport https://github.com/scipy/scipy/pull/18006
-      - patches/0001-BLD-use-a-relative-path-to-numpy-pybind11-pythran-in.patch
-      # backport https://github.com/scipy/scipy/pull/18034
-      - patches/0002-BLD-avoid-running-run_command-py3-.-for-better-cross.patch
-      # backport https://github.com/scipy/scipy/pull/18263
-      - patches/0003-BUG-some-tweaks-to-PROPACK-f2py-wrapper-and-build-fl.patch
-      # backport https://github.com/scipy/scipy/pull/18264 (3 commits)
-      - patches/0004-MAINT-remove-from-numpy.math-cimport-usages.patch
-      - patches/0005-MAINT-sync-changes-to-npy_blas.h-and-npy_blas_base.h.patch
-      - patches/0006-BUG-include-npy_common.h-in-npy_cblas.h.patch
-      # backport https://github.com/scipy/scipy/pull/18426 (3 commits)
-      - patches/0007-BLD-fix-two-regressions-for-Duse-g77-abi.patch
-      - patches/0008-BLD-add-numpy-and-python-include-dirs-to-propack-sta.patch
-      - patches/0009-BLD-fix-yet-another-PROPACK-build-issue.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/boostorg/math.git
     git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
