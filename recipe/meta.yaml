@@ -1,4 +1,5 @@
-{% set version = "1.10.1" %}
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set version = "1.11.0" %}
 
 package:
   name: scipy-split
@@ -13,7 +14,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 8f08e1742c9b09eb58640fa5a56031d6e1844806899e883fbe7447ca86fe8c55
+    sha256: 240514b6da103bf763bfe7b6c7d14ff487d5edd48ada7807ee27e6574f98246f
     # need separate folder to do full reset on windows, see build-output.bat
     folder: base
     patches:
@@ -47,7 +48,7 @@ source:
     folder: base/scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 3
+  number: 0
 
 requirements:
   build:
@@ -83,7 +84,7 @@ requirements:
 # don't have a nice separation into build & install steps, so build twice...
 outputs:
   - name: scipy
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     version: {{ version }}
     requirements:
@@ -206,7 +207,7 @@ outputs:
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed in ' in x for x in lines) else 1)"
 
   - name: scipy-tests
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     requirements:
       build:
