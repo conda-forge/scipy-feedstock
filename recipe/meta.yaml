@@ -1,4 +1,4 @@
-{% set version = "1.10.1" %}
+{% set version = "1.11.0" %}
 
 package:
   name: scipy-split
@@ -13,28 +13,13 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 8f08e1742c9b09eb58640fa5a56031d6e1844806899e883fbe7447ca86fe8c55
+    sha256: 240514b6da103bf763bfe7b6c7d14ff487d5edd48ada7807ee27e6574f98246f
     # need separate folder to do full reset on windows, see build-output.bat
     folder: base
-    patches:
-      # backport https://github.com/scipy/scipy/pull/18006
-      - patches/0001-BLD-use-a-relative-path-to-numpy-pybind11-pythran-in.patch
-      # backport https://github.com/scipy/scipy/pull/18034
-      - patches/0002-BLD-avoid-running-run_command-py3-.-for-better-cross.patch
-      # backport https://github.com/scipy/scipy/pull/18263
-      - patches/0003-BUG-some-tweaks-to-PROPACK-f2py-wrapper-and-build-fl.patch
-      # backport https://github.com/scipy/scipy/pull/18264 (3 commits)
-      - patches/0004-MAINT-remove-from-numpy.math-cimport-usages.patch
-      - patches/0005-MAINT-sync-changes-to-npy_blas.h-and-npy_blas_base.h.patch
-      - patches/0006-BUG-include-npy_common.h-in-npy_cblas.h.patch
-      # backport https://github.com/scipy/scipy/pull/18426 (3 commits)
-      - patches/0007-BLD-fix-two-regressions-for-Duse-g77-abi.patch
-      - patches/0008-BLD-add-numpy-and-python-include-dirs-to-propack-sta.patch
-      - patches/0009-BLD-fix-yet-another-PROPACK-build-issue.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
-  - git_url: https://github.com/scipy/boost-headers-only.git
-    git_rev: 3af99e6d566043072e95bc882d32c9c26f37e0ba
-    folder: base/scipy/_lib/boost
+  - git_url: https://github.com/boostorg/math.git
+    git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
+    folder: base/scipy/_lib/boost_math
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: base/scipy/_lib/highs
@@ -43,11 +28,12 @@ source:
     folder: base/scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
-    git_rev: cc32f3ba6cf941e4f9f96d96e2fc5762ea0c1014
+    git_rev: 96f6800451372dd003e627bbfd732937ac0c685e
     folder: base/scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 3
+  number: 0
+  skip: true  # [py<39]
 
 requirements:
   build:
@@ -118,7 +104,7 @@ outputs:
       run:
         - python
         # see np_maxversion in https://github.com/scipy/scipy/blob/v{{ version }}/setup.py
-        - {{ pin_compatible('numpy', upper_bound='1.27') }}
+        - {{ pin_compatible('numpy', upper_bound='1.28') }}
         # needed for scipy.datasets
         - pooch
     test:
@@ -249,17 +235,19 @@ outputs:
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab]" %}
+        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab" %}
         # scipy/scipy#16927
         {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale[pdf-1])" %}   # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
         # occasionally runs out of memory on windows + pypy
         {% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
+        {% set tests_to_skip = tests_to_skip + " or test_more_converged" %}                               # [(python_impl == "pypy") and win]
         # very slow tests for pypy in emulation
         {% if (python_impl == "pypy") and (aarch64 or ppc64le) %}
             {% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}
