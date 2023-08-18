@@ -92,6 +92,7 @@ outputs:
         - liblapack
         - python
         - setuptools <60  # [win]
+        - cython <3       # [win]
         - cython
         - meson-python    # [unix]
         - ninja           # [unix]
@@ -219,7 +220,7 @@ outputs:
         - libcblas        # [win]
         - liblapack       # [win]
         - setuptools <60  # [win]
-        - cython          # [win]
+        - cython <3       # [win]
         - pybind11        # [win]
         - pythran         # [win]
         - numpy           # [win]
