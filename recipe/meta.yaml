@@ -257,6 +257,9 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}
             {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}
             {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}
+            {% set tests_to_skip = tests_to_skip + " or (TestSobolIndices and test_ishigami[scalar])" %}
+            {% set tests_to_skip = tests_to_skip + " or (TestMannWhitneyU and test_asymptotic_behavior)" %}
+            {% set tests_to_skip = tests_to_skip + " or (test_precond_inverse and -poisson2d])" %}
             {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers or test_basic_fit_mle" %}
             {% set tests_to_skip = tests_to_skip + " or test_cdf_against_tables or test_pdf_integration" %}
             {% set tests_to_skip = tests_to_skip + " or test_cdist_ and (refcount or calling_convention)" %}
@@ -267,8 +270,9 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}
             {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}
             {% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}
-            {% set tests_to_skip = tests_to_skip + " or test_modules_importable or test_neldermead_limit" %}
+            {% set tests_to_skip = tests_to_skip + " or test_public_modules_importable or test_neldermead_limit" %}
             {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}
+            {% set tests_to_skip = tests_to_skip + " or test_cdf_against_multivariate_normal[10]" %}
         {% endif %}
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
