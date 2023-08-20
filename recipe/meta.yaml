@@ -1,4 +1,4 @@
-{% set version = "1.11.1" %}
+{% set version = "1.11.2" %}
 
 package:
   name: scipy-split
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 2605c91a4d00ea77838ecb6db2fcf4e71199f402ff0fd8e80d4ae80bfe0ac80e
+    sha256: 8bde045d246e5cae53069d73c44b6b673fc03bf2d6aebb830f2ffb0900c84881
     # need separate folder to do full reset on windows, see build-output.bat
     folder: base
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
@@ -92,6 +92,7 @@ outputs:
         - liblapack
         - python
         - setuptools <60  # [win]
+        - cython <3       # [win]
         - cython
         - meson-python    # [unix]
         - ninja           # [unix]
@@ -219,7 +220,7 @@ outputs:
         - libcblas        # [win]
         - liblapack       # [win]
         - setuptools <60  # [win]
-        - cython          # [win]
+        - cython <3       # [win]
         - pybind11        # [win]
         - pythran         # [win]
         - numpy           # [win]
@@ -230,7 +231,7 @@ outputs:
       requires:
         - pytest
         - pytest-timeout
-        - pytest-xdist
+        - pytest-xdist    # [not (win and python_impl == "pypy")]
         - mpmath
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
@@ -243,6 +244,7 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale[pdf-1])" %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestShgoArguments and test_19_parallelization)" %}   # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
         # occasionally runs out of memory on windows + pypy
@@ -255,6 +257,9 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}
             {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}
             {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}
+            {% set tests_to_skip = tests_to_skip + " or (TestSobolIndices and test_ishigami[scalar])" %}
+            {% set tests_to_skip = tests_to_skip + " or (TestMannWhitneyU and test_asymptotic_behavior)" %}
+            {% set tests_to_skip = tests_to_skip + " or (test_precond_inverse and -poisson2d])" %}
             {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers or test_basic_fit_mle" %}
             {% set tests_to_skip = tests_to_skip + " or test_cdf_against_tables or test_pdf_integration" %}
             {% set tests_to_skip = tests_to_skip + " or test_cdist_ and (refcount or calling_convention)" %}
@@ -265,8 +270,9 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}
             {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}
             {% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}
-            {% set tests_to_skip = tests_to_skip + " or test_modules_importable or test_neldermead_limit" %}
+            {% set tests_to_skip = tests_to_skip + " or test_public_modules_importable or test_neldermead_limit" %}
             {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}
+            {% set tests_to_skip = tests_to_skip + " or test_cdf_against_multivariate_normal[10]" %}
         {% endif %}
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
@@ -274,10 +280,11 @@ outputs:
         # since this takes much longer, do not run the most heavy-weight tests, i.e. use
         # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'
         {% set label = "'fast'" if (aarch64 or ppc64le or python_impl == "pypy") else "'full'" %}
+        {% set para = "" if (win and python_impl == "pypy") else "'-nauto'," %}
         # for signature of scipy.test see below (note default: label='fast'):
         # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
         {% set param = "verbose=1, label=" + label + ", tests=None" %}
-        {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '-nauto', '--timeout=1200', '--durations=50']" %}
+        {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', " ~ para ~ " '--timeout=1200', '--durations=50']" %}
         - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
 
 about:
