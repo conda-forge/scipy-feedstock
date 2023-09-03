@@ -35,6 +35,8 @@ source:
 build:
   number: 1
   skip: true  # [py<39]
+  # debug: windows only
+  skip: true  # [not win]
 
 requirements:
   build:
