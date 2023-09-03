@@ -1,9 +1,6 @@
 @echo on
 setlocal enabledelayedexpansion
 
-:: for reason see source section in meta.yaml & below
-cd base
-
 REM these are done automatically for openblas by numpy.distutils, but
 REM not for our blas libraries
 echo %LIBRARY_LIB%\blas.lib > %LIBRARY_LIB%\blas.fobjects
@@ -41,8 +38,8 @@ REM TODO: rewrite wrap_g77_abi.f with iso_c_binding when the compiler supports i
 cl.exe /I%NP_INC% /I%PY_INC% scipy\_build_utils\src\wrap_g77_abi_c.c -c /MD
 if %ERRORLEVEL% neq 0 exit 1
 echo. > scipy\_build_utils\src\wrap_g77_abi_c.c
-echo %SRC_DIR%\base\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.fobjects
-echo %SRC_DIR%\base\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.cobjects
+echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.fobjects
+echo %SRC_DIR%\wrap_g77_abi_c.obj >> %LIBRARY_LIB%\lapack.cobjects
 
 REM Add a file to load the fortran wrapper libraries in scipy/.libs
 del scipy\_distributor_init.py
@@ -99,13 +96,8 @@ if "%PKG_NAME%"=="scipy" (
 
     REM copy "test" with informative error message into installation
     copy %RECIPE_DIR%\test_conda_forge_packaging.py %SP_DIR%\scipy\_lib
-
-    REM hard-reset %SRC_DIR%\base to original state; see prep in bld.bat
-    cd ..
-    rmdir /s /q base
-    REM both `move` and `robocopy` may spuriously fail to copy for some inane reason;
-    REM use `robocopy` because it should fail less than `move`, and it provides a log.
-    REM return code 1 means success, for anything else show log (though we'll know
-    REM anyway, because if the copy fails, compilation for `scipy-tests` will break).
-    (robocopy backup base /E /MOVE >copylog) || if !ERRORLEVEL! neq 1 type copylog
 )
+
+:: clean up between invocations
+rmdir /s /q build
+del wrap_g77_abi_c.obj
