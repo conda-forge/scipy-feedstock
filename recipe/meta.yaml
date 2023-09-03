@@ -50,16 +50,19 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('fortran') }}              # [unix]
+    - flang                                  # [win]
+    # pythran code needs clang-cl on windows
+    - clang                                  # [win]
   host:
     - libblas
     - libcblas
     - liblapack
     - python
     - cython
-    - meson-python    # [unix]
-    - ninja           # [unix]
-    - pkg-config      # [unix]
-    - python-build    # [unix]
+    - meson-python
+    - ninja
+    - pkg-config
+    - python-build
     - pybind11
     - pythran
     - numpy
@@ -81,24 +84,17 @@ outputs:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
-        # pythran code needs clang-cl on windows
-        - clang                                  # [win]
-        # WARNING: It's not recommended to use these MinGW compilers with python extensions
-        # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
-        # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-        - {{ compiler('m2w64_fortran') }}        # [win]
       host:
         - libblas
         - libcblas
         - liblapack
         - python
-        - setuptools <60  # [win]
         - cython <3       # [win]
         - cython
-        - meson-python    # [unix]
-        - ninja           # [unix]
-        - pkg-config      # [unix]
-        - python-build    # [unix]
+        - meson-python
+        - ninja
+        - pkg-config
+        - python-build
         - pybind11
         - pythran
         - numpy
@@ -202,12 +198,6 @@ outputs:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
-        # pythran code needs clang-cl on windows
-        - clang                                  # [win]
-        # WARNING: It's not recommended to use these MinGW compilers with python extensions
-        # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
-        # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-        - {{ compiler('m2w64_fortran') }}        # [win]
       host:
         - {{ pin_subpackage('scipy', exact=True) }}
         # need to repeat host deps on windows because we have to do a full rebuild here;
@@ -215,14 +205,6 @@ outputs:
         - python
         - pip
         - numpy
-        - libblas         # [win]
-        - libcblas        # [win]
-        - liblapack       # [win]
-        - setuptools <60  # [win]
-        - cython <3       # [win]
-        - pybind11        # [win]
-        - pythran         # [win]
-        - numpy           # [win]
       run:
         - {{ pin_subpackage('scipy', exact=True) }}
         - python
