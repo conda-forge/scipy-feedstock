@@ -32,7 +32,7 @@ source:
     folder: base/scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
 
 requirements:
@@ -106,8 +106,6 @@ outputs:
         - python
         # see np_maxversion in https://github.com/scipy/scipy/blob/v{{ version }}/setup.py
         - {{ pin_compatible('numpy', upper_bound='1.28') }}
-        # needed for scipy.datasets
-        - pooch
     test:
       requires:
         - pytest
@@ -233,6 +231,8 @@ outputs:
         - pytest-timeout
         - pytest-xdist    # [not (win and python_impl == "pypy")]
         - mpmath
+        # needed for scipy.datasets
+        - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
