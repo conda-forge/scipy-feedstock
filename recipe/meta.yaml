@@ -16,6 +16,9 @@ source:
     sha256: 8bde045d246e5cae53069d73c44b6b673fc03bf2d6aebb830f2ffb0900c84881
     # need separate folder to do full reset on windows, see build-output.bat
     folder: base
+    patches:
+      # backport https://github.com/scipy/scipy/pull/19200
+      - patches/0001-TST-fix-TestODR.test_implicit-test-failure-with-tole.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/boostorg/math.git
     git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
