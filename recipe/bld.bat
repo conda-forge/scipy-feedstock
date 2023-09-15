@@ -11,5 +11,6 @@ set "CLANG_DEFAULT_LINKER=lld"
     -Cbuilddir=builddir ^
     -Csetup-args=-Dblas=blas ^
     -Csetup-args=-Dlapack=lapack ^
+    -Csetup-args=-Dfortran_std=none ^
     -Csetup-args=-Duse-g77-abi=true
 if %ERRORLEVEL% neq 0 exit 1
