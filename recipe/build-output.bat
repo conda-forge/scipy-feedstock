@@ -8,10 +8,6 @@ set PIP_IGNORE_INSTALLED=True
 set PIP_NO_INDEX=True
 set PYTHONDONTWRITEBYTECODE=True
 
-REM Use the G77 ABI wrapper everywhere so that the underlying blas implementation
-REM can have a G77 ABI (currently only MKL)
-set SCIPY_USE_G77_ABI_WRAPPER=1
-
 :: need to use force to reinstall the tests the second time
 :: (otherwise pip thinks the package is installed already)
 pip install dist\scipy*.whl --force-reinstall

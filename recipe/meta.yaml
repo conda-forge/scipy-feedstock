@@ -70,9 +70,8 @@ requirements:
     - numpy
     - pip
 
-# for unix, the top-level build.sh builds scipy, and then build-output.sh
-# installs the files for the respective component; on windows, we currently
-# don't have a nice separation into build & install steps, so build twice...
+# the top-level build.{sh,bat} builds scipy, and then
+# build-output.{sh,bat} installs the files
 outputs:
   - name: scipy
     script: build-output.sh   # [not win]
@@ -82,7 +81,7 @@ outputs:
       build:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-        # unix only needs these for the strong run exports
+        # only need these for the strong run exports
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
@@ -91,7 +90,6 @@ outputs:
         - libcblas
         - liblapack
         - python
-        - cython <3       # [win]
         - cython
         - meson-python
         - ninja
@@ -196,14 +194,13 @@ outputs:
       build:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-        # unix only needs these for the strong run exports
+        # only need these for the strong run exports
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
       host:
         - {{ pin_subpackage('scipy', exact=True) }}
-        # need to repeat host deps on windows because we have to do a full rebuild here;
-        # on unix we need a minimum as well so that installation of the wheel will work
+        # need a minimum for (re-)installation of wheel
         - python
         - pip
         - numpy
