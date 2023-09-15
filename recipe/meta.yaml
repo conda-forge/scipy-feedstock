@@ -53,7 +53,6 @@ requirements:
     - {{ compiler('cxx') }}
     - {{ compiler('fortran') }}              # [unix]
     - flang                                  # [win]
-    - lld                                    # [win]
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
   host:
