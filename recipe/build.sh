@@ -13,6 +13,9 @@ echo "python = '${PREFIX}/bin/python'" >> ${CONDA_PREFIX}/meson_cross_file.txt
 # we need to strip --buildtype out of MESON_ARGS or fail due to redundancy
 MESON_ARGS_REDUCED="$(echo $MESON_ARGS | sed 's/--buildtype release //g')"
 
+# test flang; still uses "temporary" name
+export FC="flang-new"
+
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 $PYTHON -m build -w -n -x \
     -Cbuilddir=builddir \

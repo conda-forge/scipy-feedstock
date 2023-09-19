@@ -36,7 +36,7 @@ build:
   number: 1
   skip: true  # [py<39]
   # debug: windows only
-  skip: true  # [not win]
+  skip: true  # [not (win or (osx and x86_64))]
 
 requirements:
   build:
@@ -51,8 +51,7 @@ requirements:
     - pkg-config                             # [build_platform != target_platform]
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}              # [unix]
-    - flang                                  # [win]
+    - flang
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
   host:

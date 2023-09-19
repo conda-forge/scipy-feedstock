@@ -1,11 +1,11 @@
 c_compiler:                    # [win]
   - clang                      # [win]
-c_compiler_version:            # [win]
-  - 17                         # [win]
+c_compiler_version:            # [win or osx]
+  - 17                         # [win or osx]
 cxx_compiler:                  # [win]
   - clang                      # [win]
-cxx_compiler_version:          # [win]
-  - 17                         # [win]
+cxx_compiler_version:          # [win or osx]
+  - 17                         # [win or osx]
 
 channel_sources:
   - conda-forge/label/llvm_rc,conda-forge
