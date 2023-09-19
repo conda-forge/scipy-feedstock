@@ -1,0 +1,24 @@
+From 3e6ecd52b7e05f1533319329b71991c7ca4fa2a9 Mon Sep 17 00:00:00 2001
+From: "Uwe L. Korn" <uwe.korn@quantco.com>
+Date: Tue, 19 Sep 2023 15:25:24 +0200
+Subject: [PATCH 2/2] Add missing float.h include
+
+---
+ scipy/_lib/_fpumode.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scipy/_lib/_fpumode.c b/scipy/_lib/_fpumode.c
+index fb5cd7dc5..7b7752c22 100644
+--- a/scipy/_lib/_fpumode.c
++++ b/scipy/_lib/_fpumode.c
+@@ -6,6 +6,7 @@
+ #ifdef _MSC_VER
+ #pragma float_control(precise, on)
+ #pragma fenv_access (on)
++#include <float.h>
+ #endif
+ 
+ 
+-- 
+2.42.0
+
