@@ -1,12 +1,43 @@
-From 3e6ecd52b7e05f1533319329b71991c7ca4fa2a9 Mon Sep 17 00:00:00 2001
+From 34f201705d57fc737e5b2805c56c3b6972fb17ee Mon Sep 17 00:00:00 2001
 From: "Uwe L. Korn" <uwe.korn@quantco.com>
 Date: Tue, 19 Sep 2023 15:25:24 +0200
 Subject: [PATCH 2/2] Add missing float.h include
 
 ---
- scipy/_lib/_fpumode.c | 1 +
- 1 file changed, 1 insertion(+)
+ scipy/_lib/_ccallback_c.pyx | 7 +++++--
+ scipy/_lib/_fpumode.c       | 1 +
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/scipy/_lib/_ccallback_c.pyx b/scipy/_lib/_ccallback_c.pyx
+index 755602bc7..8566eec51 100644
+--- a/scipy/_lib/_ccallback_c.pyx
++++ b/scipy/_lib/_ccallback_c.pyx
+@@ -4,12 +4,15 @@ from cpython.pycapsule cimport (
+ )
+ from cpython.long cimport PyLong_AsVoidPtr
+ from libc.stdlib cimport free
+-from libc.string cimport strdup
++# from libc.string cimport strdup
+ 
+ from .ccallback cimport (ccallback_t, ccallback_prepare, ccallback_release, CCALLBACK_DEFAULTS,
+                          ccallback_signature_t)
+ 
+ 
++cdef extern from "string.h":
++    char *_strdup(const char *strSource)
++
+ #
+ # PyCapsule helpers
+ #
+@@ -75,7 +78,7 @@ def get_raw_capsule(func_obj, name_obj, context_obj):
+     if name == NULL:
+         name_copy = name
+     else:
+-        name_copy = strdup(name)
++        name_copy = _strdup(name)
+ 
+     capsule = PyCapsule_New(func, name_copy, &raw_capsule_destructor)
+     if context != NULL:
 diff --git a/scipy/_lib/_fpumode.c b/scipy/_lib/_fpumode.c
 index fb5cd7dc5..7b7752c22 100644
 --- a/scipy/_lib/_fpumode.c
