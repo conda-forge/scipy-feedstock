@@ -8,6 +8,8 @@ if %ERRORLEVEL% neq 0 exit 1
 
 set "FC=flang-wrapper.bat"
 
+set
+
 :: -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 %PYTHON% -m build -w -n -x ^
     -Cbuilddir=builddir ^

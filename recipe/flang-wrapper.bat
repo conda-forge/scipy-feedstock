@@ -1,4 +1,4 @@
-@echo on
+@echo off
 setlocal enabledelayedexpansion
 
 rem Replace "-module" with "-module-dir" in the arguments
