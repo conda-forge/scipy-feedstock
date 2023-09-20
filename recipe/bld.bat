@@ -3,7 +3,8 @@
 mkdir builddir
 
 :: flang 17 still uses "temporary" name
-set "FC=flang-new"
+cp %RECIPE_DIR%\flang-wrapper.bat %LIBRARY_PREFIX%\bin
+set "FC=flang-wrapper.bat"
 
 set "CFLAGS=%CFLAGS% -std=gnu99"
 
