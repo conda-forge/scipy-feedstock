@@ -1,12 +1,13 @@
-From 34f201705d57fc737e5b2805c56c3b6972fb17ee Mon Sep 17 00:00:00 2001
+From e19fd39f5208dcc8cf8ff118a9673623d06005a5 Mon Sep 17 00:00:00 2001
 From: "Uwe L. Korn" <uwe.korn@quantco.com>
 Date: Tue, 19 Sep 2023 15:25:24 +0200
 Subject: [PATCH 2/2] Add missing float.h include
 
 ---
- scipy/_lib/_ccallback_c.pyx | 7 +++++--
- scipy/_lib/_fpumode.c       | 1 +
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ scipy/_lib/_ccallback_c.pyx  | 7 +++++--
+ scipy/_lib/_fpumode.c        | 1 +
+ scipy/_lib/messagestream.pyx | 6 +++++-
+ 3 files changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/scipy/_lib/_ccallback_c.pyx b/scipy/_lib/_ccallback_c.pyx
 index 755602bc7..8566eec51 100644
@@ -50,6 +51,34 @@ index fb5cd7dc5..7b7752c22 100644
  #endif
  
  
+diff --git a/scipy/_lib/messagestream.pyx b/scipy/_lib/messagestream.pyx
+index 318b6165f..71d4d46b2 100644
+--- a/scipy/_lib/messagestream.pyx
++++ b/scipy/_lib/messagestream.pyx
+@@ -1,10 +1,14 @@
+ cimport cython
+ from libc cimport stdio, stdlib
++from libc.stdio cimport FILE
+ from cpython cimport PyBytes_FromStringAndSize
+ 
+ import os
+ import tempfile
+ 
++cdef extern from "stdio.h":
++    FILE *_fdopen   (const char *filename, const char  *opentype)
++
+ cdef extern from "messagestream.h":
+     stdio.FILE *messagestream_open_memstream(char **, size_t *)
+ 
+@@ -35,7 +39,7 @@ cdef class MessageStream:
+         except PermissionError:
+             self._removed = 0
+ 
+-        self.handle = stdio.fdopen(fd, 'wb+')
++        self.handle = _fdopen(fd, 'wb+')
+         if self.handle == NULL:
+             os.close(fd)
+             if not self._removed:
 -- 
 2.42.0
 
