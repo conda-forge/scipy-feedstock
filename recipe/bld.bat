@@ -3,10 +3,10 @@
 mkdir builddir
 
 :: flang 17 still uses "temporary" name
-cp %RECIPE_DIR%\flang-wrapper.bat %LIBRARY_PREFIX%\bin
-set "FC=flang-wrapper.bat"
+copy %RECIPE_DIR%\flang-wrapper.bat %LIBRARY_PREFIX%\bin
+if %ERRORLEVEL% neq 0 exit 1
 
-set "CFLAGS=%CFLAGS% -std=gnu99"
+set "FC=flang-wrapper.bat"
 
 :: -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 %PYTHON% -m build -w -n -x ^
