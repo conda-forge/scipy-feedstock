@@ -14,3 +14,7 @@ for %%i in (%args%) do (
 )
 
 flang-new %newArgs%
+set "exitCode=%errorlevel%"
+
+rem Return the exit code of the last call
+exit /b %exitCode%
