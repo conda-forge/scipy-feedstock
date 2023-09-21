@@ -8,4 +8,4 @@ cxx_compiler_version:          # [win or osx]
   - 17                         # [win or osx]
 
 channel_sources:
-  - conda-forge/label/llvm_rc,conda-forge
+  - conda-forge/label/llvm_rc,conda-forge/label/meson_dev,conda-forge
