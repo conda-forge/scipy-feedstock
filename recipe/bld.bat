@@ -9,12 +9,12 @@ if %ERRORLEVEL% neq 0 exit 1
 :: set compilers to clang-cl
 set "CC=clang-cl"
 set "CXX=clang-cl"
-set "CC_LD=lld"
-set "CXX_LD=lld"
+set "CC_LD=ld.lld"
+set "CXX_LD=ld.lld"
 
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
-set "FC_LD=lld"
+set "FC_LD=ld.lld"
 
 :: set up clang-cl correctly, see
 :: https://github.com/conda-forge/clang-win-activation-feedstock/blob/main/recipe/activate-clang_win-64.sh
