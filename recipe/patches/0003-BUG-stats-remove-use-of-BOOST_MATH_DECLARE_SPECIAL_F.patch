@@ -1,7 +1,7 @@
 From d697ee96bce7926653db8925d2cd045a6fb90d93 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Sat, 23 Sep 2023 20:32:28 +0200
-Subject: [PATCH 3/3] BUG: stats: remove use of
+Subject: [PATCH 3/4] BUG: stats: remove use of
  `BOOST_MATH_DECLARE_SPECIAL_FUNCTIONS`
 
 This macro must not be used in the global scope, but rather in
