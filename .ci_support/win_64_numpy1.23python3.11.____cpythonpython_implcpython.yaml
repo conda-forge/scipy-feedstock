@@ -1,15 +1,11 @@
 c_compiler:
-- clang
-c_compiler_version:
-- '17'
+- vs2019
 channel_sources:
 - conda-forge/label/llvm_rc,conda-forge/label/meson_dev,conda-forge
 channel_targets:
 - conda-forge main
 cxx_compiler:
-- clang
-cxx_compiler_version:
-- '17'
+- vs2019
 libblas:
 - 3.9 *netlib
 libcblas:
