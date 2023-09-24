@@ -14,7 +14,7 @@ set "CXX=clang-cl"
 set "FC=flang-new"
 set "FC_LD=lld-link.exe"
 
-set "CFLAGS=%CFLAGS% -std=gnu99"
+set "LDFLAGS=%LDFLAGS% -Wl,-Lucrt"
 
 :: -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 %PYTHON% -m build -w -n -x ^
