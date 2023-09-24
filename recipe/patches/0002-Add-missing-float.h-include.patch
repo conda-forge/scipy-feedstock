@@ -1,7 +1,7 @@
-From e19fd39f5208dcc8cf8ff118a9673623d06005a5 Mon Sep 17 00:00:00 2001
+From 58817ced0035b4bcbf62f432b74bab5455b87768 Mon Sep 17 00:00:00 2001
 From: "Uwe L. Korn" <uwe.korn@quantco.com>
 Date: Tue, 19 Sep 2023 15:25:24 +0200
-Subject: [PATCH 2/2] Add missing float.h include
+Subject: [PATCH 2/3] Add missing float.h include
 
 ---
  scipy/_lib/_ccallback_c.pyx  | 7 +++++--
@@ -79,6 +79,3 @@ index 318b6165f..71d4d46b2 100644
          if self.handle == NULL:
              os.close(fd)
              if not self._removed:
--- 
-2.42.0
-

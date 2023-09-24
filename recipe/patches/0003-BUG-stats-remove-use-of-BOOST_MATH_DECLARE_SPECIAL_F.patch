@@ -1,0 +1,46 @@
+From d697ee96bce7926653db8925d2cd045a6fb90d93 Mon Sep 17 00:00:00 2001
+From: Ralf Gommers <ralf.gommers@gmail.com>
+Date: Sat, 23 Sep 2023 20:32:28 +0200
+Subject: [PATCH 3/3] BUG: stats: remove use of
+ `BOOST_MATH_DECLARE_SPECIAL_FUNCTIONS`
+
+This macro must not be used in the global scope, but rather in
+a separate namespace (see, e.g., `boost_math/example/policy_eg_9.cpp`).
+It caused compilation errors with Clang on Windows in
+PR 246 on the conda-forge scipy feedback.
+
+This bit of code also did not seem necessary, given that these
+compile flags in `stats/_boost/meson.build` should already achieve
+the same effect:
+```
+  '-DBOOST_MATH_EVALUATION_ERROR_POLICY=user_error',
+  '-DBOOST_MATH_OVERFLOW_ERROR_POLICY=user_error',
+```
+
+That the custom error handling in `func_defs.hpp` is still used can
+be verified by running for example after modifying the
+`user_evaluation_error` handler:
+```
+python dev.py test -t scipy.stats.tests.test_distributions -- -k test_boost_eval_issue_14606
+```
+---
+ scipy/stats/_boost/include/func_defs.hpp | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/scipy/stats/_boost/include/func_defs.hpp b/scipy/stats/_boost/include/func_defs.hpp
+index 2ec998c09..ff373d39e 100644
+--- a/scipy/stats/_boost/include/func_defs.hpp
++++ b/scipy/stats/_boost/include/func_defs.hpp
+@@ -11,12 +11,6 @@ typedef boost::math::policies::policy<
+     boost::math::policies::discrete_quantile<
+         boost::math::policies::integer_round_up > > Policy;
+ 
+-// Run user_error function when evaluation_errors and overflow_errors are encountered
+-typedef boost::math::policies::policy<
+-    boost::math::policies::evaluation_error<boost::math::policies::user_error>,
+-    boost::math::policies::overflow_error<boost::math::policies::user_error> > user_error_policy;
+-BOOST_MATH_DECLARE_SPECIAL_FUNCTIONS(user_error_policy)
+-
+ 
+ // Raise a RuntimeWarning making users aware that something went wrong during
+ // evaluation of the function, but return the best guess
