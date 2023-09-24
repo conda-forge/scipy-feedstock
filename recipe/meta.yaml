@@ -59,6 +59,7 @@ requirements:
     - flang
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
+    - lld                                    # [win]
   host:
     - libblas
     - libcblas

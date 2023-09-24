@@ -4,6 +4,7 @@ mkdir builddir
 
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
+set "FC_LD=lld"
 
 set "CFLAGS=%CFLAGS% -std=gnu99"
 
