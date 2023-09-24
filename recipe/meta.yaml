@@ -17,7 +17,7 @@ source:
     patches:
       # backport https://github.com/scipy/scipy/pull/19200
       - patches/0001-TST-fix-TestODR.test_implicit-test-failure-with-tole.patch
-      - patches/0002-Add-missing-float.h-include.patch
+      # - patches/0002-Add-missing-float.h-include.patch
       # backport https://github.com/scipy/scipy/pull/19286
       - patches/0003-BUG-stats-remove-use-of-BOOST_MATH_DECLARE_SPECIAL_F.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
