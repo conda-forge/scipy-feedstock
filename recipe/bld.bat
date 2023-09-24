@@ -9,10 +9,12 @@ if %ERRORLEVEL% neq 0 exit 1
 :: set compilers to clang-cl
 set "CC=clang-cl"
 set "CXX=clang-cl"
+set "CC_LD=lld"
+set "CXX_LD=lld"
 
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
-set "FC_LD=lld-link.exe"
+set "FC_LD=lld"
 
 set "LDFLAGS=%LDFLAGS% -Wl,-Lucrt"
 
