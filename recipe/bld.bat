@@ -12,6 +12,7 @@ set "CXX=clang-cl"
 
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
+set "FC_LD=lld-link.exe"
 
 set "CFLAGS=%CFLAGS% -std=gnu99"
 
