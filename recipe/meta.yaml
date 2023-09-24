@@ -59,6 +59,7 @@ requirements:
     - clang                                  # [win]
     - lld                                    # [win]
   host:
+    - compiler-rt                            # [win]
     - libblas
     - libcblas
     - liblapack
