@@ -32,4 +32,4 @@ set "LDFLAGS=%LDFLAGS% -Wl,-defaultlib:%LIBRARY_PREFIX%/lib/clang/17.0.0/lib/win
     -Csetup-args=-Dlapack=lapack ^
     -Csetup-args=-Dfortran_std=none ^
     -Csetup-args=-Duse-g77-abi=true
-if %ERRORLEVEL% neq 0 exit 1
+if %ERRORLEVEL% neq 0 (type builddir\meson-logs\meson-log.txt && exit 1)
