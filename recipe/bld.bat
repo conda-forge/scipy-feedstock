@@ -2,6 +2,8 @@
 
 mkdir builddir
 
+:: debug: show env vars
+set
 :: unset LD from compiler activation
 set "LD="
 :: try to use linker that knows it cannot use rsp's, see
@@ -12,6 +14,9 @@ set "CXX_LD=ld.lld"
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
 set "FC_LD=ld.lld"
+
+:: remove -Wl,-defaultlib:...
+set "LDFLAGS=-nostdlib -Xclang --dependent-lib=msvcrt -fuse-ld=lld"
 
 set "CFLAGS=%CFLAGS% -std=gnu99"
 
