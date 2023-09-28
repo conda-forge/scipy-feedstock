@@ -2,9 +2,14 @@
 
 mkdir builddir
 
+:: try to use linker that knows it cannot use rsp's, see
+:: https://github.com/conda-forge/meson-feedstock/pull/86
+set "CC_LD=ld.lld"
+set "CXX_LD=ld.lld"
+
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
-set "FC_LD=lld"
+set "FC_LD=ld.lld"
 
 set "CFLAGS=%CFLAGS% -std=gnu99"
 
