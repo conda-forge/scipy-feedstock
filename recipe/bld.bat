@@ -6,6 +6,9 @@ mkdir builddir
 clang-cl.exe --version
 if %ERRORLEVEL% neq 0 exit 1
 
+:: check flang-new output
+flang-new.exe --version
+
 set
 :: set compilers to clang-cl
 set "CC=clang-cl"
@@ -13,7 +16,7 @@ set "CXX=clang-cl"
 
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
-set "FC_LD=%LIBRARY_BIN%\lld-link.exe"
+set "FC_LD=%PREFIX%\Library\bin\lld-link.exe"
 
 :: set up clang-cl correctly, see
 :: https://github.com/conda-forge/clang-win-activation-feedstock/blob/main/recipe/activate-clang_win-64.sh
