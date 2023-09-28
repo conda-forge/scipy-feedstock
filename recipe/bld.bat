@@ -6,6 +6,8 @@ mkdir builddir
 clang-cl.exe --version
 if %ERRORLEVEL% neq 0 exit 1
 
+:: unset LD from compiler activation
+set "LD="
 :: set compilers to clang-cl
 set "CC=clang-cl"
 set "CXX=clang-cl"
