@@ -2,6 +2,8 @@
 
 mkdir builddir
 
+:: unset LD from compiler activation
+set "LD="
 :: try to use linker that knows it cannot use rsp's, see
 :: https://github.com/conda-forge/meson-feedstock/pull/86
 set "CC_LD=ld.lld"
