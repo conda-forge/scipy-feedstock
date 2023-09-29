@@ -6,10 +6,6 @@ mkdir builddir
 clang-cl.exe --version
 if %ERRORLEVEL% neq 0 exit 1
 
-:: check flang-new output
-flang-new.exe --version
-
-set
 :: set compilers to clang-cl
 set "CC=clang-cl"
 set "CXX=clang-cl"
@@ -23,11 +19,6 @@ set "CPPFLAGS=-D_CRT_SECURE_NO_WARNINGS -D_MT -D_DLL --target=x86_64-pc-windows-
 set "FFLAGS=-D_CRT_SECURE_NO_WARNINGS -D_MT -D_DLL --target=x86_64-pc-windows-msvc -nostdlib"
 set "LDFLAGS=--target=x86_64-pc-windows-msvc -nostdlib -Xclang --dependent-lib=msvcrt -fuse-ld=lld"
 set "LDFLAGS=%LDFLAGS% -Wl,-defaultlib:%LIBRARY_PREFIX%/lib/clang/17.0.0/lib/windows/clang_rt.builtins-x86_64.lib"
-
-:: debug
-echo CPPFLAGS=%CPPFLAGS%
-echo FFLAGS=%FFLAGS%
-echo LDFLAGS=%LDFLAGS%
 
 :: see explanation here:
 :: https://github.com/conda-forge/scipy-feedstock/pull/253#issuecomment-1732578945
