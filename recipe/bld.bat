@@ -30,6 +30,10 @@ echo CPPFLAGS=%CPPFLAGS%
 echo FFLAGS=%FFLAGS%
 echo LDFLAGS=%LDFLAGS%
 
+:: see explanation here:
+:: https://github.com/conda-forge/scipy-feedstock/pull/253#issuecomment-1732578945
+set "MESON_RSP_THRESHOLD=320000"
+
 :: -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 %PYTHON% -m build -w -n -x ^
     -Cbuilddir=builddir ^
