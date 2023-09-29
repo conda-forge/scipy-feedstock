@@ -8,9 +8,14 @@ set PIP_IGNORE_INSTALLED=True
 set PIP_NO_INDEX=True
 set PYTHONDONTWRITEBYTECODE=True
 
-:: need to use force to reinstall the tests the second time
-:: (otherwise pip thinks the package is installed already)
-pip install dist\scipy*.whl --force-reinstall
+:: `pip install dist\numpy*.whl` does not work on windows,
+:: so use a loop; there's only one wheel in dist/ anyway
+for /f %%f in ('dir /b /S .\dist') do (
+    REM need to use force to reinstall the tests the second time
+    REM (otherwise pip thinks the package is installed already)
+    pip install %%f --force-reinstall
+    if %ERRORLEVEL% neq 0 exit 1
+)
 
 FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "import sysconfig; print(sysconfig.get_config_var('EXT_SUFFIX'))"`) DO (
     SET EXT_SUFFIX=%%F
