@@ -1,4 +1,5 @@
 @echo on
+setlocal enabledelayedexpansion
 
 mkdir builddir
 
@@ -13,12 +14,18 @@ set "CXX=clang-cl"
 :: flang 17 still uses "temporary" name
 set "FC=flang-new"
 
-:: set up clang-cl correctly, see
+:: need to read clang version for path to compiler-rt
+FOR /F "tokens=* USEBACKQ" %%F IN (`clang.exe -dumpversion`) DO (
+    SET "CLANG_VER=%%F"
+)
+
+:: attempt to match flags for flang as we set them for clang-on-win, see
 :: https://github.com/conda-forge/clang-win-activation-feedstock/blob/main/recipe/activate-clang_win-64.sh
-set "CPPFLAGS=-D_CRT_SECURE_NO_WARNINGS -D_MT -D_DLL --target=x86_64-pc-windows-msvc -Xclang --dependent-lib=msvcrt -fuse-ld=lld"
+:: however, -Xflang --dependent-lib=msvcrt currently fails as an unrecognized option, see also
+:: https://github.com/llvm/llvm-project/issues/63741
 set "FFLAGS=-D_CRT_SECURE_NO_WARNINGS -D_MT -D_DLL --target=x86_64-pc-windows-msvc -nostdlib"
 set "LDFLAGS=--target=x86_64-pc-windows-msvc -nostdlib -Xclang --dependent-lib=msvcrt -fuse-ld=lld"
-set "LDFLAGS=%LDFLAGS% -Wl,-defaultlib:%LIBRARY_PREFIX%/lib/clang/17.0.0/lib/windows/clang_rt.builtins-x86_64.lib"
+set "LDFLAGS=%LDFLAGS% -Wl,-defaultlib:%LIBRARY_PREFIX%/lib/clang/!CLANG_VER!/lib/windows/clang_rt.builtins-x86_64.lib"
 
 :: see explanation here:
 :: https://github.com/conda-forge/scipy-feedstock/pull/253#issuecomment-1732578945
