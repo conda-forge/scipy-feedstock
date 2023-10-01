@@ -34,6 +34,9 @@ source:
 build:
   number: 0
   skip: true  # [py<39]
+  # pypy on aarch/ppc is un(der)maintained and currently broken, see
+  # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
+  skip: true  # [(aarch64 or ppc64le) and python_impl == "pypy"]
 
 requirements:
   build:
