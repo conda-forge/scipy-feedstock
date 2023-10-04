@@ -208,6 +208,8 @@ outputs:
         - python
         - pip
         - numpy
+        # make link check happy
+        - liblapack
       run:
         - {{ pin_subpackage('scipy', exact=True) }}
         - python
