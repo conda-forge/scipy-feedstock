@@ -32,7 +32,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
   # pypy on aarch/ppc is un(der)maintained and currently broken, see
   # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
