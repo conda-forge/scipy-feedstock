@@ -1,4 +1,2 @@
-c_compiler:                    # [win]
-  - vs2019                     # [win]
-cxx_compiler:                  # [win]
-  - vs2019                     # [win]
+channel_sources:                                                        # [win]
+  - conda-forge/label/llvm_rc,conda-forge/label/meson_dev,conda-forge   # [win]

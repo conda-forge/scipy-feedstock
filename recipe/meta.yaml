@@ -14,34 +14,35 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 86712f1dff2cf674d823ad5489db54928b44149f76d7ba891ad19a6ae118abcf
-    # need separate folder to do full reset on windows, see build-output.bat
-    folder: base
     patches:
       - patches/0001-remove-comment-that-breaks-parsing.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/boostorg/math.git
     git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
-    folder: base/scipy/_lib/boost_math
+    folder: scipy/_lib/boost_math
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
-    folder: base/scipy/_lib/highs
+    folder: scipy/_lib/highs
   - git_url: https://github.com/scipy/unuran.git
     git_rev: 81a1fd118b326880e00cc7d8989fb063782a6bdd
-    folder: base/scipy/_lib/unuran
+    folder: scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
     git_rev: 96f6800451372dd003e627bbfd732937ac0c685e
-    folder: base/scipy/sparse/linalg/_propack/PROPACK
+    folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
+  # pypy on aarch/ppc is un(der)maintained and currently broken, see
+  # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
+  skip: true  # [(aarch64 or ppc64le) and python_impl == "pypy"]
 
 requirements:
   build:
     - python                                 # [build_platform != target_platform]
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - cython                                 # [build_platform != target_platform]
+    - cython <3                              # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
     - meson-python                           # [build_platform != target_platform]
@@ -51,24 +52,30 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('fortran') }}              # [unix]
+    # pythran code needs clang-cl on windows
+    - clang                                  # [win]
+    # use flang as fortran compiler on windows (uses clang driver)
+    - flang                                  # [win]
+    # use llvm linker for both of the above
+    - lld                                    # [win]
   host:
+    - compiler-rt                            # [win]
     - libblas
     - libcblas
     - liblapack
     - python
-    - cython
-    - meson-python    # [unix]
-    - ninja           # [unix]
-    - pkg-config      # [unix]
-    - python-build    # [unix]
+    - cython <3
+    - meson-python
+    - ninja
+    - pkg-config
+    - python-build
     - pybind11
     - pythran
     - numpy
     - pip
 
-# for unix, the top-level build.sh builds scipy, and then build-output.sh
-# installs the files for the respective component; on windows, we currently
-# don't have a nice separation into build & install steps, so build twice...
+# the top-level build.{sh,bat} builds scipy, and then
+# build-output.{sh,bat} installs the files
 outputs:
   - name: scipy
     script: build-output.sh   # [not win]
@@ -78,28 +85,20 @@ outputs:
       build:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-        # unix only needs these for the strong run exports
+        # only need these for the strong run exports
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
-        # pythran code needs clang-cl on windows
-        - clang                                  # [win]
-        # WARNING: It's not recommended to use these MinGW compilers with python extensions
-        # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
-        # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-        - {{ compiler('m2w64_fortran') }}        # [win]
       host:
         - libblas
         - libcblas
         - liblapack
         - python
-        - setuptools <60  # [win]
-        - cython <3       # [win]
         - cython
-        - meson-python    # [unix]
-        - ninja           # [unix]
-        - pkg-config      # [unix]
-        - python-build    # [unix]
+        - meson-python
+        - ninja
+        - pkg-config
+        - python-build
         - pybind11
         - pythran
         - numpy
@@ -199,31 +198,18 @@ outputs:
       build:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-        # unix only needs these for the strong run exports
+        # only need these for the strong run exports
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
-        # pythran code needs clang-cl on windows
-        - clang                                  # [win]
-        # WARNING: It's not recommended to use these MinGW compilers with python extensions
-        # numpy.distutils has a complex mechanism to facilitate mixing gfortran and MSVC
-        # https://pav.iki.fi/blog/2017-10-08/pywingfortran.html#building-python-wheels-with-fortran-for-windows
-        - {{ compiler('m2w64_fortran') }}        # [win]
       host:
         - {{ pin_subpackage('scipy', exact=True) }}
-        # need to repeat host deps on windows because we have to do a full rebuild here;
-        # on unix we need a minimum as well so that installation of the wheel will work
+        # need a minimum for (re-)installation of wheel
         - python
         - pip
         - numpy
-        - libblas         # [win]
-        - libcblas        # [win]
-        - liblapack       # [win]
-        - setuptools <60  # [win]
-        - cython <3       # [win]
-        - pybind11        # [win]
-        - pythran         # [win]
-        - numpy           # [win]
+        # make link check happy
+        - liblapack
       run:
         - {{ pin_subpackage('scipy', exact=True) }}
         - python
@@ -241,11 +227,13 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab" %}
         # scipy/scipy#16927
         {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
+        # scipy/scipy#19337
+        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_distribution_outside_)" %}   # [aarch64 or ppc64le]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale[pdf-1])" %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale)" %}          # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestShgoArguments and test_19_parallelization)" %}   # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
@@ -292,7 +280,7 @@ outputs:
 about:
   home: http://www.scipy.org/
   license: BSD-3-Clause
-  license_file: base/LICENSE.txt
+  license_file: LICENSE.txt
   summary: Scientific Library for Python
   description: |
     SciPy is a Python-based ecosystem of open-source software for mathematics,
