@@ -1,4 +1,4 @@
-{% set version = "1.11.3" %}
+{% set version = "1.11.4" %}
 
 package:
   name: scipy-split
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 86712f1dff2cf674d823ad5489db54928b44149f76d7ba891ad19a6ae118abcf
+    sha256: 06c0338e76901aa1f996cc7f21eee622b1174d9e251b9bb540e6c172457851d3
     patches:
       - patches/0001-remove-comment-that-breaks-parsing.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
@@ -32,7 +32,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<39]
   # pypy on aarch/ppc is un(der)maintained and currently broken, see
   # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
