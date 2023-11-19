@@ -22,7 +22,7 @@ source:
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
   - git_url: https://github.com/scipy/unuran.git
-    git_rev: 81a1fd118b326880e00cc7d8989fb063782a6bdd
+    git_rev: 1d315c690787b14781a12e0beca6d25cc75562d6
     folder: scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
