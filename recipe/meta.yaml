@@ -111,6 +111,7 @@ outputs:
     test:
       requires:
         - pytest
+        - hypothesis
       imports:
         - scipy
         # reference for public API is effectively
@@ -219,6 +220,7 @@ outputs:
         - pytest
         - pytest-timeout
         - pytest-xdist    # [not (win and python_impl == "pypy")]
+        - hypothesis
         - mpmath
         # needed for scipy.datasets
         - pooch
