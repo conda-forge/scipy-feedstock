@@ -15,8 +15,11 @@ source:
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: d370a86e744a9af2962a8bc1e29e99dee5dedb2cb9b36b25593ef14a5bb375f4
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
+  - git_url: https://github.com/data-apis/array-api-compat.git
+    git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
+    folder: scipy/_lib/array_api_compat
   - git_url: https://github.com/boostorg/math.git
-    git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
+    git_rev: 6bfe5818acdf86432f3e1a78ec5e1d3cdb8c6480
     folder: scipy/_lib/boost_math
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
