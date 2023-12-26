@@ -226,10 +226,6 @@ outputs:
         - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab" %}
-        # scipy/scipy#16927
-        {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
         # scipy/scipy#19210 - 60 failing tests!
         {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
