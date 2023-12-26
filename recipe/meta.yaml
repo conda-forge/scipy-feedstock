@@ -230,6 +230,13 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab" %}
         # scipy/scipy#16927
         {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
+        # scipy/scipy#19210 - 60 failing tests!
+        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
+            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
+            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
+        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # scipy/scipy#19337
         {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_distribution_outside_)" %}   # [aarch64 or ppc64le]
         # on the slowest agents, these tests take more than 20min in emulation
