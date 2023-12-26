@@ -233,11 +233,14 @@ outputs:
         # scipy/scipy#19337
         {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_distribution_outside_)" %}   # [aarch64 or ppc64le]
         # on the slowest agents, these tests take more than 20min in emulation
+        {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}                      # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (test_multiprocess and fft)" %}                       # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale)" %}          # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestShgoArguments and test_19_parallelization)" %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
         # occasionally runs out of memory on windows + pypy
@@ -246,8 +249,7 @@ outputs:
         # very slow tests for pypy in emulation
         {% if (python_impl == "pypy") and (aarch64 or ppc64le) %}
             {% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}
-            {% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver or TestTRF" %}
-            {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}
+            {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest or TestTRF" %}
             {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}
             {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}
             {% set tests_to_skip = tests_to_skip + " or (TestSobolIndices and test_ishigami[scalar])" %}
@@ -261,8 +263,7 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " or test_filtfilt_gust or test_kappa3_array_gh13582" %}
             {% set tests_to_skip = tests_to_skip + " or test_fitstart[genexpon-shapes28] or test_gh12922" %}
             {% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}
-            {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}
-            {% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}
+            {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin] or test_mip1" %}
             {% set tests_to_skip = tests_to_skip + " or test_public_modules_importable or test_neldermead_limit" %}
             {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}
             {% set tests_to_skip = tests_to_skip + " or test_cdf_against_multivariate_normal[10]" %}
