@@ -1,7 +1,7 @@
 From 72b62d4beecbe12d35e44da507bafb185086a26e Mon Sep 17 00:00:00 2001
 From: Matt Borland <matt@mattborland.com>
 Date: Thu, 28 Dec 2023 21:48:49 -0500
-Subject: [PATCH] MAINT: Avoid use of aligned_alloc in pocketfft on windows
+Subject: [PATCH 1/2] MAINT: Avoid use of aligned_alloc in pocketfft on windows
  (#19761)
 
 * MSVC is too non-conformant and broken...

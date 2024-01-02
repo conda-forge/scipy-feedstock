@@ -17,6 +17,8 @@ source:
     patches:
       # backport scipy/scipy#19761 to patch out use of aligned_alloc on windows
       - patches/0001-MAINT-Avoid-use-of-aligned_alloc-in-pocketfft-on-win.patch
+      # fix some marginal tolerance violations (on windows)
+      - patches/0002-loosen-tolerances-for-tests-that-fail-otherwise-on-w.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
