@@ -14,11 +14,6 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 61888073bfa74f0963251a2f339809830a69e3fbe89ad31b78fe2a88341f9595
-    patches:
-      # backport scipy/scipy#19761 to patch out use of aligned_alloc on windows
-      - patches/0001-MAINT-Avoid-use-of-aligned_alloc-in-pocketfft-on-win.patch
-      # fix some marginal tolerance violations (on windows)
-      - patches/0002-loosen-tolerances-for-tests-that-fail-otherwise-on-w.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
