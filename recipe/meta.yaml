@@ -251,6 +251,8 @@ outputs:
         # occasionally runs out of memory on windows + pypy
         {% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
         {% set tests_to_skip = tests_to_skip + " or test_more_converged" %}                               # [(python_impl == "pypy") and win]
+        # fails on windows + pypy due to some file access race
+        {% set tests_to_skip = tests_to_skip + " or (test_read_over64bit and _fast_matrix_market)" %}     # [(python_impl == "pypy") and win]
         # very slow tests for pypy in emulation
         {% if (python_impl == "pypy") and (aarch64 or ppc64le) %}
             {% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}
