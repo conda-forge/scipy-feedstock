@@ -1,4 +1,5 @@
-{% set version = "1.11.4" %}
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set version = "1.12.0" %}
 
 package:
   name: scipy-split
@@ -13,7 +14,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 06c0338e76901aa1f996cc7f21eee622b1174d9e251b9bb540e6c172457851d3
+    sha256: 2ade75a1993b703a4cbe43b32f531feb291918cfd6d220778e107cb50b3e0266
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/boostorg/math.git
     git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
@@ -76,7 +77,7 @@ requirements:
 # build-output.{sh,bat} installs the files
 outputs:
   - name: scipy
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     version: {{ version }}
     requirements:
@@ -190,7 +191,7 @@ outputs:
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed in ' in x for x in lines) else 1)"
 
   - name: scipy-tests
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     requirements:
       build:
