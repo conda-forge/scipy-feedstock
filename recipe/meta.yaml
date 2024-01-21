@@ -1,4 +1,4 @@
-{% set version = "1.12.0rc2" %}
+{% set version = "1.12.0" %}
 
 package:
   name: scipy-split
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 61888073bfa74f0963251a2f339809830a69e3fbe89ad31b78fe2a88341f9595
+    sha256: 2ade75a1993b703a4cbe43b32f531feb291918cfd6d220778e107cb50b3e0266
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
