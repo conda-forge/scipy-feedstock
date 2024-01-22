@@ -1,4 +1,4 @@
-{% set version = "1.11.4" %}
+{% set version = "1.12.0" %}
 
 package:
   name: scipy-split
@@ -13,10 +13,13 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 06c0338e76901aa1f996cc7f21eee622b1174d9e251b9bb540e6c172457851d3
+    sha256: 2ade75a1993b703a4cbe43b32f531feb291918cfd6d220778e107cb50b3e0266
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
+  - git_url: https://github.com/data-apis/array-api-compat.git
+    git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
+    folder: scipy/_lib/array_api_compat
   - git_url: https://github.com/boostorg/math.git
-    git_rev: 298a243ccd3639b6eaa59bcdab7ab9d5f008fb36
+    git_rev: 6bfe5818acdf86432f3e1a78ec5e1d3cdb8c6480
     folder: scipy/_lib/boost_math
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
@@ -40,7 +43,7 @@ requirements:
   build:
     - python                                 # [build_platform != target_platform]
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - cython <3                              # [build_platform != target_platform]
+    - cython                                 # [build_platform != target_platform]
     - numpy                                  # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
     - meson-python                           # [build_platform != target_platform]
@@ -62,7 +65,7 @@ requirements:
     - libcblas
     - liblapack
     - python
-    - cython <3
+    - cython
     - meson-python
     - ninja
     - pkg-config
@@ -108,6 +111,7 @@ outputs:
     test:
       requires:
         - pytest
+        - hypothesis
       imports:
         - scipy
         # reference for public API is effectively
@@ -187,7 +191,7 @@ outputs:
         - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
         # ensure only one test is left (namely, our hint)
-        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed in ' in x for x in lines) else 1)"
+        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
 
   - name: scipy-tests
     script: build-output.sh   # [not win]
@@ -216,33 +220,43 @@ outputs:
         - pytest
         - pytest-timeout
         - pytest-xdist    # [not (win and python_impl == "pypy")]
+        - hypothesis
         - mpmath
         # needed for scipy.datasets
         - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # skip a test that fails with MKL + AVX512 (non-AVX512 passes), scipy/scipy#15533
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[bicgstab" %}
-        # scipy/scipy#16927
-        {% set tests_to_skip = tests_to_skip + " or test_failure_to_run_iterations" %}  # [linux]
+        # skip a test that fails with MKL, scipy/scipy#15533
+        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win]
+        # scipy/scipy#19210 - 60 failing tests!
+        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
+            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
+            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
+        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # scipy/scipy#19337
         {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_distribution_outside_)" %}   # [aarch64 or ppc64le]
         # on the slowest agents, these tests take more than 20min in emulation
+        {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}                      # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse[case1])" %}  # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (test_multiprocess and fft)" %}                       # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_optimize and TestBrute and test_workers)" %}    # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale)" %}          # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestShgoArguments and test_19_parallelization)" %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
         # occasionally runs out of memory on windows + pypy
         {% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
         {% set tests_to_skip = tests_to_skip + " or test_more_converged" %}                               # [(python_impl == "pypy") and win]
+        # fails on windows + pypy due to some file access race
+        {% set tests_to_skip = tests_to_skip + " or (test_read_over64bit and _fast_matrix_market)" %}     # [(python_impl == "pypy") and win]
         # very slow tests for pypy in emulation
         {% if (python_impl == "pypy") and (aarch64 or ppc64le) %}
             {% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}
-            {% set tests_to_skip = tests_to_skip + " or TestDifferentialEvolutionSolver or TestTRF" %}
-            {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest" %}
+            {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest or TestTRF" %}
             {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}
             {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}
             {% set tests_to_skip = tests_to_skip + " or (TestSobolIndices and test_ishigami[scalar])" %}
@@ -256,8 +270,7 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " or test_filtfilt_gust or test_kappa3_array_gh13582" %}
             {% set tests_to_skip = tests_to_skip + " or test_fitstart[genexpon-shapes28] or test_gh12922" %}
             {% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}
-            {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin]" %}
-            {% set tests_to_skip = tests_to_skip + " or test_mip1 or test_mixed_threads_processes" %}
+            {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin] or test_mip1" %}
             {% set tests_to_skip = tests_to_skip + " or test_public_modules_importable or test_neldermead_limit" %}
             {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}
             {% set tests_to_skip = tests_to_skip + " or test_cdf_against_multivariate_normal[10]" %}

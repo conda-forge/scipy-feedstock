@@ -35,6 +35,7 @@ set "MESON_RSP_THRESHOLD=320000"
 %PYTHON% -m build -w -n -x ^
     -Cbuilddir=builddir ^
     -Csetup-args=-Dblas=blas ^
+    -Csetup-args=-Dcpp_std=c++17 ^
     -Csetup-args=-Dlapack=lapack ^
     -Csetup-args=-Dfortran_std=none ^
     -Csetup-args=-Duse-g77-abi=true
