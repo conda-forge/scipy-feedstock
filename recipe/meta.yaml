@@ -15,10 +15,12 @@ source:
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 2ade75a1993b703a4cbe43b32f531feb291918cfd6d220778e107cb50b3e0266
     patches:
+      # backport https://github.com/scipy/scipy/pull/19909
+      - patches/0001-MAINT-linalg-Adjust-lwork-liwork-changes-OpenBLAS-0..patch
       # backport https://github.com/scipy/scipy/pull/19937
-      - patches/0001-TST-Add-RNG-seeds-for-TestInvgauss-and-TestLaplace-1.patch
+      - patches/0002-TST-Add-RNG-seeds-for-TestInvgauss-and-TestLaplace-1.patch
       # backport https://github.com/scipy/scipy/pull/19945
-      - patches/0002-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
+      - patches/0003-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
@@ -231,8 +233,8 @@ outputs:
         - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # skip a test that fails with MKL, scipy/scipy#15533
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win]
+        # scipy/scipy#15533 - fails depending on BLAS/LAPACK implementation resp. CPU features
+        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win or aarch64]
         # scipy/scipy#19210 - 60 failing tests!
         {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
