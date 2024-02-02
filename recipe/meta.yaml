@@ -117,7 +117,7 @@ outputs:
         - {{ pin_compatible('numpy', upper_bound='1.28') }}
     test:
       requires:
-        - pytest
+        - pytest <8
         - hypothesis
       imports:
         - scipy
@@ -224,7 +224,7 @@ outputs:
         - python
     test:
       requires:
-        - pytest
+        - pytest <8
         - pytest-timeout
         - pytest-xdist    # [not (win and python_impl == "pypy")]
         - hypothesis
