@@ -67,7 +67,7 @@ requirements:
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
     # use flang as fortran compiler on windows (uses clang driver)
-    - flang                                  # [win]
+    - flang <18                              # [win]
     # use llvm linker for both of the above
     - lld                                    # [win]
   host:
