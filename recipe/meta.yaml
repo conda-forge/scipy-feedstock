@@ -200,6 +200,9 @@ outputs:
         # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
         - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
         - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
+        # debug
+        - cat ./testlog     # [unix]
+        - type testlog      # [win]
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
         # ensure only one test is left (namely, our hint)
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
