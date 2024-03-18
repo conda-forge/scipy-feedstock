@@ -233,7 +233,7 @@ outputs:
         - python
     test:
       requires:
-        - pytest
+        - pytest <8
         - pytest-timeout
         - pytest-xdist    # [not (win and python_impl == "pypy")]
         - hypothesis
