@@ -25,6 +25,8 @@ source:
       - patches/0002-TST-Add-RNG-seeds-for-TestInvgauss-and-TestLaplace-1.patch
       # backport https://github.com/scipy/scipy/pull/19945
       - patches/0003-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
+      # backport https://github.com/scipy/scipy/pull/20197
+      - patches/0004-TST-linalg-fix-complex-sort-in-test_bad_geneig.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: affd3a56927d3d1c178023121f43c9fa624eced0

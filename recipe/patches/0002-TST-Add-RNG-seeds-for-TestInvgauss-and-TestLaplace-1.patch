@@ -1,7 +1,7 @@
 From 19ac8ce5e81b4ee41be881b8c13767d785451a29 Mon Sep 17 00:00:00 2001
 From: Ben Mares <services-git-throwaway1@tensorial.com>
 Date: Mon, 22 Jan 2024 00:03:12 +0100
-Subject: [PATCH 2/3] TST: Add RNG seeds for TestInvgauss and TestLaplace
+Subject: [PATCH 2/4] TST: Add RNG seeds for TestInvgauss and TestLaplace
  (#19937)
 
 ---
