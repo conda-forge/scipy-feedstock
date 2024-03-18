@@ -7,6 +7,10 @@ package:
 # use 'python_impl' in meta.yaml so it gets picked up by rendering
 # [python_impl == "pypy"]
 
+# need to do the same for blas_impl to ensure CI jobs get split
+# [blas_impl == "mkl"]
+# [enforce_avx512 == "True"]
+
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the relevant submodules; by taking the tarball from github
@@ -21,6 +25,8 @@ source:
       - patches/0002-TST-Add-RNG-seeds-for-TestInvgauss-and-TestLaplace-1.patch
       # backport https://github.com/scipy/scipy/pull/19945
       - patches/0003-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
+      # backport https://github.com/scipy/scipy/pull/20197
+      - patches/0004-TST-linalg-fix-complex-sort-in-test_bad_geneig.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
@@ -63,7 +69,7 @@ requirements:
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
     # use flang as fortran compiler on windows (uses clang driver)
-    - flang                                  # [win]
+    - flang <18                              # [win]
     # use llvm linker for both of the above
     - lld                                    # [win]
   host:
@@ -196,6 +202,9 @@ outputs:
         # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
         - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
         - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
+        # debug
+        - cat ./testlog     # [unix]
+        - type testlog      # [win]
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
         # ensure only one test is left (namely, our hint)
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
@@ -224,26 +233,17 @@ outputs:
         - python
     test:
       requires:
-        - pytest
+        - pytest <8
         - pytest-timeout
         - pytest-xdist    # [not (win and python_impl == "pypy")]
         - hypothesis
         - mpmath
         # needed for scipy.datasets
         - pooch
+        # make sure we test with all blas implementations
+        - libblas =*=*{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # scipy/scipy#15533 - fails depending on BLAS/LAPACK implementation resp. CPU features
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win or aarch64]
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
-        # scipy/scipy#19337
-        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_distribution_outside_)" %}   # [aarch64 or ppc64le]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}                      # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
@@ -284,6 +284,8 @@ outputs:
         {% endif %}
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F? AVX512CD?' in numpy.lib.utils._opt_info() else 1)"  # [enforce_avx512 == "absent" and blas_impl in ("mkl", "openblas")]
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F* AVX512CD*' in numpy.lib.utils._opt_info() else 1)"  # [enforce_avx512 == "present" and blas_impl in ("mkl", "openblas")]
         # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
         # since this takes much longer, do not run the most heavy-weight tests, i.e. use
         # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'

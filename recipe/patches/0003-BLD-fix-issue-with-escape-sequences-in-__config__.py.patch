@@ -1,7 +1,7 @@
 From 3ba05df1f6e2065feaf051b2b8ef55e25f70a0f9 Mon Sep 17 00:00:00 2001
 From: Ralf Gommers <ralf.gommers@gmail.com>
 Date: Mon, 22 Jan 2024 23:30:40 +0100
-Subject: [PATCH 3/3] BLD: fix issue with escape sequences in `__config__.py`
+Subject: [PATCH 3/4] BLD: fix issue with escape sequences in `__config__.py`
 
 Reported in https://github.com/conda-forge/scipy-feedstock/issues/264:
 linker args contained a `\s` on Windows as part of a path in a linker
