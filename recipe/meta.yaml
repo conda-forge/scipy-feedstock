@@ -15,12 +15,8 @@ source:
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 785953658ebf387fc9515b4cdd0e694abdf1ad8be829bcaa0aa7f87ab2a8801b
     patches:
-      # backport https://github.com/scipy/scipy/pull/19909
-      - patches/0001-MAINT-linalg-Adjust-lwork-liwork-changes-OpenBLAS-0..patch
-      # backport https://github.com/scipy/scipy/pull/19937
-      - patches/0002-TST-Add-RNG-seeds-for-TestInvgauss-and-TestLaplace-1.patch
-      # backport https://github.com/scipy/scipy/pull/19945
-      - patches/0003-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
+      # backport https://github.com/scipy/scipy/pull/20197
+      - patches/0001-TST-linalg-fix-complex-sort-in-test_bad_geneig.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
