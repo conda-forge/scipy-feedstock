@@ -1,4 +1,4 @@
-{% set version = "1.12.0" %}
+{% set version = "1.13.0rc1" %}
 
 package:
   name: scipy-split
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 2ade75a1993b703a4cbe43b32f531feb291918cfd6d220778e107cb50b3e0266
+    sha256: 785953658ebf387fc9515b4cdd0e694abdf1ad8be829bcaa0aa7f87ab2a8801b
     patches:
       # backport https://github.com/scipy/scipy/pull/19909
       - patches/0001-MAINT-linalg-Adjust-lwork-liwork-changes-OpenBLAS-0..patch
@@ -23,24 +23,27 @@ source:
       - patches/0003-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
-    git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
+    git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
     folder: scipy/_lib/array_api_compat
   - git_url: https://github.com/boostorg/math.git
-    git_rev: 6bfe5818acdf86432f3e1a78ec5e1d3cdb8c6480
+    git_rev: 1a7be5d895d266a870af7a6ed258e5bcf9838277
     folder: scipy/_lib/boost_math
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
+  - git_url: https://github.com/scipy/pocketfft.git
+    git_rev: c1347f538e9af666c7c1f3351ccb8eebaecbe1ea
+    folder: scipy/_lib/pocketfft
   - git_url: https://github.com/scipy/unuran.git
-    git_rev: 1d315c690787b14781a12e0beca6d25cc75562d6
+    git_rev: 21810c856880bb2f1b3071c8ac4aaf634983b338
     folder: scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
-    git_rev: 96f6800451372dd003e627bbfd732937ac0c685e
+    git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py<39]
   # pypy on aarch/ppc is un(der)maintained and currently broken, see
   # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
