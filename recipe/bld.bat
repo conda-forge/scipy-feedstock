@@ -19,6 +19,10 @@ FOR /F "tokens=* USEBACKQ" %%F IN (`clang.exe -dumpversion`) DO (
     SET "CLANG_VER=%%F"
 )
 
+:: avoid pulling in non-standard `complex` macro definition, see
+:: https://github.com/scipy/scipy/issues/20291
+set "CFLAGS=%CFLAGS% -D_COMPLEX_DEFINED"
+
 :: attempt to match flags for flang as we set them for clang-on-win, see
 :: https://github.com/conda-forge/clang-win-activation-feedstock/blob/main/recipe/activate-clang_win-64.sh
 :: however, -Xflang --dependent-lib=msvcrt currently fails as an unrecognized option, see also
