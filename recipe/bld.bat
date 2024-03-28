@@ -21,7 +21,7 @@ FOR /F "tokens=* USEBACKQ" %%F IN (`clang.exe -dumpversion`) DO (
 
 :: avoid pulling in non-standard `complex` macro definition, see
 :: https://github.com/scipy/scipy/issues/20291
-set "CFLAGS=%CFLAGS% -D_COMPLEX_DEFINED"
+set "CFLAGS=%CFLAGS% -D_CRT_INTERNAL_NONSTDC_NAMES=0"
 
 :: attempt to match flags for flang as we set them for clang-on-win, see
 :: https://github.com/conda-forge/clang-win-activation-feedstock/blob/main/recipe/activate-clang_win-64.sh
