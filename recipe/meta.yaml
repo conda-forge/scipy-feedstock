@@ -25,7 +25,7 @@ source:
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
   - git_url: https://github.com/scipy/pocketfft.git
-    git_rev: 0bf2b51224e7c4e973724bac67d2577c7831e27c
+    git_rev: 9367142748fcc9696a1c9e5a99b76ed9897c9daa
     folder: scipy/_lib/pocketfft
   - git_url: https://github.com/scipy/unuran.git
     git_rev: 21810c856880bb2f1b3071c8ac4aaf634983b338
