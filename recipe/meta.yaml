@@ -1,4 +1,4 @@
-{% set version = "1.13.0rc1" %}
+{% set version = "1.13.0" %}
 
 package:
   name: scipy-split
@@ -13,7 +13,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 785953658ebf387fc9515b4cdd0e694abdf1ad8be829bcaa0aa7f87ab2a8801b
+    sha256: 3ccf1c2da83da095a75c7b45f6658daad0ec9b06efcabe10b70af402adafc3db
     patches:
       # backport https://github.com/scipy/scipy/pull/20197
       - patches/0001-TST-linalg-fix-complex-sort-in-test_bad_geneig.patch
@@ -28,7 +28,7 @@ source:
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
   - git_url: https://github.com/scipy/pocketfft.git
-    git_rev: c1347f538e9af666c7c1f3351ccb8eebaecbe1ea
+    git_rev: 0bf2b51224e7c4e973724bac67d2577c7831e27c
     folder: scipy/_lib/pocketfft
   - git_url: https://github.com/scipy/unuran.git
     git_rev: 21810c856880bb2f1b3071c8ac4aaf634983b338
