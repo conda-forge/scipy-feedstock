@@ -229,6 +229,8 @@ outputs:
         - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
+        # failing on windows as of 1.13.0
+        {% set tests_to_skip = tests_to_skip + " or test_nnls_inner_loop_case1" %}                        # [win]
         # scipy/scipy#15533 - fails depending on BLAS/LAPACK implementation resp. CPU features
         {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win or aarch64]
         # scipy/scipy#19210 - 60 failing tests!
