@@ -1,4 +1,4 @@
-{% set version = "1.12.0" %}
+{% set version = "1.13.0" %}
 
 package:
   name: scipy-split
@@ -13,34 +13,30 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 2ade75a1993b703a4cbe43b32f531feb291918cfd6d220778e107cb50b3e0266
-    patches:
-      # backport https://github.com/scipy/scipy/pull/19909
-      - patches/0001-MAINT-linalg-Adjust-lwork-liwork-changes-OpenBLAS-0..patch
-      # backport https://github.com/scipy/scipy/pull/19937
-      - patches/0002-TST-Add-RNG-seeds-for-TestInvgauss-and-TestLaplace-1.patch
-      # backport https://github.com/scipy/scipy/pull/19945
-      - patches/0003-BLD-fix-issue-with-escape-sequences-in-__config__.py.patch
+    sha256: 3ccf1c2da83da095a75c7b45f6658daad0ec9b06efcabe10b70af402adafc3db
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
-    git_rev: affd3a56927d3d1c178023121f43c9fa624eced0
+    git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
     folder: scipy/_lib/array_api_compat
   - git_url: https://github.com/boostorg/math.git
-    git_rev: 6bfe5818acdf86432f3e1a78ec5e1d3cdb8c6480
+    git_rev: 1a7be5d895d266a870af7a6ed258e5bcf9838277
     folder: scipy/_lib/boost_math
   - git_url: https://github.com/scipy/highs.git
     git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
+  - git_url: https://github.com/scipy/pocketfft.git
+    git_rev: 9367142748fcc9696a1c9e5a99b76ed9897c9daa
+    folder: scipy/_lib/pocketfft
   - git_url: https://github.com/scipy/unuran.git
-    git_rev: 1d315c690787b14781a12e0beca6d25cc75562d6
+    git_rev: 21810c856880bb2f1b3071c8ac4aaf634983b338
     folder: scipy/_lib/unuran
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
-    git_rev: 96f6800451372dd003e627bbfd732937ac0c685e
+    git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py<39]
   # pypy on aarch/ppc is un(der)maintained and currently broken, see
   # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
@@ -63,7 +59,7 @@ requirements:
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
     # use flang as fortran compiler on windows (uses clang driver)
-    - flang                                  # [win]
+    - flang <18                              # [win]
     # use llvm linker for both of the above
     - lld                                    # [win]
   host:
@@ -233,6 +229,8 @@ outputs:
         - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
+        # failing on windows as of 1.13.0
+        {% set tests_to_skip = tests_to_skip + " or test_nnls_inner_loop_case1" %}                        # [win]
         # scipy/scipy#15533 - fails depending on BLAS/LAPACK implementation resp. CPU features
         {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win or aarch64]
         # scipy/scipy#19210 - 60 failing tests!
@@ -242,8 +240,6 @@ outputs:
             {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
             {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
         {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
-        # scipy/scipy#19337
-        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_distribution_outside_)" %}   # [aarch64 or ppc64le]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes" %}                      # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
