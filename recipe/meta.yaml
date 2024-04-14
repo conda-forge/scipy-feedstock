@@ -51,6 +51,8 @@ build:
   skip: true  # [py<310]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
+  # debug: we're not running tests on osx-arm; don't waste CI
+  skip: true  # [osx and arm64]
 
 requirements:
   build:
