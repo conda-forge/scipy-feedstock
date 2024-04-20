@@ -54,6 +54,7 @@ requirements:
     - ninja                                  # [build_platform != target_platform]
     - pkg-config                             # [build_platform != target_platform]
     - {{ compiler('c') }}
+    - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
     - {{ compiler('fortran') }}              # [unix]
     # pythran code needs clang-cl on windows
@@ -91,6 +92,7 @@ outputs:
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
         # only need these for the strong run exports
         - {{ compiler('c') }}
+        - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
       host:
@@ -205,6 +207,7 @@ outputs:
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
         # only need these for the strong run exports
         - {{ compiler('c') }}
+        - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
       host:
