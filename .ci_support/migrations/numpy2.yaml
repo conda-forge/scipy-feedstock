@@ -7,6 +7,7 @@ __migrator:
     channel_sources:
       - conda-forge
       - conda-forge/label/numpy_rc,conda-forge
+      - conda-forge/label/numpy_rc,conda-forge/label/meson_dev,conda-forge
   use_local: true
 
 # needs to fully reproduce zip of {python, python_impl, numpy}
