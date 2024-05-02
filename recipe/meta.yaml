@@ -1,5 +1,10 @@
 {% set version = "1.13.0" %}
 
+{% if numpy is not defined %}
+{% set numpy = "2.0.0" %}
+{% endif %}
+{% set numpy_minor = numpy.split(".")[1] | int %}
+
 package:
   name: scipy-split
   version: {{ version }}
@@ -111,8 +116,11 @@ outputs:
         - pip
       run:
         - python
-        # see np_maxversion in https://github.com/scipy/scipy/blob/v{{ version }}/setup.py
-        - {{ pin_compatible('numpy', upper_bound='1.28') }}
+        # numpy's run-export only requires <3 because not every package
+        # is exposed as deeply to its ABI. scipy however only supports
+        # the two next minor versions after the numpy we build against, see
+        # https://scipy.github.io/devdocs/dev/core-dev/index.html#version-ranges-for-numpy-and-other-dependencies
+        - numpy <2.{{ numpy_minor + 3 }}
     test:
       requires:
         - pytest
