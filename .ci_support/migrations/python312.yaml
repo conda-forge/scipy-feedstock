@@ -28,7 +28,6 @@ __migrator:
     - cross-python
     - python_abi
   exclude_pinned_pkgs: false
-  use_local: true
 
 python:
   - 3.12.* *_cpython
