@@ -9,9 +9,6 @@ package:
   name: scipy-split
   version: {{ version }}
 
-# use 'python_impl' in meta.yaml so it gets picked up by rendering
-# [python_impl == "pypy"]
-
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the relevant submodules; by taking the tarball from github
@@ -46,9 +43,8 @@ source:
 build:
   number: 1
   skip: true  # [py<39]
-  # pypy on aarch/ppc is un(der)maintained and currently broken, see
-  # https://github.com/conda-forge/pypy3.6-feedstock/issues/111
-  skip: true  # [(aarch64 or ppc64le) and python_impl == "pypy"]
+  # pypy is currently broken and on its way out anyway
+  skip: true  # [python_impl == "pypy"]
 
 requirements:
   build:
@@ -189,9 +185,8 @@ outputs:
             "_lib/_test_ccallback", "integrate/_test_multivariate", "io/_test_fortran",
             "ndimage/_ctest", "ndimage/_cytest", "special/_test_internal"
         ] %}
-        {% set PY_ABI = "cpython-" ~ PY_VER.replace(".", "") %}                         # [unix and python_impl == "cpython"]
-        {% set PY_ABI = "cp" ~ PY_VER.replace(".", "") %}                               # [win and python_impl == "cpython"]
-        {% set PY_ABI = "pypy" ~ PY_VER.replace(".", "") ~ "-pp73" %}                   # [python_impl == "pypy"]
+        {% set PY_ABI = "cpython-" ~ PY_VER.replace(".", "") %}                         # [unix]
+        {% set PY_ABI = "cp" ~ PY_VER.replace(".", "") %}                               # [win]
         {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else "powerpc64le")%}  # [linux]
         {% for each_lib in test_libraries %}
         - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-{{ ARCH }}-linux-gnu.so                     # [linux]
@@ -236,7 +231,7 @@ outputs:
       requires:
         - pytest
         - pytest-timeout
-        - pytest-xdist    # [not (win and python_impl == "pypy")]
+        - pytest-xdist
         - hypothesis
         - mpmath
         # needed for scipy.datasets
@@ -265,44 +260,15 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
-        # occasionally runs out of memory on windows + pypy
-        {% set tests_to_skip = tests_to_skip + " or test_bootstrap_against_" %}                           # [(python_impl == "pypy") and win]
-        {% set tests_to_skip = tests_to_skip + " or test_more_converged" %}                               # [(python_impl == "pypy") and win]
-        # fails on windows + pypy due to some file access race
-        {% set tests_to_skip = tests_to_skip + " or (test_read_over64bit and _fast_matrix_market)" %}     # [(python_impl == "pypy") and win]
-        # very slow tests for pypy in emulation
-        {% if (python_impl == "pypy") and (aarch64 or ppc64le) %}
-            {% set tests_to_skip = tests_to_skip + " or TestDualAnnealing or TestQuad or TestNQuad" %}
-            {% set tests_to_skip = tests_to_skip + " or TestMonteCarloHypothesisTest or TestTRF" %}
-            {% set tests_to_skip = tests_to_skip + " or (TestBessel and test_fs_param)" %}
-            {% set tests_to_skip = tests_to_skip + " or (TestOrdQZWorkspaceSize and test_decompose)" %}
-            {% set tests_to_skip = tests_to_skip + " or (TestSobolIndices and test_ishigami[scalar])" %}
-            {% set tests_to_skip = tests_to_skip + " or (TestMannWhitneyU and test_asymptotic_behavior)" %}
-            {% set tests_to_skip = tests_to_skip + " or (test_precond_inverse and -poisson2d])" %}
-            {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers or test_basic_fit_mle" %}
-            {% set tests_to_skip = tests_to_skip + " or test_cdf_against_tables or test_pdf_integration" %}
-            {% set tests_to_skip = tests_to_skip + " or test_cdist_ and (refcount or calling_convention)" %}
-            {% set tests_to_skip = tests_to_skip + " or test_conditionally_positive_definite" %}
-            {% set tests_to_skip = tests_to_skip + " or test_cont_basic[500 or test_cython_api[elliprj]" %}
-            {% set tests_to_skip = tests_to_skip + " or test_filtfilt_gust or test_kappa3_array_gh13582" %}
-            {% set tests_to_skip = tests_to_skip + " or test_fitstart[genexpon-shapes28] or test_gh12922" %}
-            {% set tests_to_skip = tests_to_skip + " or test_integration_sparse or test_kdtree_box" %}
-            {% set tests_to_skip = tests_to_skip + " or test_minimize_callback_copies_array[fmin] or test_mip1" %}
-            {% set tests_to_skip = tests_to_skip + " or test_public_modules_importable or test_neldermead_limit" %}
-            {% set tests_to_skip = tests_to_skip + " or test_random_exact or test_random_complex_exact" %}
-            {% set tests_to_skip = tests_to_skip + " or test_cdf_against_multivariate_normal[10]" %}
-        {% endif %}
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
-        # the tests ppc64le and aarch64 are currently run through emulation in QEMU;
-        # since this takes much longer, do not run the most heavy-weight tests, i.e. use
-        # label='fast'; same for PyPy due to huge runtime; otherwise set label='full'
-        {% set label = "'fast'" if (aarch64 or ppc64le or python_impl == "pypy") else "'full'" %}
-        {% set para = "" if (win and python_impl == "pypy") else "'-nauto'," %}
+        # tests for ppc64le and aarch64 are run in emulation through QEMU; as this takes
+        # much longer, do not run the most heavy-weight tests, i.e. use label='fast'
+        {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
         # for signature of scipy.test see below (note default: label='fast'):
         # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
         {% set param = "verbose=1, label=" + label + ", tests=None" %}
-        {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', " ~ para ~ " '--timeout=1200', '--durations=50']" %}
+        {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '-nauto', '--timeout=1200', '--durations=50']" %}
         - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
 
 about:
