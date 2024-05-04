@@ -3,7 +3,7 @@ c_compiler:
 c_stdlib:
 - vs
 channel_sources:
-- conda-forge/label/meson_dev,conda-forge
+- conda-forge/label/numpy_rc,conda-forge/label/meson_dev,conda-forge
 channel_targets:
 - conda-forge main
 cxx_compiler:
@@ -15,7 +15,7 @@ libcblas:
 liblapack:
 - 3.9 *netlib
 numpy:
-- '1.26'
+- '2.0'
 pin_run_as_build:
   python:
     min_pin: x.x

@@ -1,0 +1,29 @@
+From e14498864ab3e219abbcf5141c308625696e3e06 Mon Sep 17 00:00:00 2001
+From: Evgeni Burovski <evgeny.burovskiy@gmail.com>
+Date: Sun, 14 Apr 2024 15:58:36 +0300
+Subject: [PATCH] BUG: linalg: fix ordering of complex conj gen eigenvalues
+
+This was reported to cause test failures under windows + MKL in conda-forge
+cf https://github.com/scipy/scipy/issues/20471
+---
+ scipy/linalg/tests/test_decomp.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scipy/linalg/tests/test_decomp.py b/scipy/linalg/tests/test_decomp.py
+index 8722b31468..69a4067872 100644
+--- a/scipy/linalg/tests/test_decomp.py
++++ b/scipy/linalg/tests/test_decomp.py
+@@ -230,8 +230,8 @@ class TestEig:
+         w_fin = -1j * np.real_if_close(1j*w_fin, tol=1e-10)
+         wt_fin = -1j * np.real_if_close(1j*wt_fin, tol=1e-10)
+ 
+-        perm = argsort(w_fin)
+-        permt = argsort(wt_fin)
++        perm = argsort(abs(w_fin) + w_fin.imag)
++        permt = argsort(abs(wt_fin) + wt_fin.imag)
+ 
+         assert_allclose(w_fin[perm], wt_fin[permt],
+                         atol=1e-7, rtol=1e-7, err_msg=msg)
+-- 
+2.44.0.windows.1
+
