@@ -67,7 +67,7 @@ requirements:
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
     # use flang as fortran compiler on windows (uses clang driver)
-    - flang <18                              # [win]
+    - flang                                  # [win]
     # use llvm linker for both of the above
     - lld                                    # [win]
   host:
@@ -232,7 +232,7 @@ outputs:
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
         - clang                                  # [win]
-        - flang <18                              # [win]
+        - flang                                  # [win]
         - lld                                    # [win]
         - sed                                    # [unix]
         - m2-sed                                 # [win]
