@@ -16,9 +16,6 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: c05838ab4ba02b1e8329efbe2d12124ed209c68aa9df42169bab0f17ebcfc215
-    patches:
-      # backport https://github.com/scipy/scipy/pull/20473
-      - patches/0001-BUG-linalg-fix-ordering-of-complex-conj-gen-eigenval.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
