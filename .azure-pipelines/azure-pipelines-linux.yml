@@ -8,6 +8,10 @@ jobs:
     vmImage: ubuntu-latest
   strategy:
     matrix:
+      linux_64_numpy1.26python3.12.____cpythonpython_implcpython:
+        CONFIG: linux_64_numpy1.26python3.12.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_64_numpy2.0python3.10.____cpythonpython_implcpython:
         CONFIG: linux_64_numpy2.0python3.10.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
@@ -16,12 +20,12 @@ jobs:
         CONFIG: linux_64_numpy2.0python3.11.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
-      linux_64_numpy2.0python3.12.____cpythonpython_implcpython:
-        CONFIG: linux_64_numpy2.0python3.12.____cpythonpython_implcpython
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_64_numpy2.0python3.9.____cpythonpython_implcpython:
         CONFIG: linux_64_numpy2.0python3.9.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
+      linux_aarch64_numpy1.26python3.12.____cpythonpython_implcpython:
+        CONFIG: linux_aarch64_numpy1.26python3.12.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_aarch64_numpy2.0python3.10.____cpythonpython_implcpython:
@@ -32,12 +36,12 @@ jobs:
         CONFIG: linux_aarch64_numpy2.0python3.11.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
-      linux_aarch64_numpy2.0python3.12.____cpythonpython_implcpython:
-        CONFIG: linux_aarch64_numpy2.0python3.12.____cpythonpython_implcpython
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_aarch64_numpy2.0python3.9.____cpythonpython_implcpython:
         CONFIG: linux_aarch64_numpy2.0python3.9.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
+      linux_ppc64le_numpy1.26python3.12.____cpythonpython_implcpython:
+        CONFIG: linux_ppc64le_numpy1.26python3.12.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_ppc64le_numpy2.0python3.10.____cpythonpython_implcpython:
@@ -46,10 +50,6 @@ jobs:
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_ppc64le_numpy2.0python3.11.____cpythonpython_implcpython:
         CONFIG: linux_ppc64le_numpy2.0python3.11.____cpythonpython_implcpython
-        UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
-      linux_ppc64le_numpy2.0python3.12.____cpythonpython_implcpython:
-        CONFIG: linux_ppc64le_numpy2.0python3.12.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
         DOCKER_IMAGE: quay.io/condaforge/linux-anvil-cos7-x86_64
       linux_ppc64le_numpy2.0python3.9.____cpythonpython_implcpython:
