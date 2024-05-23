@@ -1,4 +1,5 @@
-{% set version = "1.13.0" %}
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set version = "1.13.1" %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -15,7 +16,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 3ccf1c2da83da095a75c7b45f6658daad0ec9b06efcabe10b70af402adafc3db
+    sha256: c05838ab4ba02b1e8329efbe2d12124ed209c68aa9df42169bab0f17ebcfc215
     patches:
       # backport https://github.com/scipy/scipy/pull/20473
       - patches/0001-BUG-linalg-fix-ordering-of-complex-conj-gen-eigenval.patch
@@ -41,7 +42,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 1
+  number: 0
   skip: true  # [py<39]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
@@ -87,7 +88,7 @@ requirements:
 # build-output.{sh,bat} installs the files
 outputs:
   - name: scipy
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     version: {{ version }}
     requirements:
@@ -205,7 +206,7 @@ outputs:
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
 
   - name: scipy-tests
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     requirements:
       build:
