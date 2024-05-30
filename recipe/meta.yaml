@@ -1,4 +1,4 @@
-{% set version = "1.13.1" %}
+{% set version = "1.14.0rc1" %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -15,27 +15,30 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: c05838ab4ba02b1e8329efbe2d12124ed209c68aa9df42169bab0f17ebcfc215
+    sha256: be54c9e34168ce64edc6ae2855013348c2fd917b5c942abb591473bda14f1f34
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
-    git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
     folder: scipy/_lib/array_api_compat
+    git_rev: fd22a73e19b2273035e15e8bce57f767dee8dff7
   - git_url: https://github.com/boostorg/math.git
-    git_rev: 1a7be5d895d266a870af7a6ed258e5bcf9838277
     folder: scipy/_lib/boost_math
+    git_rev: a53b013c735caa98179532a32ad24d34569b9710
+  - git_url: https://github.com/cobyqa/cobyqa.git
+    folder: scipy/_lib/cobyqa
+    git_rev: 7f40b6dd54525d7aa722f9558c186d39d163af94
   - git_url: https://github.com/scipy/highs.git
-    git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
     folder: scipy/_lib/highs
+    git_rev: 4a122958a82e67e725d08153e099efe4dad099a2
   - git_url: https://github.com/scipy/pocketfft.git
-    git_rev: 9367142748fcc9696a1c9e5a99b76ed9897c9daa
     folder: scipy/_lib/pocketfft
+    git_rev: 9367142748fcc9696a1c9e5a99b76ed9897c9daa
   - git_url: https://github.com/scipy/unuran.git
-    git_rev: 21810c856880bb2f1b3071c8ac4aaf634983b338
     folder: scipy/_lib/unuran
+    git_rev: 21810c856880bb2f1b3071c8ac4aaf634983b338
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/sparse/linalg/_propack
   - git_url: https://github.com/scipy/PROPACK.git
-    git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
     folder: scipy/sparse/linalg/_propack/PROPACK
+    git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
   number: 0
