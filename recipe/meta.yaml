@@ -42,7 +42,7 @@ source:
 
 build:
   number: 0
-  skip: true  # [py<39]
+  skip: true  # [py<310]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
 
