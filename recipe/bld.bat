@@ -34,6 +34,7 @@ set "MESON_RSP_THRESHOLD=320000"
 :: -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 %PYTHON% -m build -w -n -x ^
     -Cbuilddir=builddir ^
+    -Cinstall-args=--tags=runtime,python-runtime,devel ^
     -Csetup-args=-Dblas=blas ^
     -Csetup-args=-Dcpp_std=c++17 ^
     -Csetup-args=-Dlapack=lapack ^

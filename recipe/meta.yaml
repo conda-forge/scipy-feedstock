@@ -173,7 +173,7 @@ outputs:
         - scipy.stats.qmc
         - scipy.stats.sampling
       commands:
-        # absence of tests (selection from test_folders_to_delete.txt)
+        # absence of tests (selection)
         {% set test_folders = [
             "_lib/tests", "cluster/tests", "constants/tests", "datasets/tests",
             "fftpack/tests", "fft/tests", "integrate/tests", "interpolate/tests",
@@ -186,7 +186,7 @@ outputs:
         - if exist %SP_DIR%\scipy\{{ "\\".join(each_folder.split("/")) }} exit 1  # [win]
         {% endfor %}
 
-        # absence of testing DSOs (selection from test_libraries_to_delete.txt)
+        # absence of testing DSOs (selection)
         {% set test_libraries = [
             "_lib/_test_ccallback", "integrate/_test_multivariate", "io/_test_fortran",
             "ndimage/_ctest", "ndimage/_cytest", "special/_test_internal"
@@ -217,19 +217,38 @@ outputs:
       build:
         - python                                 # [build_platform != target_platform]
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-        # only need these for the strong run exports
+        - cython                                 # [build_platform != target_platform]
+        - numpy                                  # [build_platform != target_platform]
+        - pybind11                               # [build_platform != target_platform]
+        - meson-python                           # [build_platform != target_platform]
+        - cmake                                  # [build_platform != target_platform]
+        - ninja                                  # [build_platform != target_platform]
+        - pkg-config                             # [build_platform != target_platform]
         - {{ compiler('c') }}
         - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
+        - clang                                  # [win]
+        - flang <18                              # [win]
+        - lld                                    # [win]
+        - sed                                    # [unix]
+        - m2-sed                                 # [win]
       host:
         - {{ pin_subpackage('scipy', exact=True) }}
-        # need a minimum for (re-)installation of wheel
+        - libblas
+        - libcblas
+        - liblapack
         - python
         - pip
+        - cython
+        - meson-python
+        - meson <1.4                             # [win]
+        - ninja
+        - pkg-config
+        - python-build
+        - pybind11
+        - pythran
         - numpy
-        # make link check happy
-        - liblapack
       run:
         - {{ pin_subpackage('scipy', exact=True) }}
         - python
