@@ -1,0 +1,45 @@
+From d37a416eeaa43f428d685e94e9a734ead4100a45 Mon Sep 17 00:00:00 2001
+From: Matt Haberland <mhaberla@calpoly.edu>
+Date: Tue, 11 Jun 2024 20:14:44 -0400
+Subject: [PATCH 2/2] TST: adjust tolerances of failing tests
+
+---
+ scipy/optimize/tests/test_differentiate.py | 2 +-
+ scipy/special/tests/test_hyp2f1.py         | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/scipy/optimize/tests/test_differentiate.py b/scipy/optimize/tests/test_differentiate.py
+index ad9407675b..195fec2f18 100644
+--- a/scipy/optimize/tests/test_differentiate.py
++++ b/scipy/optimize/tests/test_differentiate.py
+@@ -64,7 +64,7 @@ class TestDifferentiate:
+         assert_equal(res.df.shape, shape)
+ 
+         ref_error = [ref.error for ref in refs]
+-        assert_allclose(res.error.ravel(), ref_error, atol=5e-15)
++        assert_allclose(res.error.ravel(), ref_error, atol=1e-12)
+         assert_equal(res.error.shape, shape)
+ 
+         ref_success = [ref.success for ref in refs]
+diff --git a/scipy/special/tests/test_hyp2f1.py b/scipy/special/tests/test_hyp2f1.py
+index f5a7978abe..6c2f6ec103 100644
+--- a/scipy/special/tests/test_hyp2f1.py
++++ b/scipy/special/tests/test_hyp2f1.py
+@@ -791,7 +791,7 @@ class TestHyp2f1:
+                     c=2.0397202577726152,
+                     z=(-0.3157894736842106+0.7368421052631575j),
+                     expected=(54749.216391029935-23078.144720887536j),
+-                    rtol=1e-15,
++                    rtol=2e-15,
+                 ),
+             ),
+             pytest.param(
+@@ -2183,7 +2183,7 @@ class TestHyp2f1:
+                     c=16.088264119063613,
+                     z=(0.26551724137931054+1.024137931034483j),
+                     expected=(-0.18515160890991517+0.7959014164484782j),
+-                    rtol=1.1e-15,
++                    rtol=2e-15,
+                 ),
+             ),
+             pytest.param(

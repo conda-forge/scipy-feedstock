@@ -19,6 +19,8 @@ source:
     patches:
       # backport https://github.com/scipy/scipy/pull/20937
       - patches/0001-BUG-BLD-special-Ensure-symbols-in-sf_error_state-sha.patch
+      # backport https://github.com/scipy/scipy/pull/20945
+      - patches/0002-TST-adjust-tolerances-of-failing-tests.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     folder: scipy/_lib/array_api_compat

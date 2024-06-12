@@ -1,8 +1,8 @@
 From 001c8edde0061cc4ca4e24a8a928beb6899d36c7 Mon Sep 17 00:00:00 2001
 From: Albert Steppi <albert.steppi@gmail.com>
 Date: Thu, 13 Jun 2024 03:33:51 -0400
-Subject: [PATCH] BUG/BLD: special: Ensure symbols in `sf_error_state` shared
- library are exported/imported on MSVC (#20937)
+Subject: [PATCH 1/2] BUG/BLD: special: Ensure symbols in `sf_error_state`
+ shared library are exported/imported on MSVC (#20937)
 
 * Add compile flag fpp for ifx, not just ifort
 
