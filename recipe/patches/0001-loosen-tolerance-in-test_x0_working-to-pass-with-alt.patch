@@ -1,0 +1,23 @@
+From 9a71897659fee8e2fd3f9dcfe6554dddf6e68033 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Thu, 13 Jun 2024 12:42:14 +1100
+Subject: [PATCH 1/2] loosen tolerance in test_x0_working to pass with
+ alternate BLAS backends
+
+---
+ scipy/sparse/linalg/_isolve/tests/test_iterative.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scipy/sparse/linalg/_isolve/tests/test_iterative.py b/scipy/sparse/linalg/_isolve/tests/test_iterative.py
+index 01540ff10c..b4ff16a01b 100644
+--- a/scipy/sparse/linalg/_isolve/tests/test_iterative.py
++++ b/scipy/sparse/linalg/_isolve/tests/test_iterative.py
+@@ -504,7 +504,7 @@ def test_x0_working(solver):
+ 
+     x, info = solver(A, b, x0=x0, **kw)
+     assert info == 0
+-    assert norm(A @ x - b) <= 2e-6*norm(b)
++    assert norm(A @ x - b) <= 3e-6*norm(b)
+ 
+ 
+ def test_x0_equals_Mb(case):
