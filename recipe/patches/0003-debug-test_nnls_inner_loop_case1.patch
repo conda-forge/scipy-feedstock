@@ -1,0 +1,25 @@
+From 10df00578a94c46594928b9faf275462cbf96ed1 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Fri, 14 Jun 2024 22:14:09 +1100
+Subject: [PATCH 3/3] debug test_nnls_inner_loop_case1
+
+---
+ scipy/optimize/tests/test_nnls.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scipy/optimize/tests/test_nnls.py b/scipy/optimize/tests/test_nnls.py
+index 69b0f186a5..aa4956febd 100644
+--- a/scipy/optimize/tests/test_nnls.py
++++ b/scipy/optimize/tests/test_nnls.py
+@@ -97,7 +97,7 @@ class TestNNLS:
+ 
+         # Small perturbations can already make the infinite loop go away (just
+         # uncomment the next line)
+-        # k = k + 1e-10 * np.random.normal(size=N)
++        k = k + 1e-10 * np.random.normal(size=N)
+         dact, _ = nnls(W @ A, W @ k)
+         assert_allclose(dact, d, rtol=0., atol=1e-10)
+ 
+-- 
+2.44.0.windows.1
+
