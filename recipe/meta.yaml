@@ -55,6 +55,8 @@ build:
   skip: true  # [python_impl == "pypy"]
   # debug: we're not running tests on osx-arm; don't waste CI
   skip: true  # [osx and arm64]
+  # debug: avoid unnecessary CI load
+  skip: true  # [blas_impl != "mkl"]
 
 requirements:
   build:
