@@ -9,6 +9,10 @@ package:
   name: scipy-split
   version: {{ version }}
 
+# use 'blas_impl' in meta.yaml to ensure CI jobs get split
+# [blas_impl == "mkl"]
+# [enforce_avx512 == "True"]
+
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the relevant submodules; by taking the tarball from github
@@ -16,6 +20,15 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: c05838ab4ba02b1e8329efbe2d12124ed209c68aa9df42169bab0f17ebcfc215
+    patches:
+      # backport https://github.com/scipy/scipy/pull/20952
+      - patches/0001-loosen-tolerance-in-test_x0_working-to-pass-with-alt.patch
+      # backport https://github.com/scipy/scipy/pull/20953
+      - patches/0002-loosen-tolerance-in-test_krandinit-slightly-to-pass-.patch
+      # backport https://github.com/scipy/scipy/pull/20961
+      - patches/0003-TST-robustify-test_nnls_inner_loop_case1.patch
+      # debug https://github.com/scipy/scipy/issues/15533
+      - patches/0004-add-debug-statements-for-bicgstab.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
@@ -42,6 +55,10 @@ build:
   skip: true  # [py<39]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
+  # debug: we're not running tests on osx-arm; don't waste CI
+  skip: true  # [osx and arm64]
+  # debug: avoid unnecessary CI load
+  skip: true  # [blas_impl not in ("accelerate", "mkl")]
 
 requirements:
   build:
@@ -200,6 +217,9 @@ outputs:
         # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
         - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
         - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
+        # debug
+        - cat ./testlog     # [unix]
+        - type testlog      # [win]
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
         # ensure only one test is left (namely, our hint)
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
@@ -236,19 +256,10 @@ outputs:
         - mpmath
         # needed for scipy.datasets
         - pooch
+        # make sure we test with all blas implementations
+        - libblas =*=*{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # failing on windows as of 1.13.0
-        {% set tests_to_skip = tests_to_skip + " or test_nnls_inner_loop_case1" %}                        # [win]
-        # scipy/scipy#15533 - fails depending on BLAS/LAPACK implementation resp. CPU features
-        {% set tests_to_skip = tests_to_skip + " or test_x0_equals_Mb[nonsymposdef-bicgstab]" %}          # [win or aarch64]
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
@@ -263,6 +274,8 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F? AVX512CD?' in numpy.lib._utils_impl._opt_info() else 1)"  # [enforce_avx512 == "absent" and blas_impl in ("mkl", "openblas")]
+        - python -c "import sys; import numpy; sys.exit(0 if 'AVX512F* AVX512CD*' in numpy.lib._utils_impl._opt_info() else 1)"  # [enforce_avx512 == "present" and blas_impl in ("mkl", "openblas")]
         # tests for ppc64le and aarch64 are run in emulation through QEMU; as this takes
         # much longer, do not run the most heavy-weight tests, i.e. use label='fast'
         {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
