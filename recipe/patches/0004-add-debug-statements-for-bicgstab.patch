@@ -1,54 +1,29 @@
-From 43f6bb5caac9f511fbb109782c2a88a0aaeeb2a6 Mon Sep 17 00:00:00 2001
+From 9a4c98ac45a596341a7b46864c29f074c5e536eb Mon Sep 17 00:00:00 2001
 From: "H. Vetinari" <h.vetinari@gmx.com>
 Date: Sun, 16 Jun 2024 13:38:01 +1100
 Subject: [PATCH 4/4] add debug statements for bicgstab
 
 ---
- scipy/sparse/linalg/_isolve/iterative.py | 26 ++++++++++++------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ scipy/sparse/linalg/_isolve/iterative.py | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/scipy/sparse/linalg/_isolve/iterative.py b/scipy/sparse/linalg/_isolve/iterative.py
-index 11f7191432..002ad0b739 100644
+index 11f7191432..3552177560 100644
 --- a/scipy/sparse/linalg/_isolve/iterative.py
 +++ b/scipy/sparse/linalg/_isolve/iterative.py
-@@ -169,9 +169,8 @@ def bicg(A, b, x0=None, *, tol=_NoValue, maxiter=None, M=None, callback=None,
-         return postprocess(x), maxiter
- 
- 
--@_deprecate_positional_args(version="1.14")
--def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
--             callback=None, atol=0., rtol=1e-5):
-+def bicgstab(A, b, x0=None, *, rtol=1e-5, atol=0., maxiter=None, M=None,
-+             callback=None):
-     """Use BIConjugate Gradient STABilized iteration to solve ``Ax = b``.
- 
-     Parameters
-@@ -200,11 +199,6 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
-     callback : function
-         User-supplied function to call after each iteration.  It is called
-         as callback(xk), where xk is the current solution vector.
--    tol : float, optional, deprecated
--
--        .. deprecated:: 1.12.0
--           `bicgstab` keyword argument ``tol`` is deprecated in favor of
--           ``rtol`` and will be removed in SciPy 1.14.0.
- 
-     Returns
-     -------
-@@ -236,9 +230,9 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
+@@ -236,9 +236,9 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
      """
      A, M, x, b, postprocess = make_system(A, M, x0, b)
      bnrm2 = np.linalg.norm(b)
 -
--    atol, _ = _get_atol_rtol('bicgstab', bnrm2, tol, atol, rtol)
--
 +    print(f"Starting bnrm2 : {bnrm2}")
-+    atol, _ = _get_atol_rtol('bicgstab', bnrm2, atol, rtol)
+     atol, _ = _get_atol_rtol('bicgstab', bnrm2, tol, atol, rtol)
+-
 +    print(f"Starting atol: {atol}")
      if bnrm2 == 0:
          return postprocess(b), 0
  
-@@ -256,26 +250,30 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
+@@ -256,26 +256,30 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
      # sqrt might have been meant instead.
      rhotol = np.finfo(x.dtype.char).eps**2
      omegatol = rhotol
@@ -81,10 +56,14 @@ index 11f7191432..002ad0b739 100644
              p -= omega*v
              p *= beta
              p += r
-@@ -286,9 +284,11 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
+@@ -286,9 +290,15 @@ def bicgstab(A, b, *, x0=None, tol=_NoValue, maxiter=None, M=None,
          phat = psolve(p)
          v = matvec(phat)
          rv = dotprod(rtilde, v)
++        print("p", p)
++        print("phat", phat)
++        print("v", v)
++        print("rtilde", rtilde)
 +        print(f"Current rv : {rv}")
          if rv == 0:
              return postprocess(x), -11
