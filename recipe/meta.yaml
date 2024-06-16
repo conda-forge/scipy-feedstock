@@ -25,8 +25,10 @@ source:
       - patches/0001-loosen-tolerance-in-test_x0_working-to-pass-with-alt.patch
       # backport https://github.com/scipy/scipy/pull/20953
       - patches/0002-loosen-tolerance-in-test_krandinit-slightly-to-pass-.patch
-      # debug https://github.com/scipy/scipy/issues/20470
-      - patches/0003-debug-test_nnls_inner_loop_case1.patch
+      # backport https://github.com/scipy/scipy/pull/20961
+      - patches/0003-TST-robustify-test_nnls_inner_loop_case1.patch
+      # debug https://github.com/scipy/scipy/issues/15533
+      - patches/0004-add-debug-statements-for-bicgstab.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     git_rev: 05548f0281f13e7cb6a293a422ef8c1a90021413
@@ -56,7 +58,7 @@ build:
   # debug: we're not running tests on osx-arm; don't waste CI
   skip: true  # [osx and arm64]
   # debug: avoid unnecessary CI load
-  skip: true  # [blas_impl != "mkl"]
+  skip: true  # [blas_impl not in ("accelerate", "mkl")]
 
 requirements:
   build:
