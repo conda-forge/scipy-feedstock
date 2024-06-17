@@ -38,7 +38,7 @@ source:
     folder: scipy/sparse/linalg/_propack/PROPACK
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
