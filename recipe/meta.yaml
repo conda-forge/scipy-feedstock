@@ -215,6 +215,9 @@ outputs:
   - name: scipy-tests
     script: build-output.sh   # [not win]
     script: build-output.bat  # [win]
+    build:
+      ignore_run_exports:     # [win]
+        - libflang            # [win]
     requirements:
       build:
         - python                                 # [build_platform != target_platform]
