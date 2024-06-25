@@ -41,7 +41,7 @@ source:
     git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<310]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
@@ -210,6 +210,9 @@ outputs:
   - name: scipy-tests
     script: build-output.sh   # [not win]
     script: build-output.bat  # [win]
+    build:
+      ignore_run_exports:     # [win]
+        - libflang            # [win]
     requirements:
       build:
         - python                                 # [build_platform != target_platform]
