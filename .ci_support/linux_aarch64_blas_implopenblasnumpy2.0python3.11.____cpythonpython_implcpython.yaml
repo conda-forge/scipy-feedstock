@@ -1,5 +1,7 @@
 BUILD:
 - aarch64-conda_cos7-linux-gnu
+blas_impl:
+- openblas
 c_compiler:
 - gcc
 c_compiler_version:
@@ -39,7 +41,7 @@ pin_run_as_build:
     min_pin: x.x
     max_pin: x.x
 python:
-- 3.12.* *_cpython
+- 3.11.* *_cpython
 python_impl:
 - cpython
 target_platform:
