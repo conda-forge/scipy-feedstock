@@ -9,45 +9,43 @@ export PIP_IGNORE_INSTALLED=True
 export PIP_NO_INDEX=True
 export PYTHONDONTWRITEBYTECODE=True
 
-# need to use force to reinstall the tests the second time
-# (otherwise pip thinks the package is installed already)
-pip install dist/scipy*.whl --force-reinstall
-
-# delete tests from baseline output "scipy"
 if [[ "$PKG_NAME" == "scipy" ]]; then
-    # verify $RECIPE_DIR/test_folders_to_delete.txt is up to date;
-    # it's enough to do this on one platform
-    if [[ "${target_platform}" == "linux-64" ]]; then
-        # validating this is important because windows does not have
-        # a good dynamic command like 'find ... -name tests -type d',
-        # and we're using this file to do the deletions on windows.
-        find ${SP_DIR}/scipy -name tests -type d -printf '%p\n' \
-            | sort -k1 | sed "s:${SP_DIR}/scipy/::g" > testfolders
-        echo "Test folders to be deleted:"
-        cat testfolders
-        # diff returns error code if there are differences
-        diff $RECIPE_DIR/test_folders_to_delete.txt testfolders
-
-        # same procedure for extra test DLLs/SOs; as above, but additionally, replace
-        # ABI tag with a marker (here it's helpful this branch is only for linux-64)
-        find ${SP_DIR}/scipy -regex ".*_c?y?test.*\.so" -printf '%p\n' \
-            | sort -k1 | sed "s:${SP_DIR}/scipy/::g" \
-            | sed "s:.cpython-${PY_VER//./}-x86_64-linux-gnu.so:SUFFIX_MARKER:g" \
-            > testlibs
-        echo "Test libraries to be deleted:"
-        cat testlibs
-        if [[ $python_impl == "cpython" ]] ; then
-            # don't try on pypy; has different tag so the above sed doesn't apply
-            diff $RECIPE_DIR/test_libraries_to_delete.txt testlibs
-        fi
-    fi
-
-    # do the actual deletion
-    find ${SP_DIR}/scipy -name tests -type d | xargs rm -r
-    # different syntax for regex on osx ('\x2d\x45'=='-E'; else echo insists it's a flag)
-    OSX_EXTRA="$([[ ${target_platform} == osx-* ]] && echo -e '\x2d\x45' || echo '')"
-    find ${OSX_EXTRA} ${SP_DIR}/scipy -regex ".*_c?y?test.*\.so" | xargs rm
+    # install wheel from build.sh
+    pip install dist/scipy*.whl
 
     # copy "test" with informative error message into installation
     cp $RECIPE_DIR/test_conda_forge_packaging.py $SP_DIR/scipy/_lib
+
+    # clean up dist folder for building tests
+    rm -rf dist
+else
+    # copy of build.sh, except different build tags; instead of using the
+    # same script (lightly templated on tags) per output, we keep the
+    # global build to reuse the cache when building the tests
+
+    # need to rename project as well; for more details see
+    # https://scipy.github.io/devdocs/building/redistributable_binaries.html
+    sed -i "s:name = \"scipy\":name = \"scipy-tests\":g" pyproject.toml
+
+    # HACK: extend $CONDA_PREFIX/meson_cross_file that's created in
+    # https://github.com/conda-forge/ctng-compiler-activation-feedstock/blob/main/recipe/activate-gcc.sh
+    # https://github.com/conda-forge/clang-compiler-activation-feedstock/blob/main/recipe/activate-clang.sh
+    # to use host python; requires that [binaries] section is last in meson_cross_file
+    echo "python = '${PREFIX}/bin/python'" >> ${CONDA_PREFIX}/meson_cross_file.txt
+
+    # meson-python already sets up a -Dbuildtype=release argument to meson, so
+    # we need to strip --buildtype out of MESON_ARGS or fail due to redundancy
+    MESON_ARGS_REDUCED="$(echo $MESON_ARGS | sed 's/--buildtype release //g')"
+
+    # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
+    $PYTHON -m build -w -n -x \
+        -Cbuilddir=builddir \
+        -Cinstall-args=--tags=tests \
+        -Csetup-args=-Dblas=blas \
+        -Csetup-args=-Dlapack=lapack \
+        -Csetup-args=-Duse-g77-abi=true \
+        -Csetup-args=${MESON_ARGS_REDUCED// / -Csetup-args=} \
+        || (cat builddir/meson-logs/meson-log.txt && exit 1)
+
+    pip install dist/scipy*.whl
 fi

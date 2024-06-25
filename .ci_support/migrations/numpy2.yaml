@@ -3,13 +3,6 @@ __migrator:
   kind: version
   commit_message: "Rebuild for numpy 2.0"
   migration_number: 1
-  ordering:
-    channel_sources:
-      - conda-forge
-      - conda-forge/label/numpy_rc,conda-forge
-      - conda-forge/label/numpy_rc,conda-forge/label/meson_dev,conda-forge
-  # need to keep this due to needing an ordering for windows that contains meson_dev
-  use_local: true
 
 # needs to fully reproduce zip of {python, python_impl, numpy}
 # in order to override it
