@@ -78,9 +78,6 @@ requirements:
     - python
     - cython
     - meson-python
-    # limit this for now because incompatible changes
-    # have accumulated in meson_dev channel for 1.4+
-    - meson <1.4                             # [win]
     - ninja
     - pkg-config
     - python-build
@@ -245,7 +242,6 @@ outputs:
         - pip
         - cython
         - meson-python
-        - meson <1.4                             # [win]
         - ninja
         - pkg-config
         - python-build
