@@ -22,6 +22,8 @@ source:
     patches:
       # backport https://github.com/scipy/scipy/pull/21069
       - patches/0001-MAINT-fix-typo-in-small_dynamic_array.h-21069.patch
+      # test https://github.com/scipy/scipy/pull/21021
+      - patches/0002-ENH-optimize-Re-rewrite-nnls-in-Cython.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     folder: scipy/_lib/array_api_compat
