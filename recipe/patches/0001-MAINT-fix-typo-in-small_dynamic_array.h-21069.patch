@@ -1,7 +1,7 @@
 From 91c4074b0eb9e4f56e3c182e873f16bdbd83c11e Mon Sep 17 00:00:00 2001
 From: h-vetinari <h.vetinari@gmx.com>
 Date: Sun, 30 Jun 2024 07:33:27 +1100
-Subject: [PATCH] MAINT: fix typo in small_dynamic_array.h (#21069)
+Subject: [PATCH 1/2] MAINT: fix typo in small_dynamic_array.h (#21069)
 
 on clang-19, this causes:
 ```

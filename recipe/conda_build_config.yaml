@@ -1,2 +1,10 @@
-channel_sources:                             # [win]
-  - conda-forge/label/meson_dev,conda-forge  # [win]
+channel_sources:
+  - conda-forge/label/openblas_dev,conda-forge                              # [unix]
+  - conda-forge/label/openblas_dev,conda-forge/label/meson_dev,conda-forge  # [win]
+
+blas_impl:
+  - accelerate   # [osx]
+  - netlib
+  - openblas
+  - mkl          # [x86_64]
+  - blis         # [x86_64]

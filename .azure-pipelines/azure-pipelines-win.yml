@@ -8,18 +8,47 @@ jobs:
     vmImage: windows-2022
   strategy:
     matrix:
-      win_64_numpy2.0python3.10.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy2.0python3.10.____cpythonpython_implcpython
+      win_64_blas_implblisnumpy2.0python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisnumpy2.0python3.10.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
-      win_64_numpy2.0python3.11.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy2.0python3.11.____cpythonpython_implcpython
+      win_64_blas_implblisnumpy2.0python3.11.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisnumpy2.0python3.11.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
-      win_64_numpy2.0python3.12.____cpythonpython_implcpython:
-        CONFIG: win_64_numpy2.0python3.12.____cpythonpython_implcpython
+      win_64_blas_implblisnumpy2.0python3.12.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implblisnumpy2.0python3.12.____cpythonpython_implcpython
         UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklnumpy2.0python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklnumpy2.0python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklnumpy2.0python3.11.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklnumpy2.0python3.11.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklnumpy2.0python3.12.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implmklnumpy2.0python3.12.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibnumpy2.0python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibnumpy2.0python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibnumpy2.0python3.11.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibnumpy2.0python3.11.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibnumpy2.0python3.12.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implnetlibnumpy2.0python3.12.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasnumpy2.0python3.10.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasnumpy2.0python3.10.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasnumpy2.0python3.11.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasnumpy2.0python3.11.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasnumpy2.0python3.12.____cpythonpython_implcpython:
+        CONFIG: win_64_blas_implopenblasnumpy2.0python3.12.____cpythonpython_implcpython
+        UPLOAD_PACKAGES: 'True'
+    maxParallel: 12
   timeoutInMinutes: 360
   variables:
     CONDA_BLD_PATH: C:\\bld\\
+    SET_PAGEFILE: 'True'
     UPLOAD_TEMP: D:\\tmp
 
   steps:

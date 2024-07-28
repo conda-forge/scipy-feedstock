@@ -9,6 +9,9 @@ package:
   name: scipy-split
   version: {{ version }}
 
+# use 'blas_impl' in meta.yaml to ensure CI jobs get split
+# [blas_impl == "mkl"]
+
 source:
   # The sdist distributed by scipy contains pre-compiled pythran sources,
   # as well as the relevant submodules; by taking the tarball from github
@@ -19,6 +22,8 @@ source:
     patches:
       # backport https://github.com/scipy/scipy/pull/21069
       - patches/0001-MAINT-fix-typo-in-small_dynamic_array.h-21069.patch
+      # test https://github.com/scipy/scipy/pull/21021
+      - patches/0002-ENH-optimize-Re-rewrite-nnls-in-Cython.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     folder: scipy/_lib/array_api_compat
@@ -48,6 +53,8 @@ build:
   skip: true  # [py<310]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
+  # debug: we're not running tests on osx-arm; don't waste CI
+  skip: true  # [osx and arm64]
 
 requirements:
   build:
@@ -264,15 +271,10 @@ outputs:
         - mpmath
         # needed for scipy.datasets
         - pooch
+        # make sure we test with all blas implementations
+        - libblas =*=*{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
