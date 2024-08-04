@@ -67,7 +67,7 @@ requirements:
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
     # use flang as fortran compiler on windows (uses clang driver)
-    - flang <18                              # [win]
+    - flang                                  # [win]
     # use llvm linker for both of the above
     - lld                                    # [win]
   host:
@@ -78,9 +78,6 @@ requirements:
     - python
     - cython
     - meson-python
-    # limit this for now because incompatible changes
-    # have accumulated in meson_dev channel for 1.4+
-    - meson <1.4                             # [win]
     - ninja
     - pkg-config
     - python-build
@@ -232,7 +229,7 @@ outputs:
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}              # [unix]
         - clang                                  # [win]
-        - flang <18                              # [win]
+        - flang                                  # [win]
         - lld                                    # [win]
         - sed                                    # [unix]
         - m2-sed                                 # [win]
@@ -245,7 +242,6 @@ outputs:
         - pip
         - cython
         - meson-python
-        - meson <1.4                             # [win]
         - ninja
         - pkg-config
         - python-build
