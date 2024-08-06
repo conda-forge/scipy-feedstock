@@ -1,14 +1,6 @@
 #!/bin/bash
 set -ex
 
-# Set a few environment variables that are not set due to
-# https://github.com/conda/conda-build/issues/3993
-export PIP_NO_BUILD_ISOLATION=True
-export PIP_NO_DEPENDENCIES=True
-export PIP_IGNORE_INSTALLED=True
-export PIP_NO_INDEX=True
-export PYTHONDONTWRITEBYTECODE=True
-
 if [[ "$PKG_NAME" == "scipy" ]]; then
     # install wheel from build.sh
     pip install dist/scipy*.whl

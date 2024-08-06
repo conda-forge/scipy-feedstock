@@ -1,14 +1,6 @@
 @echo on
 setlocal enabledelayedexpansion
 
-REM Set a few environment variables that are not set due to
-REM https://github.com/conda/conda-build/issues/3993
-set PIP_NO_BUILD_ISOLATION=True
-set PIP_NO_DEPENDENCIES=True
-set PIP_IGNORE_INSTALLED=True
-set PIP_NO_INDEX=True
-set PYTHONDONTWRITEBYTECODE=True
-
 REM delete tests from baseline output "scipy"
 if "%PKG_NAME%"=="scipy" (
     REM `pip install dist\numpy*.whl` does not work on windows,
