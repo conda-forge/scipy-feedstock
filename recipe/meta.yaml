@@ -16,9 +16,6 @@ source:
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
     sha256: 233b1d5a9a7740c247e2d677e10273727abe867a415bfb4b88030b29195c495d
-    patches:
-      # backport https://github.com/scipy/scipy/pull/21069
-      - patches/0001-MAINT-fix-typo-in-small_dynamic_array.h-21069.patch
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - git_url: https://github.com/data-apis/array-api-compat.git
     folder: scipy/_lib/array_api_compat
