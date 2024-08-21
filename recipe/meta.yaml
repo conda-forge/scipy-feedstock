@@ -1,4 +1,4 @@
-{% set version = "1.14.0" %}
+{% set version = "1.14.1" %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -15,7 +15,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: ea1c8e3ebe88713063b70ff1b5902400b16131ad1f5b731b6585fb9f5721ed2d
+    sha256: 233b1d5a9a7740c247e2d677e10273727abe867a415bfb4b88030b29195c495d
     patches:
       # backport https://github.com/scipy/scipy/pull/21069
       - patches/0001-MAINT-fix-typo-in-small_dynamic_array.h-21069.patch
@@ -44,7 +44,7 @@ source:
     git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py<310]
   # pypy is currently broken and on its way out anyway
   skip: true  # [python_impl == "pypy"]
