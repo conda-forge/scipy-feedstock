@@ -30,6 +30,8 @@ __migrator:
         - cross-python
         - python_abi
     exclude_pinned_pkgs: false
+    # we override numpy to be more specific
+    use_local: true
     additional_zip_keys:
         - channel_sources
 
@@ -39,6 +41,6 @@ channel_sources:
 - conda-forge/label/python_rc,conda-forge
 # additional entries to add for zip_keys
 numpy:
-- 2
+- 2.1
 python_impl:
 - cpython
