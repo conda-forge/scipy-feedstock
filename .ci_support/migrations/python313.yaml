@@ -19,6 +19,7 @@ __migrator:
             - 3.8.* *_73_pypy
             - 3.9.* *_73_pypy
         channel_sources:
+            # doesn't seem to work properly when using additional_zip_keys
             - conda-forge
             - conda-forge/label/python_rc,conda-forge
             - conda-forge/label/python_rc,conda-forge/label/llvm_rc,conda-forge
