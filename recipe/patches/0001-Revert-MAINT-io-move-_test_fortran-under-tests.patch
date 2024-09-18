@@ -1,0 +1,86 @@
+From 95fdf4e702e5f97116dfc0f4184d436201a144a5 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Sun, 15 Sep 2024 22:46:08 +0200
+Subject: [PATCH] Revert "MAINT: io: move `_test_fortran` under `tests`"
+
+This reverts commit cf664690e47bb0fed5ee1552353de42797a30b12.
+---
+ scipy/io/{tests => }/_test_fortran.f  |  0
+ scipy/io/meson.build                  | 15 +++++++++++++++
+ scipy/io/{tests => }/test_fortran.pyf |  0
+ scipy/io/tests/meson.build            | 15 ---------------
+ scipy/io/tests/test_fortran.py        |  3 ++-
+ 5 files changed, 17 insertions(+), 16 deletions(-)
+ rename scipy/io/{tests => }/_test_fortran.f (100%)
+ rename scipy/io/{tests => }/test_fortran.pyf (100%)
+
+diff --git a/scipy/io/tests/_test_fortran.f b/scipy/io/_test_fortran.f
+similarity index 100%
+rename from scipy/io/tests/_test_fortran.f
+rename to scipy/io/_test_fortran.f
+diff --git a/scipy/io/meson.build b/scipy/io/meson.build
+index af04022208..60f71c6968 100644
+--- a/scipy/io/meson.build
++++ b/scipy/io/meson.build
+@@ -1,3 +1,18 @@
++py3.extension_module('_test_fortran',
++  [
++    f2py_gen.process('test_fortran.pyf'),
++    '_test_fortran.f'
++  ],
++  c_args: [Wno_unused_variable],
++  fortran_args: fortran_ignore_warnings,
++  link_args: version_link_args,
++  dependencies: [lapack_dep, fortranobject_dep],
++  install: true,
++  link_language: 'fortran',
++  subdir: 'scipy/io',
++  install_tag: 'tests'
++)
++
+ py3.install_sources([
+     '__init__.py',
+     '_fortran.py',
+diff --git a/scipy/io/tests/test_fortran.pyf b/scipy/io/test_fortran.pyf
+similarity index 100%
+rename from scipy/io/tests/test_fortran.pyf
+rename to scipy/io/test_fortran.pyf
+diff --git a/scipy/io/tests/meson.build b/scipy/io/tests/meson.build
+index f401cea392..8813f8e470 100644
+--- a/scipy/io/tests/meson.build
++++ b/scipy/io/tests/meson.build
+@@ -1,18 +1,3 @@
+-py3.extension_module('_test_fortran',
+-  [
+-    f2py_gen.process('test_fortran.pyf'),
+-    '_test_fortran.f'
+-  ],
+-  c_args: [Wno_unused_variable],
+-  fortran_args: fortran_ignore_warnings,
+-  link_args: version_link_args,
+-  dependencies: [lapack_dep, fortranobject_dep],
+-  install: true,
+-  link_language: 'fortran',
+-  subdir: 'scipy/io/tests',
+-  install_tag: 'tests'
+-)
+-
+ py3.install_sources([
+     '__init__.py',
+     'test_fortran.py',
+diff --git a/scipy/io/tests/test_fortran.py b/scipy/io/tests/test_fortran.py
+index b05b723b3a..d4b93ecccb 100644
+--- a/scipy/io/tests/test_fortran.py
++++ b/scipy/io/tests/test_fortran.py
+@@ -11,9 +11,10 @@ import numpy as np
+ import pytest
+ 
+ from scipy.io import (FortranFile,
++                      _test_fortran,
+                       FortranEOFError,
+                       FortranFormattingError)
+-from . import _test_fortran
++
+ 
+ DATA_PATH = path.join(path.dirname(__file__), 'data')
+ 
