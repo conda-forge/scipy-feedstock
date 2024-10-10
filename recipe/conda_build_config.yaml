@@ -1,2 +1,4 @@
+fortran_compiler_version:   # [win]
+  - 19                      # [win]
 channel_sources:
   - conda-forge/label/meson_dev,conda-forge
