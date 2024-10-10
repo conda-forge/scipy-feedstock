@@ -58,15 +58,10 @@ requirements:
     - {{ compiler('c') }}
     - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}              # [unix]
+    - {{ compiler('fortran') }}
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
-    # use flang as fortran compiler on windows (uses clang driver)
-    - flang                                  # [win]
-    # use llvm linker for both of the above
-    - lld                                    # [win]
   host:
-    - compiler-rt                            # [win]
     - libblas
     - libcblas
     - liblapack
@@ -96,7 +91,7 @@ outputs:
         - {{ compiler('c') }}
         - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('fortran') }}              # [unix]
+        - {{ compiler('fortran') }}
       host:
         - libblas
         - libcblas
@@ -225,10 +220,8 @@ outputs:
         - {{ compiler('c') }}
         - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('fortran') }}              # [unix]
+        - {{ compiler('fortran') }}
         - clang                                  # [win]
-        - flang                                  # [win]
-        - lld                                    # [win]
         - sed                                    # [unix]
         - m2-sed                                 # [win]
       host:
