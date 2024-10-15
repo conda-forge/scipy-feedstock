@@ -1,9 +1,11 @@
+ace:
+- 8.0.1
 c_compiler:
 - vs2019
 c_stdlib:
 - vs
 channel_sources:
-- conda-forge/label/python_rc,conda-forge/label/llvm_rc,conda-forge
+- conda-forge/label/python_rc,conda-forge
 channel_targets:
 - conda-forge main
 cxx_compiler:
