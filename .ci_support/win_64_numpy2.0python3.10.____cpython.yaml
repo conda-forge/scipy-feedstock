@@ -5,11 +5,15 @@ c_compiler:
 c_stdlib:
 - vs
 channel_sources:
-- conda-forge/label/python_rc,conda-forge/label/llvm_rc,conda-forge
+- conda-forge
 channel_targets:
 - conda-forge main
 cxx_compiler:
 - vs2019
+fortran_compiler:
+- flang
+fortran_compiler_version:
+- '19'
 libblas:
 - 3.9 *netlib
 libcblas:
@@ -24,12 +28,9 @@ pin_run_as_build:
     max_pin: x.x
 python:
 - 3.10.* *_cpython
-python_impl:
-- cpython
 target_platform:
 - win-64
 zip_keys:
 - - python
   - numpy
-  - python_impl
   - channel_sources

@@ -41,10 +41,8 @@ source:
     git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<310]
-  # pypy is currently broken and on its way out anyway
-  skip: true  # [python_impl == "pypy"]
 
 requirements:
   build:
@@ -60,15 +58,10 @@ requirements:
     - {{ compiler('c') }}
     - {{ stdlib('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}              # [unix]
+    - {{ compiler('fortran') }}
     # pythran code needs clang-cl on windows
     - clang                                  # [win]
-    # use flang as fortran compiler on windows (uses clang driver)
-    - flang                                  # [win]
-    # use llvm linker for both of the above
-    - lld                                    # [win]
   host:
-    - compiler-rt                            # [win]
     - libblas
     - libcblas
     - liblapack
@@ -89,7 +82,9 @@ outputs:
   - name: scipy
     script: build-output.sh   # [not win]
     script: build-output.bat  # [win]
-    version: {{ version }}
+    build:
+      ignore_run_exports:     # [win]
+        - libflang            # [win]
     requirements:
       build:
         - python                                 # [build_platform != target_platform]
@@ -98,7 +93,7 @@ outputs:
         - {{ compiler('c') }}
         - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('fortran') }}              # [unix]
+        - {{ compiler('fortran') }}
       host:
         - libblas
         - libcblas
@@ -227,10 +222,8 @@ outputs:
         - {{ compiler('c') }}
         - {{ stdlib('c') }}
         - {{ compiler('cxx') }}
-        - {{ compiler('fortran') }}              # [unix]
+        - {{ compiler('fortran') }}
         - clang                                  # [win]
-        - flang                                  # [win]
-        - lld                                    # [win]
         - sed                                    # [unix]
         - m2-sed                                 # [win]
       host:
