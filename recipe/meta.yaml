@@ -244,6 +244,13 @@ outputs:
       run:
         - {{ pin_subpackage('scipy', exact=True) }}
         - python
+        - pytest
+        - pytest-timeout
+        - pytest-xdist
+        - hypothesis
+        - mpmath
+        # needed for scipy.datasets
+        - pooch
     test:
       requires:
         - pytest
