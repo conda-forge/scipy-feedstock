@@ -245,21 +245,14 @@ outputs:
         - {{ pin_subpackage('scipy', exact=True) }}
         - python
         - pytest
-        - pytest-timeout
-        - pytest-xdist
         - hypothesis
-        - mpmath
         # needed for scipy.datasets
         - pooch
     test:
       requires:
-        - pytest
         - pytest-timeout
         - pytest-xdist
-        - hypothesis
         - mpmath
-        # needed for scipy.datasets
-        - pooch
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # scipy/scipy#19210 - 60 failing tests!
