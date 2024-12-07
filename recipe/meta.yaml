@@ -1,4 +1,6 @@
 {% set version = "1.14.1" %}
+{% set version_parts = version.split('.') %}
+{% set next_micro_version = version_parts[0] ~ '.' ~ parts[1] ~ '.' ~ (parts[2]|int + 1) %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -209,7 +211,7 @@ outputs:
       run:
         - python
         - {{ pin_subpackage('scipy', exact=True) }}
-        - scipy-stubs ~={{ version }}.0
+        - scipy-stubs >={{ version }}.0,<{{ next_micro_version }}
     test:
       imports:
         - scipy
