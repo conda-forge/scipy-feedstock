@@ -41,7 +41,7 @@ source:
     git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
-  number: 1
+  number: 2
   skip: true  # [py<310]
 
 requirements:
