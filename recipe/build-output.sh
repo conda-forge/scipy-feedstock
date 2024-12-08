@@ -5,8 +5,13 @@ if [[ "$PKG_NAME" == "scipy" ]]; then
     # install wheel from build.sh
     pip install dist/scipy*.whl
 
-    # copy "test" with informative error message into installation
-    cp $RECIPE_DIR/test_conda_forge_packaging.py $SP_DIR/scipy/_lib
+    if [[ "$is_freethreading" == "true" ]]; then
+        # work around https://github.com/conda/conda-build/issues/5563
+        cp $RECIPE_DIR/test_conda_forge_packaging.py $PREFIX/lib/python3.13t/site-packages/scipy/_lib
+    else
+        # copy "test" with informative error message into installation
+        cp $RECIPE_DIR/test_conda_forge_packaging.py $SP_DIR/scipy/_lib
+    fi
 
     # clean up dist folder for building tests
     rm -rf dist
