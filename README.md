@@ -217,6 +217,7 @@ Current release info
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-scipy-green.svg)](https://anaconda.org/conda-forge/scipy) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/scipy.svg)](https://anaconda.org/conda-forge/scipy) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/scipy.svg)](https://anaconda.org/conda-forge/scipy) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/scipy.svg)](https://anaconda.org/conda-forge/scipy) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-scipy--tests-green.svg)](https://anaconda.org/conda-forge/scipy-tests) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/scipy-tests.svg)](https://anaconda.org/conda-forge/scipy-tests) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/scipy-tests.svg)](https://anaconda.org/conda-forge/scipy-tests) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/scipy-tests.svg)](https://anaconda.org/conda-forge/scipy-tests) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-scipy--typed-green.svg)](https://anaconda.org/conda-forge/scipy-typed) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/scipy-typed.svg)](https://anaconda.org/conda-forge/scipy-typed) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/scipy-typed.svg)](https://anaconda.org/conda-forge/scipy-typed) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/scipy-typed.svg)](https://anaconda.org/conda-forge/scipy-typed) |
 
 Installing scipy
 ================
@@ -228,16 +229,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `scipy, scipy-tests` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `scipy, scipy-tests, scipy-typed` can be installed with `conda`:
 
 ```
-conda install scipy scipy-tests
+conda install scipy scipy-tests scipy-typed
 ```
 
 or with `mamba`:
 
 ```
-mamba install scipy scipy-tests
+mamba install scipy scipy-tests scipy-typed
 ```
 
 It is possible to list all of the versions of `scipy` available on your platform with `conda`:
