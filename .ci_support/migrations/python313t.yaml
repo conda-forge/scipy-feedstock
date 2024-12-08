@@ -20,6 +20,7 @@ __migrator:
             - 3.8.* *_73_pypy
             - 3.9.* *_73_pypy
     paused: true
+    use_local: true
     longterm: true
     pr_limit: 20
     max_solver_attempts: 3  # this will make the bot retry "not solvable" stuff 12 times
@@ -43,7 +44,7 @@ channel_sources:
 - conda-forge/label/cython_dev,conda-forge
 # additional entries to add for zip_keys
 numpy:
-- 2
+- 2.1
 python_impl:
 - cpython
 is_freethreading:
