@@ -1,6 +1,6 @@
 {% set version = "1.14.1" %}
 {% set version_parts = version.split('.') %}
-{% set next_micro_version = version_parts[0] ~ '.' ~ parts[1] ~ '.' ~ (parts[2]|int + 1) %}
+{% set next_minor_version = version_parts[0] ~ '.' ~ (parts[1]|int + 1) %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -43,7 +43,7 @@ source:
     git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
-  number: 2
+  number: 3
   skip: true  # [py<310]
 
 requirements:
@@ -211,10 +211,17 @@ outputs:
       run:
         - python
         - {{ pin_subpackage('scipy', exact=True) }}
-        - scipy-stubs >={{ version }}.0,<{{ next_micro_version }}
+        - scipy-stubs >={{ version }}.0,<{{ next_minor_version }}
     test:
+      requires:
+        - basedmypy
       imports:
         - scipy
+      source_files:
+        - pyproject.toml
+        - .mypyignore
+      commands:
+        - stubtest --mypy-config-file=pyproject.toml --allowlist=.mypyignore --ignore-unused-allowlist scipy
 
   - name: scipy-tests
     script: build-output.sh   # [not win]
