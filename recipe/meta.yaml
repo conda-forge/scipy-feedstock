@@ -5,6 +5,9 @@
 {% endif %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
+# ensure is_freethreading gets detected as a used variable
+# [is_freethreading]
+
 package:
   name: scipy-split
   version: {{ version }}
