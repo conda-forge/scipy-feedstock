@@ -1,7 +1,7 @@
 import pytest
 
 
-def test_output_separation():
+def test_output_separation() -> None:
     need_to_warn = False
     try:
         # check if we can import a test folder that's deleted in `scipy`
