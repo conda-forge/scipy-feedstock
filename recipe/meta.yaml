@@ -1,4 +1,4 @@
-{% set version = "1.15.0rc1" %}
+{% set version = "1.15.0rc2" %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -18,7 +18,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 72c3a5951d6f87f55f4210299cdcaf9af1631c8e9cb1a43ee69d6152d2439738
+    sha256: 5f821ce583365e083593c4c08766badebd0b7701383d33ec43e34ea8c436bf91
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - folder: scipy/_lib/array_api_compat
     git_url: https://github.com/data-apis/array-api-compat.git
