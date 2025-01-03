@@ -1,4 +1,5 @@
-{% set version = "1.14.1" %}
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set version = "1.15.0" %}
 
 {% if numpy is not defined %}
 {% set numpy = "2.0.0" %}
@@ -15,7 +16,7 @@ source:
   # we can compile pythran ourselves (or not), but manually need to include
   # the submodules (not in tarball due to dear-github/dear-github#214)
   - url: https://github.com/scipy/scipy/archive/refs/tags/v{{ version }}.tar.gz
-    sha256: 233b1d5a9a7740c247e2d677e10273727abe867a415bfb4b88030b29195c495d
+    sha256: a9e29052fa3ebd4edd87544f5ee917bf13572321c5f6f9c8d579974cb0f06891
   # https://github.com/scipy/scipy/tree/v{{ version }}/scipy/_lib
   - folder: scipy/_lib/array_api_compat
     git_url: https://github.com/data-apis/array-api-compat.git
@@ -41,7 +42,7 @@ source:
     git_rev: a9ed9736ad52ff76ae1777922b700b13ca2bf0ae
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py<310]
 
 requirements:
@@ -80,10 +81,10 @@ requirements:
 # build-output.{sh,bat} installs the files
 outputs:
   - name: scipy
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     build:
-      ignore_run_exports:     # [win]
+      ignore_run_exports:   # [win]
         - libflang            # [win]
     requirements:
       build:
@@ -203,10 +204,10 @@ outputs:
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
 
   - name: scipy-tests
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     build:
-      ignore_run_exports:     # [win]
+      ignore_run_exports:   # [win]
         - libflang            # [win]
     requirements:
       build:
