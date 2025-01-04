@@ -1,7 +1,9 @@
 {% set version = "1.15.0" %}
 
+# Update the numpy value here to the most recent released version
+# when updating to a new scipy feature release
 {% if numpy is not defined %}
-{% set numpy = "2.0.0" %}
+{% set numpy = "2.2.1" %}
 {% endif %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
