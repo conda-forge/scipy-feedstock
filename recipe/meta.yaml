@@ -1,10 +1,8 @@
 {% set version = "1.15.0" %}
 
 # Update the numpy value here to the most recent released version
-# when updating to a new scipy feature release
-{% if numpy is not defined %}
+# when updating to a new scipy feature release; override default pins
 {% set numpy = "2.2.1" %}
-{% endif %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
 # ensure is_freethreading gets detected as a used variable
@@ -19,7 +17,7 @@ source:
   sha256: 300742e2cc94e36a2880ebe464a1c8b4352a7b0f3e36ec3d2ac006cdbe0219ac
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<310]
 
 requirements:

@@ -30,8 +30,6 @@ __migrator:
         - cross-python
         - python_abi
     exclude_pinned_pkgs: false
-    # we override numpy to be more specific
-    use_local: true
     additional_zip_keys:
         - channel_sources
 
