@@ -8,25 +8,72 @@ jobs:
     vmImage: windows-2022
   strategy:
     matrix:
-      win_64_is_freethreadingfalsenumpy2.0python3.10.____cpython:
-        CONFIG: win_64_is_freethreadingfalsenumpy2.0python3.10.____cpython
+      win_64_blas_implblisis_freethreadingfalsenumpy2.0python3.10.____cpython:
+        CONFIG: win_64_blas_implblisis_freethreadingfalsenumpy2.0python3.10.____cpython
         UPLOAD_PACKAGES: 'True'
-      win_64_is_freethreadingfalsenumpy2.0python3.11.____cpython:
-        CONFIG: win_64_is_freethreadingfalsenumpy2.0python3.11.____cpython
+      win_64_blas_implblisis_freethreadingfalsenumpy2.0python3.11.____cpython:
+        CONFIG: win_64_blas_implblisis_freethreadingfalsenumpy2.0python3.11.____cpython
         UPLOAD_PACKAGES: 'True'
-      win_64_is_freethreadingfalsenumpy2.0python3.12.____cpython:
-        CONFIG: win_64_is_freethreadingfalsenumpy2.0python3.12.____cpython
+      win_64_blas_implblisis_freethreadingfalsenumpy2.0python3.12.____cpython:
+        CONFIG: win_64_blas_implblisis_freethreadingfalsenumpy2.0python3.12.____cpython
         UPLOAD_PACKAGES: 'True'
-      win_64_is_freethreadingfalsenumpy2python3.13.____cp313:
-        CONFIG: win_64_is_freethreadingfalsenumpy2python3.13.____cp313
+      win_64_blas_implblisis_freethreadingfalsenumpy2python3.13.____cp313:
+        CONFIG: win_64_blas_implblisis_freethreadingfalsenumpy2python3.13.____cp313
         UPLOAD_PACKAGES: 'True'
-      win_64_is_freethreadingtruenumpy2python3.13.____cp313t:
-        CONFIG: win_64_is_freethreadingtruenumpy2python3.13.____cp313t
+      win_64_blas_implblisis_freethreadingtruenumpy2python3.13.____cp313t:
+        CONFIG: win_64_blas_implblisis_freethreadingtruenumpy2python3.13.____cp313t
         UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklis_freethreadingfalsenumpy2.0python3.10.____cpython:
+        CONFIG: win_64_blas_implmklis_freethreadingfalsenumpy2.0python3.10.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklis_freethreadingfalsenumpy2.0python3.11.____cpython:
+        CONFIG: win_64_blas_implmklis_freethreadingfalsenumpy2.0python3.11.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklis_freethreadingfalsenumpy2.0python3.12.____cpython:
+        CONFIG: win_64_blas_implmklis_freethreadingfalsenumpy2.0python3.12.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklis_freethreadingfalsenumpy2python3.13.____cp313:
+        CONFIG: win_64_blas_implmklis_freethreadingfalsenumpy2python3.13.____cp313
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implmklis_freethreadingtruenumpy2python3.13.____cp313t:
+        CONFIG: win_64_blas_implmklis_freethreadingtruenumpy2python3.13.____cp313t
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibis_freethreadingfalsenumpy2.0python3.10.____cpython:
+        CONFIG: win_64_blas_implnetlibis_freethreadingfalsenumpy2.0python3.10.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibis_freethreadingfalsenumpy2.0python3.11.____cpython:
+        CONFIG: win_64_blas_implnetlibis_freethreadingfalsenumpy2.0python3.11.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibis_freethreadingfalsenumpy2.0python3.12.____cpython:
+        CONFIG: win_64_blas_implnetlibis_freethreadingfalsenumpy2.0python3.12.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibis_freethreadingfalsenumpy2python3.13.____cp313:
+        CONFIG: win_64_blas_implnetlibis_freethreadingfalsenumpy2python3.13.____cp313
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implnetlibis_freethreadingtruenumpy2python3.13.____cp313t:
+        CONFIG: win_64_blas_implnetlibis_freethreadingtruenumpy2python3.13.____cp313t
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasis_freethreadingfalsenumpy2.0python3.10.____cpython:
+        CONFIG: win_64_blas_implopenblasis_freethreadingfalsenumpy2.0python3.10.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasis_freethreadingfalsenumpy2.0python3.11.____cpython:
+        CONFIG: win_64_blas_implopenblasis_freethreadingfalsenumpy2.0python3.11.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasis_freethreadingfalsenumpy2.0python3.12.____cpython:
+        CONFIG: win_64_blas_implopenblasis_freethreadingfalsenumpy2.0python3.12.____cpython
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasis_freethreadingfalsenumpy2python3.13.____cp313:
+        CONFIG: win_64_blas_implopenblasis_freethreadingfalsenumpy2python3.13.____cp313
+        UPLOAD_PACKAGES: 'True'
+      win_64_blas_implopenblasis_freethreadingtruenumpy2python3.13.____cp313t:
+        CONFIG: win_64_blas_implopenblasis_freethreadingtruenumpy2python3.13.____cp313t
+        UPLOAD_PACKAGES: 'True'
+    maxParallel: 12
   timeoutInMinutes: 360
   variables:
     CONDA_BLD_PATH: C:\\bld\\
     MINIFORGE_HOME: C:\Miniforge
+    SET_PAGEFILE: 'True'
     UPLOAD_TEMP: D:\\tmp
 
   steps:

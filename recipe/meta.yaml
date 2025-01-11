@@ -12,6 +12,9 @@ package:
   name: scipy-split
   version: {{ version }}
 
+# use 'blas_impl' in meta.yaml to ensure CI jobs get split
+# [blas_impl == "mkl"]
+
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: 033a75ddad1463970c96a88063a1df87ccfddd526437136b6ee81ff0312ebdf6
@@ -19,6 +22,8 @@ source:
 build:
   number: 0
   skip: true  # [py<310]
+  # debug: we're not running tests on osx-arm; don't waste CI
+  skip: true  # [osx and arm64]
 
 requirements:
   build:
@@ -229,15 +234,10 @@ outputs:
         - pytest-timeout
         - pytest-xdist
         - mpmath
+        # make sure we test with all blas implementations
+        - libblas =*=*{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or test_quad_vec_pool" %}                                # [aarch64 or ppc64le]
