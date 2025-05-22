@@ -16,6 +16,6 @@ $PYTHON -m build -w -n -x \
     -Csetup-args=-Dblas=blas \
     -Csetup-args=-Dlapack=lapack \
     -Csetup-args=-Duse-g77-abi=true \
-    -Csetup-args=-Duse-system-libraries \
+    -Csetup-args=-Duse-system-libraries=all \
     -Csetup-args=${MESON_ARGS// / -Csetup-args=} \
     || (cat builddir/meson-logs/meson-log.txt && exit 1)
