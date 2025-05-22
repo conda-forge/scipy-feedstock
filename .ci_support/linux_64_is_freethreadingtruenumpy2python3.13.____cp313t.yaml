@@ -25,9 +25,11 @@ fortran_compiler:
 fortran_compiler_version:
 - '13'
 is_freethreading:
-- 'true'
+- true
 libblas:
 - 3.9.* *netlib
+libboost_headers:
+- '1.86'
 libcblas:
 - 3.9.* *netlib
 liblapack:
@@ -40,6 +42,8 @@ pin_run_as_build:
     max_pin: x.x
 python:
 - 3.13.* *_cp313t
+qhull:
+- '2020.2'
 target_platform:
 - linux-64
 zip_keys:
