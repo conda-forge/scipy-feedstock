@@ -1,4 +1,4 @@
-{% set version = "1.16.0rc1" %}
+{% set version = "1.16.0rc2" %}
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
@@ -14,7 +14,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  sha256: 39bd1557eca376b28c5485f8bcd8672030dfb59f731f8bf5149b234d2ce1d6a6
+  sha256: 15691a82725e641c4830efafe191f1b232b7d87ee25995a687213030686651eb
 
 build:
   number: 0
