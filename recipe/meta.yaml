@@ -41,7 +41,6 @@ requirements:
     - libblas
     - libcblas
     - liblapack
-    - libboost-headers
     - python
     - cython
     - meson-python
@@ -50,7 +49,6 @@ requirements:
     - python-build
     - pybind11
     - pythran
-    - qhull
     - numpy
     - pip
 
@@ -84,7 +82,6 @@ outputs:
         - python-build
         - pybind11
         - pythran
-        - qhull
         - numpy
         - pip
       run:

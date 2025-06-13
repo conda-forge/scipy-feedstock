@@ -23,6 +23,5 @@ set "MESON_RSP_THRESHOLD=320000"
     -Csetup-args=-Dcpp_std=c++17 ^
     -Csetup-args=-Dlapack=lapack ^
     -Csetup-args=-Dfortran_std=none ^
-    -Csetup-args=-Duse-system-libraries=all ^
     -Csetup-args=-Duse-g77-abi=true
 if %ERRORLEVEL% neq 0 (type builddir\meson-logs\meson-log.txt && exit 1)
