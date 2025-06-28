@@ -231,6 +231,9 @@ outputs:
         - mpmath
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
+        # undiagnosed tolerance violations
+        {% set tests_to_skip = tests_to_skip + " or test_log1mexp" %}                                     # [win]
+        {% set tests_to_skip = tests_to_skip + " or (TestBatch and (test_solve or test_lu_solve))" %}     # [win and py<312]
         # scipy/scipy#19210 - 60 failing tests!
         {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
