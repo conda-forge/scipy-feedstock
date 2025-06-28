@@ -255,8 +255,8 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (test_workers and (TestBrute or TestDogbox or TestLM or TestTRF))" %}                   # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (test_workers and (TestScalarFunction or TestVectorialFunction))" %}                    # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestWorkers and (test_smoke or test_equal_bounds))" %}                                 # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivativesDense and (test_all or test_scalar_vector))" %}                   # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivativesDense and (test_vector_vector or test_workers_evaluations))" %}   # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivatives and (test_all or test_scalar_vector))" %}                        # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivatives and (test_vector_vector or test_workers_evaluations))" %}        # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [aarch64 or ppc64le]
         # tests that run into timeouts (set in scipy test suite) in emulation
         {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}                  # [aarch64 or ppc64le]
