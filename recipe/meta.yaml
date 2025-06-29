@@ -19,6 +19,8 @@ source:
 build:
   number: 0
   skip: true  # [py<311]
+  # debug: not necessary for testing unix compilers
+  skip: true  # [win]
 
 requirements:
   build:
