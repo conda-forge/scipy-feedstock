@@ -8,6 +8,9 @@ jobs:
     vmImage: windows-2022
   strategy:
     matrix:
+      win_64_is_freethreadingfalsepython3.10.____cpython:
+        CONFIG: win_64_is_freethreadingfalsepython3.10.____cpython
+        UPLOAD_PACKAGES: 'True'
       win_64_is_freethreadingfalsepython3.11.____cpython:
         CONFIG: win_64_is_freethreadingfalsepython3.11.____cpython
         UPLOAD_PACKAGES: 'True'

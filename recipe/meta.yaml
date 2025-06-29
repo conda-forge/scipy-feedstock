@@ -1,8 +1,8 @@
-{% set version = "1.16.0" %}
+{% set version = "1.15.3" %}
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
-{% set numpy = "2.3.0" %}
+{% set numpy = "2.2.1" %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
 # ensure is_freethreading gets detected as a used variable
@@ -14,11 +14,11 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  sha256: b5ef54021e832869c8cfb03bc3bf20366cbcd426e02a58e8a58d7584dfbb8f62
+  sha256: eae3cf522bc7df64b42cad3925c876e1b0b6c35c1337c93e12c0f366f55b0eaf
 
 build:
   number: 0
-  skip: true  # [py<311]
+  skip: true  # [py<310]
 
 requirements:
   build:
@@ -93,7 +93,7 @@ outputs:
         - numpy <2.{{ numpy_minor + 3 }}
         # double-check lower bound from
         # https://github.com/scipy/scipy/blob/v{{ version }}/pyproject.toml#L55
-        - numpy >=1.25.2
+        - numpy >=1.23.5
     test:
       requires:
         - pytest
