@@ -12,6 +12,9 @@ package:
   name: scipy-split
   version: {{ version }}
 
+# use 'blas_impl' in meta.yaml to ensure CI jobs get split
+# [blas_impl == "mkl"]
+
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: b5ef54021e832869c8cfb03bc3bf20366cbcd426e02a58e8a58d7584dfbb8f62
@@ -19,6 +22,8 @@ source:
 build:
   number: 0
   skip: true  # [py<311]
+  # debug: we're not running tests on osx-arm; don't waste CI
+  skip: true  # [osx and arm64]
 
 requirements:
   build:
@@ -229,19 +234,10 @@ outputs:
         - pytest-timeout
         - pytest-xdist
         - mpmath
+        # make sure we test with all blas implementations
+        - libblas =*=*{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # undiagnosed tolerance violations
-        {% set tests_to_skip = tests_to_skip + " or test_log1mexp" %}                                     # [win]
-        {% set tests_to_skip = tests_to_skip + " or (TestBatch and (test_solve or test_lu_solve))" %}     # [win and py<312]
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or test_null_space or test_small_sigma2" %}              # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [aarch64 or ppc64le]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [aarch64 or ppc64le]
@@ -267,7 +263,7 @@ outputs:
         {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
         # for signature of scipy.test see below (note default: label='fast'):
         # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
-        {% set param = "verbose=1, label=" + label + ", tests=None" %}
+        {% set param = "verbose=2, label=" + label + ", tests=None" %}
         {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '-nauto', '--timeout=1200', '--durations=50']" %}
         - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
 
