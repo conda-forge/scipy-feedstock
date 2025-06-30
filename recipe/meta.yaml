@@ -293,7 +293,7 @@ outputs:
         {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
         # for signature of scipy.test see below (note default: label='fast'):
         # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
-        {% set param = "verbose=1, label=" + label + ", tests=None" %}
+        {% set param = "verbose=2, label=" + label + ", tests=None" %}
         {% set extra = "extra_argv=['-k', 'not (" + tests_to_skip + ")', '-nauto', '--timeout=1200', '--durations=50']" %}
         - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
 
