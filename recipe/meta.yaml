@@ -1,4 +1,5 @@
-{% set version = "1.16.0" %}
+{% set tests_to_skip = "_not_a_real_test" %}
+{% set version = "1.16.1" %}
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
@@ -14,7 +15,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  sha256: b5ef54021e832869c8cfb03bc3bf20366cbcd426e02a58e8a58d7584dfbb8f62
+  sha256: 44c76f9e8b6e8e488a586190ab38016e4ed2f8a038af7cd3defa903c0a2238b3
 
 build:
   number: 0
@@ -56,10 +57,10 @@ requirements:
 # build-output.{sh,bat} installs the files
 outputs:
   - name: scipy
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     build:
-      ignore_run_exports:     # [win]
+      ignore_run_exports:   # [win]
         - libflang            # [win]
     requirements:
       build:
@@ -173,16 +174,16 @@ outputs:
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
         # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
         - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
-        - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
+        - (pytest --pyargs scipy -v || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
         # ensure only one test is left (namely, our hint)
         - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
 
   - name: scipy-tests
-    script: build-output.sh   # [not win]
+    script: build-output.sh  # [not win]
     script: build-output.bat  # [win]
     build:
-      ignore_run_exports:     # [win]
+      ignore_run_exports:   # [win]
         - libflang            # [win]
     requirements:
       build:
