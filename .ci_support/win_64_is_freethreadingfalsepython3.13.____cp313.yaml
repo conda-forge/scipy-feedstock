@@ -1,5 +1,5 @@
 ace:
-- 8.0.4
+- 8.0.5
 c_compiler:
 - vs2022
 c_stdlib:
@@ -34,4 +34,5 @@ target_platform:
 - win-64
 zip_keys:
 - - python
+  - channel_sources
   - is_freethreading
