@@ -271,6 +271,14 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_exact)" %}           # [win]
         {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_complex_exact)" %}   # [win]
         {% set tests_to_skip = tests_to_skip + " or test_more_nan_policy_omit_tests" %}             # [win]
+        # catastrophic failures on windows for old CPUs: https://github.com/scipy/scipy/issues/23527
+        {% set tests_to_skip = tests_to_skip + " or test_ldl_type_size_combinations_real" %}        # [win]
+        {% set tests_to_skip = tests_to_skip + " or test_isf_of_sf_sqrtn" %}                        # [win]
+        {% set tests_to_skip = tests_to_skip + " or test_ppf_of_cdf_sqrtn" %}                       # [win]
+        {% set tests_to_skip = tests_to_skip + " or test_solve_continuous_are" %}                   # [win]
+        {% set tests_to_skip = tests_to_skip + " or test_various_drivers_standard" %}               # [win]
+        {% set tests_to_skip = tests_to_skip + " or (TestKSTwo and test_ppf)" %}                    # [win]
+        {% set tests_to_skip = tests_to_skip + " or (TestSVD_GESVD and test_random_complex)" %}     # [win]
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
         # tests for ppc64le and aarch64 are run in emulation through QEMU; as this takes
