@@ -1,5 +1,7 @@
 ace:
 - 8.0.5
+blas_impl:
+- openblas
 c_compiler:
 - vs2022
 c_stdlib:
