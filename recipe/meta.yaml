@@ -17,7 +17,7 @@ source:
   sha256: 01e87659402762f43bd2fee13370553a17ada367d42e7487800bf2916535aecb
 
 build:
-  number: 1
+  number: 2
   skip: true  # [py<311]
 
 requirements:
