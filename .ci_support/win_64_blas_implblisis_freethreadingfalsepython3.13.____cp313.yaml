@@ -1,5 +1,5 @@
-ace:
-- 8.0.5
+blas_impl:
+- blis
 c_compiler:
 - vs2022
 c_stdlib:
@@ -29,7 +29,7 @@ pin_run_as_build:
     min_pin: x.x
     max_pin: x.x
 python:
-- 3.14.* *_cp314
+- 3.13.* *_cp313
 target_platform:
 - win-64
 zip_keys:
