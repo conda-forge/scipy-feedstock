@@ -3,6 +3,15 @@ setlocal enabledelayedexpansion
 
 mkdir builddir
 
+:: see https://github.com/conda-forge/conda-forge-ci-setup-feedstock/pull/408
+if defined CI (
+    RMDIR /s /q "C:\Program Files\LLVM" || (Echo Ignoring failure to delete C:\Program Files\LLVM)
+    RMDIR /s /q "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm" ^
+        || (Echo Ignoring failure to delete C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\Llvm)
+    RMDIR /s /q "C:\Program Files\Microsoft Visual Studio\2026\Enterprise\VC\Tools\Llvm" ^
+        || (Echo Ignoring failure to delete C:\Program Files\Microsoft Visual Studio\2026\Enterprise\VC\Tools\Llvm)
+)
+
 :: check if clang-cl is on path as required
 clang-cl.exe --version
 if %ERRORLEVEL% neq 0 exit 1
