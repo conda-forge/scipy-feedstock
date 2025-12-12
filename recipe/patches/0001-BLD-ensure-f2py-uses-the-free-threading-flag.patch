@@ -1,0 +1,33 @@
+From b2ec17364e7546b32407be1a4dd7e4821ee0c4c1 Mon Sep 17 00:00:00 2001
+From: Ralf Gommers <ralf.gommers@gmail.com>
+Date: Fri, 12 Dec 2025 21:35:45 +0100
+Subject: [PATCH] BLD: ensure f2py uses the --free-threading flag
+
+This will fix the issue on macOS arm64 for conda-forge with
+re-enabling the GIL, because there the `numpy` version detection
+doesn't work and the old code then skipped setting this flag.
+---
+ scipy/meson.build | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/scipy/meson.build b/scipy/meson.build
+index 1bc50f5026..7be0b2dd3d 100644
+--- a/scipy/meson.build
++++ b/scipy/meson.build
+@@ -35,12 +35,7 @@ thread_dep = dependency('threads', required: false)
+ # our minimum supported version). Using this now to be able to detect the
+ # version easily for >=2.0.
+ _numpy_dep = dependency('numpy', required: false)
+-f2py_freethreading_arg = []
+-if _numpy_dep.found()
+-  if _numpy_dep.version().version_compare('>=2.1.0')
+-    f2py_freethreading_arg = ['--free-threading']
+-  endif
+-endif
++f2py_freethreading_arg = ['--free-threading']
+ 
+ # NumPy include directory - needed in all submodules
+ # The chdir is needed because within numpy there's an `import signal`
+-- 
+2.49.0
+
