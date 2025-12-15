@@ -15,8 +15,6 @@ package:
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: 01e87659402762f43bd2fee13370553a17ada367d42e7487800bf2916535aecb
-  patches:
-    - patches/0001-BLD-ensure-f2py-uses-the-free-threading-flag.patch
 
 build:
   number: 1
