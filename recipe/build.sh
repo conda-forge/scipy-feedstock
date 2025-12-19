@@ -8,6 +8,7 @@ mkdir builddir
 # https://github.com/conda-forge/clang-compiler-activation-feedstock/blob/main/recipe/activate-clang.sh
 # to use host python; requires that [binaries] section is last in meson_cross_file
 echo "python = '${PREFIX}/bin/python'" >> ${CONDA_PREFIX}/meson_cross_file.txt
+echo "numpy-config = '${PREFIX}/bin/numpy-config'" >> ${CONDA_PREFIX}/meson_cross_file.txt
 
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 $PYTHON -m build -w -n -x \
