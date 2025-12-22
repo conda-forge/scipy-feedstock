@@ -2,7 +2,7 @@
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
-{% set numpy = "2.3.0" %}
+{% set numpy = "2.4.0" %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
 # ensure is_freethreading gets detected as a used variable
