@@ -1,4 +1,4 @@
-{% set version = "1.17.0rc1" %}
+{% set version = "1.17.0rc2" %}
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
@@ -14,10 +14,7 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  sha256: 3ba8bbc8f5df00ce5ada76109e5a2cd46521650e87b5d61d6a5846cee229e67b
-  patches:
-    # backport https://github.com/scipy/scipy/pull/24223
-    - patches/0001-BLD-linalg-link_language-fortran-for-_fblas-24223.patch
+  sha256: d3f22c0fc779065ab7a8bf027be8f737d346413ee36254a52a7ec06981a13a5a
 
 build:
   number: 0
