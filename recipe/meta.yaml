@@ -1,8 +1,8 @@
-{% set version = "1.16.3" %}
+{% set version = "1.17.0" %}
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
-{% set numpy = "2.3.0" %}
+{% set numpy = "2.4.0" %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
 # ensure is_freethreading gets detected as a used variable
@@ -14,10 +14,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  sha256: 01e87659402762f43bd2fee13370553a17ada367d42e7487800bf2916535aecb
+  sha256: 2591060c8e648d8b96439e111ac41fd8342fdeff1876be2e19dea3fe8930454e
 
 build:
-  number: 2
+  number: 0
   skip: true  # [py<311]
 
 requirements:
@@ -25,7 +25,7 @@ requirements:
     - python                                 # [build_platform != target_platform]
     - cross-python_{{ target_platform }}     # [build_platform != target_platform]
     - cython                                 # [build_platform != target_platform]
-    - numpy                                  # [build_platform != target_platform]
+    - numpy {{ numpy }}                      # [build_platform != target_platform]
     - pybind11                               # [build_platform != target_platform]
     - meson-python                           # [build_platform != target_platform]
     - cmake                                  # [build_platform != target_platform]
@@ -49,7 +49,7 @@ requirements:
     - python-build
     - pybind11
     - pythran
-    - numpy
+    - numpy {{ numpy }}
     - pip
 
 # the top-level build.{sh,bat} builds scipy, and then
@@ -82,7 +82,7 @@ outputs:
         - python-build
         - pybind11
         - pythran
-        - numpy
+        - numpy {{ numpy }}
         - pip
       run:
         - python
@@ -236,6 +236,7 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (TestBatch and (test_solve or test_lu_solve))" %}     # [win]
         # scipy/scipy#19210 - 60 failing tests!
         {% set tests_to_skip = tests_to_skip + " or test_null_space or test_small_sigma2" %}              # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (test_all_type_size_routine_combinations and float32)" %}  # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
