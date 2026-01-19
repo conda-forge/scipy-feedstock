@@ -3,12 +3,14 @@ set -ex
 
 mkdir builddir
 
-# HACK: extend $CONDA_PREFIX/meson_cross_file that's created in
-# https://github.com/conda-forge/ctng-compiler-activation-feedstock/blob/main/recipe/activate-gcc.sh
-# https://github.com/conda-forge/clang-compiler-activation-feedstock/blob/main/recipe/activate-clang.sh
-# to use host python; requires that [binaries] section is last in meson_cross_file
-echo "python = '${PREFIX}/bin/python'" >> ${CONDA_PREFIX}/meson_cross_file.txt
-echo "numpy-config = '${PREFIX}/bin/numpy-config'" >> ${CONDA_PREFIX}/meson_cross_file.txt
+if [[ $build_platform != $target_platform ]]; then
+    # write to separate cross-file to not interfere with default cross-python activation, c.f.
+    # https://github.com/conda-forge/cross-python-feedstock/blob/91d3c9cf/recipe/activate-cross-python.sh#L111-L125
+    echo "[binaries]"                                   > $SRC_DIR/scipy_cross_file.txt
+    # Forces use of --free-threading for f2py, which otherwise goes missing in cross compilation; see #314
+    echo "numpy-config = '${PREFIX}/bin/numpy-config'" >> $SRC_DIR/scipy_cross_file.txt
+    export MESON_ARGS="$MESON_ARGS --cross-file=$SRC_DIR/scipy_cross_file.txt"
+fi
 
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 $PYTHON -m build -w -n -x \
