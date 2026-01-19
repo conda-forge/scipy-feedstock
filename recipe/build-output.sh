@@ -24,15 +24,12 @@ else
     # https://scipy.github.io/devdocs/building/redistributable_binaries.html
     sed -i "s:name = \"scipy\":name = \"scipy-tests\":g" pyproject.toml
 
-    # HACK: extend $CONDA_PREFIX/meson_cross_file that's created in
-    # https://github.com/conda-forge/ctng-compiler-activation-feedstock/blob/main/recipe/activate-gcc.sh
-    # https://github.com/conda-forge/clang-compiler-activation-feedstock/blob/main/recipe/activate-clang.sh
-    # to use host python; requires that [binaries] section is last in meson_cross_file
-    echo "python = '${PREFIX}/bin/python'" >> ${CONDA_PREFIX}/meson_cross_file.txt
-
-    # meson-python already sets up a -Dbuildtype=release argument to meson, so
-    # we need to strip --buildtype out of MESON_ARGS or fail due to redundancy
-    MESON_ARGS_REDUCED="$(echo $MESON_ARGS | sed 's/--buildtype release //g')"
+    if [[ $build_platform != $target_platform ]]; then
+        # see build.sh
+        echo "[binaries]"                                   > $SRC_DIR/scipy_cross_file.txt
+        echo "numpy-config = '${PREFIX}/bin/numpy-config'" >> $SRC_DIR/scipy_cross_file.txt
+        export MESON_ARGS="$MESON_ARGS --cross-file=$SRC_DIR/scipy_cross_file.txt"
+    fi
 
     # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
     $PYTHON -m build -w -n -x \
@@ -41,7 +38,7 @@ else
         -Csetup-args=-Dblas=blas \
         -Csetup-args=-Dlapack=lapack \
         -Csetup-args=-Duse-g77-abi=true \
-        -Csetup-args=${MESON_ARGS_REDUCED// / -Csetup-args=} \
+        -Csetup-args=${MESON_ARGS// / -Csetup-args=} \
         || (cat builddir/meson-logs/meson-log.txt && exit 1)
 
     pip install dist/scipy*.whl
