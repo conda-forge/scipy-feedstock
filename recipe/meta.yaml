@@ -1,4 +1,4 @@
-{% set version = "1.17.1" %}
+{% set version = "1.18.0rc1" %}
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
@@ -14,11 +14,11 @@ package:
 
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
-  sha256: 95d8e012d8cb8816c226aef832200b1d45109ed4464303e997c5b13122b297c0
+  sha256: 75037c0f026b67451c93a785df90af5b0cb7efeeb93c25e8a283a2461b2bd418
 
 build:
-  number: 1
-  skip: true  # [py<311]
+  number: 0
+  skip: true  # [py<312]
 
 requirements:
   build:
@@ -93,7 +93,7 @@ outputs:
         - numpy <2.{{ numpy_minor + 3 }}
         # double-check lower bound from
         # https://github.com/scipy/scipy/blob/v{{ version }}/pyproject.toml#L55
-        - numpy >=1.25.2
+        - numpy >=2.0.0
     test:
       requires:
         - pytest
