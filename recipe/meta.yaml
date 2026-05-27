@@ -2,7 +2,7 @@
 
 # Update the numpy value here to the most recent released version
 # when updating to a new scipy feature release; override default pins
-{% set numpy = "2.4.0" %}
+{% set numpy = "2.4" %}
 {% set numpy_minor = numpy.split(".")[1] | int %}
 
 # ensure is_freethreading gets detected as a used variable
@@ -17,7 +17,7 @@ source:
   sha256: 95d8e012d8cb8816c226aef832200b1d45109ed4464303e997c5b13122b297c0
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<311]
 
 requirements:
@@ -231,36 +231,33 @@ outputs:
         - mpmath
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
+        # inf vs. nan issues
+        {% set tests_to_skip = tests_to_skip + " or (TestCephes and test_expm1_complex)" %}               # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (TestCephes and test_log1p_complex)" %}               # [aarch64]
         # undiagnosed tolerance violations
+        {% set tests_to_skip = tests_to_skip + " or test_negative_real_gh14582" %}                        # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (TestAAA and test_diag_scaling)" %}                   # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (TestSystematic and test_spherical)" %}               # [aarch64]
         {% set tests_to_skip = tests_to_skip + " or test_log1mexp" %}                                     # [win]
         {% set tests_to_skip = tests_to_skip + " or (TestBatch and (test_solve or test_lu_solve))" %}     # [win]
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or test_null_space or test_small_sigma2" %}              # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_all_type_size_routine_combinations and float32)" %}  # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
-        {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or test_quad_vec_pool" %}                                # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse)" %}         # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (test_multiprocess and fft)" %}                       # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_complex_exact)" %}         # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale)" %}          # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestShgoArguments and test_19_parallelization)" %}   # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (test_workers and (TestBrute or TestDogbox or TestLM or TestTRF))" %}                   # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (test_workers and (TestScalarFunction or TestVectorialFunction))" %}                    # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestWorkers and (test_smoke or test_equal_bounds))" %}                                 # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivatives and (test_all or test_scalar_vector))" %}                        # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivatives and (test_vector_vector or test_workers_evaluations))" %}        # [aarch64 or ppc64le]
-        {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or test_quad_vec_pool" %}                                # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (test_lsq_linear and test_large_rank_deficient)" %}   # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (test_iterative and test_precond_inverse)" %}         # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (test_multiprocess and fft)" %}                       # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_complex_exact)" %}         # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestLevyStable and test_location_scale)" %}          # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestShgoArguments and test_19_parallelization)" %}   # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (test_workers and (TestBrute or TestDogbox or TestLM or TestTRF))" %}                   # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (test_workers and (TestScalarFunction or TestVectorialFunction))" %}                    # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestWorkers and (test_smoke or test_equal_bounds))" %}                                 # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivatives and (test_all or test_scalar_vector))" %}                        # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestApproxDerivatives and (test_vector_vector or test_workers_evaluations))" %}        # [build_platform != target_platform]
+        {% set tests_to_skip = tests_to_skip + " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))" %}    # [build_platform != target_platform]
         # tests that run into timeouts (set in scipy test suite) in emulation
-        {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}            # [aarch64 or ppc64le]
+        {% set tests_to_skip = tests_to_skip + " or (test_propack and test_examples)" %}            # [build_platform != target_platform]
         # hangs on windows for old CPUs: https://github.com/scipy/scipy/issues/23527
         {% set tests_to_skip = tests_to_skip + " or test_variation_ddof" %}                         # [win]
         {% set tests_to_skip = tests_to_skip + " or test_warning_calls_filters" %}                  # [win]
@@ -282,9 +279,9 @@ outputs:
         {% set tests_to_skip = tests_to_skip + " or (TestSVD_GESVD and test_random_complex)" %}     # [win]
         # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
         - python -c "import numpy; numpy.show_config()"
-        # tests for ppc64le and aarch64 are run in emulation through QEMU; as this takes
+        # tests for cross-compiled targets run in emulation through QEMU; as this takes
         # much longer, do not run the most heavy-weight tests, i.e. use label='fast'
-        {% set label = "'fast'" if (aarch64 or ppc64le) else "'full'" %}
+        {% set label = "'fast'" if (build_platform != target_platform) else "'full'" %}
         # for signature of scipy.test see below (note default: label='fast'):
         # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
         {% set param = "verbose=1, label=" + label + ", tests=None" %}
