@@ -234,15 +234,6 @@ outputs:
         # undiagnosed tolerance violations
         {% set tests_to_skip = tests_to_skip + " or test_log1mexp" %}                                     # [win]
         {% set tests_to_skip = tests_to_skip + " or (TestBatch and (test_solve or test_lu_solve))" %}     # [win]
-        # scipy/scipy#19210 - 60 failing tests!
-        {% set tests_to_skip = tests_to_skip + " or test_null_space or test_small_sigma2" %}              # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_all_type_size_routine_combinations and float32)" %}  # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestQR and (delete_f or insert_f or update_f))" %}   # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (TestLstsq and test_random_overdet)" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + " or (test_lapack.py and (" %}                             # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " test_pftri or test_pstrf or test_pstf2" %}           # [aarch64]
-            {% set tests_to_skip = tests_to_skip + " or test_sfrk_hfrk or TestBlockedQR" %}               # [aarch64]
-        {% set tests_to_skip = tests_to_skip + "))" %}                                                    # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]
