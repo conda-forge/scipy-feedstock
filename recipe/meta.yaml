@@ -15,6 +15,8 @@ package:
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: 75037c0f026b67451c93a785df90af5b0cb7efeeb93c25e8a283a2461b2bd418
+  patches:
+    - patches/0001-MAINT-fix-some-minor-tolerance-violations.patch
 
 build:
   number: 0
