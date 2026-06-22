@@ -12,9 +12,15 @@ package:
   name: scipy-split
   version: {{ version }}
 
+# use 'blas_impl' in meta.yaml to ensure CI jobs get split
+# [blas_impl == "mkl"]
+
 source:
   url: https://pypi.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
   sha256: 67b2ad2ad54c72ca6d04975a9b2df8c3638c34ddd5b28738e94fc2b57929d378
+  patches:
+    # follow-up that missed https://github.com/scipy/scipy/pull/25231
+    - patches/0001-MAINT-fix-some-minor-tolerance-violations.patch
 
 build:
   number: 0
@@ -229,10 +235,10 @@ outputs:
         - pytest-timeout
         - pytest-xdist
         - mpmath
+        # make sure we test with all blas implementations
+        - libblas * *{{ blas_impl }}
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
-        # sign errors
-        {% set tests_to_skip = tests_to_skip + " or (TestSystematic and test_spherical)" %}               # [aarch64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]

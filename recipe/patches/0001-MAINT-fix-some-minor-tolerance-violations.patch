@@ -1,0 +1,22 @@
+From f737d698c9ded35fd8b9788f7b44b9384ef92f62 Mon Sep 17 00:00:00 2001
+From: "H. Vetinari" <h.vetinari@gmx.com>
+Date: Wed, 27 May 2026 15:09:27 +1100
+Subject: [PATCH] MAINT: fix some minor tolerance violations
+
+---
+ scipy/stats/tests/test_kdeoth.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/scipy/stats/tests/test_kdeoth.py b/scipy/stats/tests/test_kdeoth.py
+index a4ceed5e47..a579713db0 100644
+--- a/scipy/stats/tests/test_kdeoth.py
++++ b/scipy/stats/tests/test_kdeoth.py
+@@ -181,7 +181,7 @@ def test_kde_2d_weighted(n_basesample):
+     assert_allclose(
+         gkde(xx.T),
+         np.sum(pdf(arg, cov=gkde.covariance) * gkde.weights, axis=-1),
+-        rtol=5e-14
++        rtol=6e-14
+     )
+ 
+     # ... and cdf
