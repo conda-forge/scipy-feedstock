@@ -12,6 +12,11 @@ if [[ $build_platform != $target_platform ]]; then
     export MESON_ARGS="$MESON_ARGS --cross-file=$SRC_DIR/scipy_cross_file.txt"
 fi
 
+if [[ "${target_platform}" == osx-* ]]; then
+    # See https://conda-forge.org/docs/maintainer/knowledge_base.html#newer-c-features-with-old-sdk
+    CXXFLAGS="${CXXFLAGS} -D_LIBCPP_DISABLE_AVAILABILITY"
+fi
+
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 $PYTHON -m build -w -n -x \
     -Cbuilddir=builddir \
