@@ -16,10 +16,13 @@ FOR %%A IN ("%~dp0.") DO SET "REPO_ROOT=%%~dpA"
 if "%MINIFORGE_HOME%"=="" set "MINIFORGE_HOME=%USERPROFILE%\Miniforge3"
 :: Remove trailing backslash, if present
 if "%MINIFORGE_HOME:~-1%"=="\" set "MINIFORGE_HOME=%MINIFORGE_HOME:~0,-1%"
+
+set "arch=64"
+if "%PROCESSOR_ARCHITECTURE%"=="ARM64" set "arch=arm64"
 call :start_group "Provisioning base env with micromamba"
 set "MAMBA_ROOT_PREFIX=%MINIFORGE_HOME%-micromamba-%RANDOM%"
-set "MICROMAMBA_VERSION=1.5.10-0"
-set "MICROMAMBA_URL=https://github.com/mamba-org/micromamba-releases/releases/download/%MICROMAMBA_VERSION%/micromamba-win-64"
+set "MICROMAMBA_VERSION=2.9.0-0"
+set "MICROMAMBA_URL=https://github.com/mamba-org/micromamba-releases/releases/download/%MICROMAMBA_VERSION%/micromamba-win-%arch%"
 set "MICROMAMBA_TMPDIR=%TMP%\micromamba-%RANDOM%"
 set "MICROMAMBA_EXE=%MICROMAMBA_TMPDIR%\micromamba.exe"
 
@@ -31,7 +34,7 @@ if !errorlevel! neq 0 exit /b !errorlevel!
 echo Creating environment
 call "%MICROMAMBA_EXE%" create --yes --root-prefix "%MAMBA_ROOT_PREFIX%" --prefix "%MINIFORGE_HOME%" ^
     --channel conda-forge ^
-    pip python=3.12 conda-build conda-forge-ci-setup=4 "conda-build>=26.3"
+    pip python=3.14 conda-build conda-forge-ci-setup=4 "conda-build>=26.3"
 if !errorlevel! neq 0 exit /b !errorlevel!
 echo Removing %MAMBA_ROOT_PREFIX%
 del /S /Q "%MAMBA_ROOT_PREFIX%" >nul
@@ -77,12 +80,8 @@ call :end_group
 
 :: Build the recipe
 echo Building recipe
-set "_OLD_CONDA_SUBDIR=%CONDA_SUBDIR%"
-set "CONDA_SUBDIR=%BUILD_PLATFORM%"
 conda-build.exe "recipe" -m .ci_support\%CONFIG%.yaml --suppress-variables %EXTRA_CB_OPTIONS%
 if !errorlevel! neq 0 exit /b !errorlevel!
-set "_OLD_CONDA_SUBDIR="
-set "CONDA_SUBDIR=%_OLD_CONDA_SUBDIR%"
 
 call :start_group "Inspecting artifacts"
 :: inspect_artifacts was only added in conda-forge-ci-setup 4.9.4

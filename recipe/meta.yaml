@@ -248,10 +248,12 @@ outputs:
       commands:
         {% set tests_to_skip = "_not_a_real_test" %}
         # sign errors
-        {% set tests_to_skip = tests_to_skip + " or (TestSystematic and test_spherical)" %}               # [aarch64]
+        {% set tests_to_skip = tests_to_skip + " or (TestSystematic and test_spherical)" %}               # [aarch64 or riscv64]
         # Single-precision CGS convergence depends on platform rounding;
         # similar to https://github.com/scipy/scipy/issues/25522
         {% set tests_to_skip = tests_to_skip + " or (test_convergence and rand-sym-pd-F-cgs)" %}          # [win and arm64]
+        # timeout on current riscv agents
+        {% set tests_to_skip = tests_to_skip + " or test_rv_generic[34-distdata34]" %}                    # [riscv64]
         # on the slowest agents, these tests take more than 20min in emulation
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]

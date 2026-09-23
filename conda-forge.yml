@@ -8,6 +8,7 @@ github:
   tooling_branch_name: main
 provider:
   linux_aarch64: default
+  linux_riscv64: default
   osx_arm64: default
   win_arm64: default
 test: native_and_emulated
