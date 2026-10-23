@@ -23,7 +23,7 @@ source:
     - patches/0003-preserve-sici-signed-zero.patch
 
 build:
-  number: 1
+  number: 2
   skip: true  # [py<312]
 
 requirements:
@@ -173,7 +173,7 @@ outputs:
         ] %}
         {% set PY_ABI = "cpython-" ~ PY_VER.replace(".", "") %}                         # [unix]
         {% set PY_ABI = "cp" ~ PY_VER.replace(".", "") ~ ("t" if is_freethreading == "true" else "") %}   # [win]
-        {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else "powerpc64le")%}  # [linux]
+        {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else ("riscv64" if target_platform == "linux-riscv64" else "powerpc64le")) %}  # [linux]
         {% set ARCH = "amd64" if x86 else "arm64" %}                                    # [win]
         {% for each_lib in test_libraries %}
         - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-{{ ARCH }}-linux-gnu.so                     # [linux]
