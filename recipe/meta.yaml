@@ -23,7 +23,7 @@ source:
     - patches/0003-preserve-sici-signed-zero.patch
 
 build:
-  number: 1
+  number: 2
   skip: true  # [py<312]
 
 requirements:
@@ -173,7 +173,7 @@ outputs:
         ] %}
         {% set PY_ABI = "cpython-" ~ PY_VER.replace(".", "") %}                         # [unix]
         {% set PY_ABI = "cp" ~ PY_VER.replace(".", "") ~ ("t" if is_freethreading == "true" else "") %}   # [win]
-        {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else "powerpc64le")%}  # [linux]
+        {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else ("riscv64" if target_platform == "linux-riscv64" else "powerpc64le")) %}  # [linux]
         {% set ARCH = "amd64" if x86 else "arm64" %}                                    # [win]
         {% for each_lib in test_libraries %}
         - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-{{ ARCH }}-linux-gnu.so                     # [linux]
@@ -252,7 +252,11 @@ outputs:
         # Single-precision CGS convergence depends on platform rounding;
         # similar to https://github.com/scipy/scipy/issues/25522
         {% set tests_to_skip = tests_to_skip + " or (test_convergence and rand-sym-pd-F-cgs)" %}          # [win and arm64]
+        # fails on riscv, but only in emulation
+        {% set tests_to_skip = tests_to_skip + " or (TestVectorNorms and test_stable)" %}                            # [riscv64]
+        {% set tests_to_skip = tests_to_skip + " or test_precond_dummy[poisson2d-F-cgs-numpy-batch_b0-batch_A0]" %}  # [riscv64]
         # on the slowest agents, these tests take more than 20min in emulation
+        {% set tests_to_skip = tests_to_skip + " or test_nan_inputs[airye]" %}                            # [riscv64]
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_quad_vec_pool" %}                                # [build_platform != target_platform]
