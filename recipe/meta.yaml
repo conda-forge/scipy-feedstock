@@ -252,7 +252,11 @@ outputs:
         # Single-precision CGS convergence depends on platform rounding;
         # similar to https://github.com/scipy/scipy/issues/25522
         {% set tests_to_skip = tests_to_skip + " or (test_convergence and rand-sym-pd-F-cgs)" %}          # [win and arm64]
+        # fails on riscv, but only in emulation
+        {% set tests_to_skip = tests_to_skip + " or (TestVectorNorms and test_stable)" %}                            # [riscv64]
+        {% set tests_to_skip = tests_to_skip + " or test_precond_dummy[poisson2d-F-cgs-numpy-batch_b0-batch_A0]" %}  # [riscv64]
         # on the slowest agents, these tests take more than 20min in emulation
+        {% set tests_to_skip = tests_to_skip + " or test_nan_inputs[airye]" %}                            # [riscv64]
         {% set tests_to_skip = tests_to_skip + " or test_all_nograd_minimizers" %}                        # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_mixed_threads_processes or test_sf_gh18506" %}   # [build_platform != target_platform]
         {% set tests_to_skip = tests_to_skip + " or test_quad_vec_pool" %}                                # [build_platform != target_platform]
