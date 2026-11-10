@@ -277,6 +277,8 @@ outputs:
         - python
         - pip
         - cython
+        # for https://github.com/scipy/scipy/issues/25904
+        - meson <1.12
         - meson-python
         - ninja
         - pkg-config
