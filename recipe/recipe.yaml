@@ -1,16 +1,13 @@
-{% set version = "1.18.1" %}
+context:
+  version: "1.18.1"
+  # Update the numpy value here to the most recent released version
+  # when updating to a new scipy feature release; override default pins
+  numpy_pin: "2.5"
+  numpy_minor: ${{ (numpy_pin | split(".") | list)[1] | int }}
 
-# Update the numpy value here to the most recent released version
-# when updating to a new scipy feature release; override default pins
-{% set numpy = "2.5" %}
-{% set numpy_minor = numpy.split(".")[1] | int %}
-
-# ensure is_freethreading gets detected as a used variable
-# [is_freethreading]
-
-package:
+recipe:
   name: scipy-split
-  version: {{ version }}
+  version: ${{ version }}
 
 source:
   url: https://files.pythonhosted.org/packages/source/s/scipy/scipy-{{ version }}.tar.gz
@@ -286,15 +283,15 @@ outputs:
         - python -c "import scipy, sys; sys.exit(not scipy.test({{ param }}, {{ extra }}))"
 
 about:
-  home: http://www.scipy.org/
+  homepage: http://www.scipy.org/
   license: BSD-3-Clause
   license_file: LICENSE.txt
   summary: Scientific Library for Python
   description: |
     SciPy is a Python-based ecosystem of open-source software for mathematics,
     science, and engineering.
-  doc_url: http://www.scipy.org/docs.html
-  dev_url: https://github.com/scipy/scipy
+  documentation: http://www.scipy.org/docs.html
+  repository: https://github.com/scipy/scipy
 
 extra:
   recipe-maintainers:
