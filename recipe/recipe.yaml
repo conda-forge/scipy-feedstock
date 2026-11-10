@@ -68,21 +68,25 @@ outputs:
         - numpy ${{ numpy_pin }}.*
         - pip
 
-  - name: scipy
-    script: build-output.sh   # [not win]
-    script: build-output.bat  # [win]
+  - package:
+      name: scipy
+    inherit: scipy-build
     build:
-      ignore_run_exports:     # [win]
-        - libflang            # [win]
+      script:
+        file: build-output
+        env:
+          is_freethreading: ${{ (is_freethreading ~ "") | lower }}
     requirements:
       build:
-        - python                                 # [build_platform != target_platform]
-        - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+        - if: build_platform != target_platform
+          then:
+            - python
+            - cross-python_${{ target_platform }}
         # only need these for the strong run exports
-        - {{ compiler('c') }}
-        - {{ stdlib('c') }}
-        - {{ compiler('cxx') }}
-        - {{ compiler('fortran') }}
+        - ${{ compiler('c') }}
+        - ${{ stdlib('c') }}
+        - ${{ compiler('cxx') }}
+        - ${{ compiler('fortran') }}
       host:
         - libblas
         - libcblas
@@ -97,7 +101,7 @@ outputs:
         - python-build
         - pybind11
         - pythran
-        - numpy {{ numpy }}
+        - numpy ${{ numpy_pin }}.*
         - pip
       run:
         - python
@@ -105,97 +109,103 @@ outputs:
         # is exposed as deeply to its ABI. scipy however only supports
         # the two next minor versions after the numpy we build against, see
         # https://scipy.github.io/devdocs/dev/core-dev/index.html#version-ranges-for-numpy-and-other-dependencies
-        - numpy <2.{{ numpy_minor + 3 }}
+        - numpy <2.${{ numpy_minor + 3 }}
         # double-check lower bound from
-        # https://github.com/scipy/scipy/blob/v{{ version }}/pyproject.toml#L55
+        # https://github.com/scipy/scipy/blob/v${{ version }}/pyproject.toml#L55
         - numpy >=2.0.0
-    test:
-      requires:
-        - pytest
-        - hypothesis
-      imports:
-        - scipy
-        # reference for public API is effectively
-        # https://github.com/scipy/scipy/blob/main/scipy/_lib/tests/test_public_api.py
-        - scipy.cluster
-        - scipy.cluster.hierarchy
-        - scipy.cluster.vq
-        - scipy.constants
-        - scipy.datasets
-        - scipy.fft
-        - scipy.fftpack
-        - scipy.integrate
-        - scipy.interpolate
-        - scipy.io
-        - scipy.io.arff
-        - scipy.io.matlab
-        - scipy.io.wavfile
-        - scipy.linalg
-        - scipy.linalg.blas
-        - scipy.linalg.cython_blas
-        - scipy.linalg.cython_lapack
-        - scipy.linalg.interpolative
-        - scipy.linalg.lapack
-        - scipy.misc
-        - scipy.ndimage
-        - scipy.odr
-        - scipy.optimize
-        - scipy.signal
-        - scipy.signal.windows
-        - scipy.sparse
-        - scipy.sparse.csgraph
-        - scipy.sparse.linalg
-        - scipy.spatial
-        - scipy.spatial.distance
-        - scipy.spatial.transform
-        - scipy.special
-        - scipy.stats
-        - scipy.stats.contingency
-        - scipy.stats.distributions
-        - scipy.stats.mstats
-        - scipy.stats.qmc
-        - scipy.stats.sampling
-      commands:
-        # absence of tests (selection)
-        {% set test_folders = [
-            "_lib/tests", "cluster/tests", "constants/tests", "datasets/tests",
-            "fftpack/tests", "fft/tests", "integrate/tests", "interpolate/tests",
-            "io/tests", "linalg/tests", "misc/tests", "ndimage/tests", "odr/tests",
-            "optimize/tests", "signal/tests", "sparse/tests", "spatial/tests",
-            "special/tests", "stats/tests"
-        ] %}
-        {% for each_folder in test_folders %}
-        - test ! -d $SP_DIR/scipy/{{ each_folder }}                               # [unix]
-        - if exist %SP_DIR%\scipy\{{ "\\".join(each_folder.split("/")) }} exit 1  # [win and py<315]
-        # go back to SP_DIR once https://github.com/conda/conda-build/pull/6143 is available
-        - if exist %PREFIX%\lib\python\site-packages\scipy\{{ "\\".join(each_folder.split("/")) }} exit 1  # [win and py>=315]
-        {% endfor %}
-
-        # absence of testing DSOs (selection)
-        {% set test_libraries = [
-            "_lib/_test_ccallback", "integrate/_test_multivariate", "io/_test_fortran",
-            "ndimage/_ctest", "ndimage/_cytest", "special/_test_internal"
-        ] %}
-        {% set PY_ABI = "cpython-" ~ PY_VER.replace(".", "") %}                         # [unix]
-        {% set PY_ABI = "cp" ~ PY_VER.replace(".", "") ~ ("t" if is_freethreading == "true" else "") %}   # [win]
-        {% set ARCH = "x86_64" if x86 else ("aarch64" if aarch64 else ("riscv64" if target_platform == "linux-riscv64" else "powerpc64le")) %}  # [linux]
-        {% set ARCH = "amd64" if x86 else "arm64" %}                                    # [win]
-        {% for each_lib in test_libraries %}
-        - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-{{ ARCH }}-linux-gnu.so                     # [linux]
-        - test ! -f $SP_DIR/scipy/{{ each_lib }}.{{ PY_ABI }}-darwin.so                                   # [osx]
-        - if exist %SP_DIR%\scipy\{{ "\\".join(each_lib.split("/")) }}.{{ PY_ABI }}-win_{{ ARCH }}.pyd exit 1  # [win and py<315]
-        - if exist %PREFIX%\lib\python\site-packages\scipy\{{ "\\".join(each_lib.split("/")) }}.{{ PY_ABI }}-win_{{ ARCH }}.pyd exit 1  # [win and py>=315]
-        {% endfor %}
-
-        # test that scipy.test raises an informative error
-        - python -c "import scipy; throw_away_the_return_value = scipy.test()" > testlog
-        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
-        # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
-        - (pytest --pyargs scipy || echo "failure was expected") > testlog   # [unix]
-        - (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog  # [win]
-        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
-        # ensure only one test is left (namely, our hint)
-        - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
+      ignore_run_exports:
+        by_name:
+          - if: win
+            then: libflang
+    tests:
+      - python:
+          imports:
+            - scipy
+            # reference for public API is effectively
+            # https://github.com/scipy/scipy/blob/main/scipy/_lib/tests/test_public_api.py
+            - scipy.cluster
+            - scipy.cluster.hierarchy
+            - scipy.cluster.vq
+            - scipy.constants
+            - scipy.datasets
+            - scipy.fft
+            - scipy.fftpack
+            - scipy.integrate
+            - scipy.interpolate
+            - scipy.io
+            - scipy.io.arff
+            - scipy.io.matlab
+            - scipy.io.wavfile
+            - scipy.linalg
+            - scipy.linalg.blas
+            - scipy.linalg.cython_blas
+            - scipy.linalg.cython_lapack
+            - scipy.linalg.interpolative
+            - scipy.linalg.lapack
+            - scipy.misc
+            - scipy.ndimage
+            - scipy.odr
+            - scipy.optimize
+            - scipy.signal
+            - scipy.signal.windows
+            - scipy.sparse
+            - scipy.sparse.csgraph
+            - scipy.sparse.linalg
+            - scipy.spatial
+            - scipy.spatial.distance
+            - scipy.spatial.transform
+            - scipy.special
+            - scipy.stats
+            - scipy.stats.contingency
+            - scipy.stats.distributions
+            - scipy.stats.mstats
+            - scipy.stats.qmc
+            - scipy.stats.sampling
+      - package_contents:
+          files:
+            not_exists:
+              # absence of tests (selection)
+              - "**/site-packages/scipy/_lib/tests/**"
+              - "**/site-packages/scipy/cluster/tests/**"
+              - "**/site-packages/scipy/constants/tests/**"
+              - "**/site-packages/scipy/datasets/tests/**"
+              - "**/site-packages/scipy/fftpack/tests/**"
+              - "**/site-packages/scipy/fft/tests/**"
+              - "**/site-packages/scipy/integrate/tests/**"
+              - "**/site-packages/scipy/interpolate/tests/**"
+              - "**/site-packages/scipy/io/tests/**"
+              - "**/site-packages/scipy/linalg/tests/**"
+              - "**/site-packages/scipy/misc/tests/**"
+              - "**/site-packages/scipy/ndimage/tests/**"
+              - "**/site-packages/scipy/odr/tests/**"
+              - "**/site-packages/scipy/optimize/tests/**"
+              - "**/site-packages/scipy/signal/tests/**"
+              - "**/site-packages/scipy/sparse/tests/**"
+              - "**/site-packages/scipy/spatial/tests/**"
+              - "**/site-packages/scipy/special/tests/**"
+              - "**/site-packages/scipy/stats/tests/**"
+              # absence of testing DSOs (selection)
+              - "**/site-packages/scipy/_lib/_test_ccallback.*"
+              - "**/site-packages/scipy/integrate/_test_multivariate.*"
+              - "**/site-packages/scipy/io/_test_fortran.*"
+              - "**/site-packages/scipy/ndimage/_ctest.*"
+              - "**/site-packages/scipy/ndimage/_cytest.*"
+              - "**/site-packages/scipy/special/_test_internal.*"
+      - requirements:
+          run:
+            - pytest
+            - hypothesis
+        script:
+          # test that scipy.test raises an informative error
+          - python -c "import scipy; throw_away_the_return_value = scipy.test()" > testlog
+          - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
+          # same for `pytest --pyargs scipy` (uses exit code that's neither 0 or 1 on win, which breaks piping)
+          - if: unix
+            then: (pytest --pyargs scipy || echo "failure was expected") > testlog
+            else: (pytest --pyargs scipy || if !ERRORLEVEL! neq 0 exit 0) > testlog
+          - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('conda-forge builds of' in x for x in lines) else 1)"
+          # ensure only one test is left (namely, our hint)
+          - python -c "import sys; lines=open('testlog').readlines(); sys.exit(0 if any('======== 1 failed' in x for x in lines) else 1)"
 
   - name: scipy-tests
     script: build-output.sh   # [not win]
