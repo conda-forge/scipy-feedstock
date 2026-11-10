@@ -26,6 +26,9 @@ if "%PKG_NAME%"=="scipy" (
     REM instead of using the same script (lightly templated on tags) per output,
     REM we keep the global build to reuse the cache when building the tests.
 
+    REM the staging work directory still contains the scipy wheel; remove it
+    if exist dist rmdir /s /q dist
+
     REM need to rename project as well; for more details see
     REM https://scipy.github.io/devdocs/building/redistributable_binaries.html
     sed -i "s:name = \"scipy\":name = \"scipy-tests\":g" pyproject.toml

@@ -20,6 +20,9 @@ else
     # same script (lightly templated on tags) per output, we keep the
     # global build to reuse the cache when building the tests
 
+    # the staging work directory still contains the scipy wheel; remove it
+    rm -rf dist
+
     # need to rename project as well; for more details see
     # https://scipy.github.io/devdocs/building/redistributable_binaries.html
     sed -i "s:name = \"scipy\":name = \"scipy-tests\":g" pyproject.toml
