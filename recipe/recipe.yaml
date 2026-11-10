@@ -21,45 +21,53 @@ source:
 
 build:
   number: 2
-  skip: true  # [py<312]
+  skip:
+    - match(python, "<3.12")
 
-requirements:
-  build:
-    - python                                 # [build_platform != target_platform]
-    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
-    - cython                                 # [build_platform != target_platform]
-    - numpy {{ numpy }}                      # [build_platform != target_platform]
-    - pybind11                               # [build_platform != target_platform]
-    - meson-python                           # [build_platform != target_platform]
-    - cmake                                  # [build_platform != target_platform]
-    - ninja                                  # [build_platform != target_platform]
-    - pkg-config                             # [build_platform != target_platform]
-    - {{ compiler('c') }}
-    - {{ stdlib('c') }}
-    - {{ compiler('cxx') }}
-    - {{ compiler('fortran') }}
-    # pythran code needs clang-cl on windows
-    - clang                                  # [win]
-  host:
-    - libblas
-    - libcblas
-    - liblapack
-    - python
-    - cython
-    # for https://github.com/scipy/scipy/issues/25904
-    - meson <1.12
-    - meson-python
-    - ninja
-    - pkg-config
-    - python-build
-    - pybind11
-    - pythran
-    - numpy {{ numpy }}
-    - pip
-
-# the top-level build.{sh,bat} builds scipy, and then
-# build-output.{sh,bat} installs the files
+# the staging output builds the scipy wheel (build.{sh,bat}), and then
+# build-output.{sh,bat} installs the files for each package output
 outputs:
+  - staging:
+      name: scipy-build
+    build:
+      script: build
+    requirements:
+      build:
+        - if: build_platform != target_platform
+          then:
+            - python
+            - cross-python_${{ target_platform }}
+            - cython
+            - numpy ${{ numpy_pin }}.*
+            - pybind11
+            - meson-python
+            - cmake
+            - ninja
+            - pkg-config
+        - ${{ compiler('c') }}
+        - ${{ stdlib('c') }}
+        - ${{ compiler('cxx') }}
+        - ${{ compiler('fortran') }}
+        # pythran code needs clang-cl on windows
+        - if: win
+          then: clang
+      host:
+        - libblas
+        - libcblas
+        - liblapack
+        - python
+        - cython
+        # for https://github.com/scipy/scipy/issues/25904
+        - meson <1.12
+        - meson-python
+        - ninja
+        - pkg-config
+        - python-build
+        - pybind11
+        - pythran
+        - numpy ${{ numpy_pin }}.*
+        - pip
+
   - name: scipy
     script: build-output.sh   # [not win]
     script: build-output.bat  # [win]
