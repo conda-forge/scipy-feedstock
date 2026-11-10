@@ -16,7 +16,6 @@ Documentation: http://www.scipy.org/docs.html
 SciPy is a Python-based ecosystem of open-source software for mathematics,
 science, and engineering.
 
-
 Current build status
 ====================
 
