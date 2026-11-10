@@ -191,6 +191,9 @@ outputs:
             - scipy.stats.sampling
       - package_contents:
           files:
+            exists:
+              # informative error for `scipy.test()` / `pytest --pyargs scipy`
+              - "**/site-packages/scipy/_lib/test_conda_forge_packaging.py"
             not_exists:
               # absence of tests (selection)
               - "**/site-packages/scipy/_lib/tests/**"
