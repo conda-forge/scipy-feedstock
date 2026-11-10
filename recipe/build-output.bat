@@ -7,7 +7,7 @@ if "%PKG_NAME%"=="scipy" (
     REM so use a loop; there's only one wheel in dist/ anyway
     for /f %%f in ('dir /b /S .\dist') do (
         pip install %%f
-        if %ERRORLEVEL% neq 0 exit 1
+        if errorlevel 1 exit 1
     )
 
     REM copy "test" with informative error message into installation
@@ -50,10 +50,10 @@ if "%PKG_NAME%"=="scipy" (
         -Csetup-args=-Dlapack=lapack ^
         -Csetup-args=-Dfortran_std=none ^
         -Csetup-args=-Duse-g77-abi=true
-    if %ERRORLEVEL% neq 0 (type builddir\meson-logs\meson-log.txt && exit 1)
+    if errorlevel 1 (type builddir\meson-logs\meson-log.txt && exit 1)
 
     for /f %%f in ('dir /b /S .\dist') do (
         pip install %%f
-        if %ERRORLEVEL% neq 0 exit 1
+        if errorlevel 1 exit 1
     )
 )
