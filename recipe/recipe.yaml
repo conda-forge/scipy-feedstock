@@ -4,34 +4,6 @@ context:
   # when updating to a new scipy feature release; override default pins
   numpy_pin: "2.5"
   numpy_minor: ${{ (numpy_pin | split(".") | list)[1] | int }}
-  # tests for cross-compiled targets run in emulation through QEMU; as this takes
-  # much longer, do not run the most heavy-weight tests, i.e. use label='fast'
-  test_label: ${{ "fast" if build_platform != target_platform else "full" }}
-  tests_to_skip: >-
-    ${{ "_not_a_real_test"
-    ~ (" or (TestSystematic and test_spherical)" if target_platform == "linux-aarch64" else "")
-    ~ (" or (test_convergence and rand-sym-pd-F-cgs)" if target_platform == "win-arm64" else "")
-    ~ (" or (TestVectorNorms and test_stable)" if target_platform == "linux-riscv64" else "")
-    ~ (" or test_precond_dummy[poisson2d-F-cgs-numpy-batch_b0-batch_A0]" if target_platform == "linux-riscv64" else "")
-    ~ (" or test_nan_inputs[airye]" if target_platform == "linux-riscv64" else "")
-    ~ (" or test_all_nograd_minimizers"
-       ~ " or test_mixed_threads_processes or test_sf_gh18506"
-       ~ " or test_quad_vec_pool"
-       ~ " or (test_lsq_linear and test_large_rank_deficient)"
-       ~ " or (test_iterative and test_precond_inverse)"
-       ~ " or (test_multiprocess and fft)"
-       ~ " or (TestLstsq and test_random_complex_exact)"
-       ~ " or (TestLevyStable and test_location_scale)"
-       ~ " or (TestShgoArguments and test_19_parallelization)"
-       ~ " or (test_workers and (TestBrute or TestDogbox or TestLM or TestTRF))"
-       ~ " or (test_workers and (TestScalarFunction or TestVectorialFunction))"
-       ~ " or (TestWorkers and (test_smoke or test_equal_bounds))"
-       ~ " or (TestApproxDerivatives and (test_all or test_scalar_vector))"
-       ~ " or (TestApproxDerivatives and (test_vector_vector or test_workers_evaluations))"
-       ~ " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))"
-       ~ " or (test_propack and test_examples)"
-       if build_platform != target_platform else "")
-    }}
 
 recipe:
   name: scipy-split
@@ -307,11 +279,58 @@ outputs:
             - pytest-xdist
             - mpmath
         script:
-          # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
-          - python -c "import numpy; numpy.show_config()"
-          # for signature of scipy.test see below (note default: label='fast'):
-          # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
-          - python -c "import scipy, sys; sys.exit(not scipy.test(verbose=1, label='${{ test_label }}', tests=None, extra_argv=['-k', 'not (${{ tests_to_skip }})', '-nauto', '--timeout=1200', '--durations=50']))"
+          interpreter: python
+          content:
+            - import numpy, scipy, sys
+            # show SIMD features (some failures occur depending on presence/absence of e.g. AVX512)
+            - numpy.show_config()
+            - 'tests_to_skip = "_not_a_real_test"'
+            - 'label = "full"'
+            - if: aarch64
+              then:
+                # sign errors
+                - 'tests_to_skip += " or (TestSystematic and test_spherical)"'
+            - if: win and arm64
+              then:
+                # Single-precision CGS convergence depends on platform rounding;
+                # similar to https://github.com/scipy/scipy/issues/25522
+                - 'tests_to_skip += " or (test_convergence and rand-sym-pd-F-cgs)"'
+            - if: riscv64
+              then:
+                # fails on riscv, but only in emulation
+                - 'tests_to_skip += " or (TestVectorNorms and test_stable)"'
+                - 'tests_to_skip += " or test_precond_dummy[poisson2d-F-cgs-numpy-batch_b0-batch_A0]"'
+                # on the slowest agents, this test takes more than 20min in emulation
+                - 'tests_to_skip += " or test_nan_inputs[airye]"'
+            - if: build_platform != target_platform
+              then:
+                # tests for cross-compiled targets run in emulation through QEMU; as this takes
+                # much longer, do not run the most heavy-weight tests, i.e. use label='fast'
+                - 'label = "fast"'
+                # on the slowest agents, these tests take more than 20min in emulation
+                - 'tests_to_skip += " or test_all_nograd_minimizers"'
+                - 'tests_to_skip += " or test_mixed_threads_processes or test_sf_gh18506"'
+                - 'tests_to_skip += " or test_quad_vec_pool"'
+                - 'tests_to_skip += " or (test_lsq_linear and test_large_rank_deficient)"'
+                - 'tests_to_skip += " or (test_iterative and test_precond_inverse)"'
+                - 'tests_to_skip += " or (test_multiprocess and fft)"'
+                - 'tests_to_skip += " or (TestLstsq and test_random_complex_exact)"'
+                - 'tests_to_skip += " or (TestLevyStable and test_location_scale)"'
+                - 'tests_to_skip += " or (TestShgoArguments and test_19_parallelization)"'
+                - 'tests_to_skip += " or (test_workers and (TestBrute or TestDogbox or TestLM or TestTRF))"'
+                - 'tests_to_skip += " or (test_workers and (TestScalarFunction or TestVectorialFunction))"'
+                - 'tests_to_skip += " or (TestWorkers and (test_smoke or test_equal_bounds))"'
+                - 'tests_to_skip += " or (TestApproxDerivatives and (test_all or test_scalar_vector))"'
+                - 'tests_to_skip += " or (TestApproxDerivatives and (test_vector_vector or test_workers_evaluations))"'
+                - 'tests_to_skip += " or (TestDifferentialEvolutionSolver and (test_immediate_updating or test_parallel))"'
+                # tests that run into timeouts (set in scipy test suite) in emulation
+                - 'tests_to_skip += " or (test_propack and test_examples)"'
+            # for signature of scipy.test see below (note default: label='fast'):
+            # https://github.com/scipy/scipy/blob/v1.7.0/scipy/_lib/_testutils.py#L27
+            - 'param = {"verbose": 1, "label": label, "tests": None}'
+            - 'extra_argv = ["-k", f"not ({tests_to_skip})", "-nauto", "--timeout=1200", "--durations=50"]'
+            - 'print(f"running with args: kwargs={param}, extra_argv={extra_argv}")'
+            - sys.exit(not scipy.test(**param, extra_argv=extra_argv))
 
 about:
   homepage: http://www.scipy.org/
