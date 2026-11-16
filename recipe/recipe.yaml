@@ -43,7 +43,7 @@ outputs:
             - meson-python
             - cmake
             - ninja
-            - pkg-config
+            - pkgconf
         - ${{ compiler('c') }}
         - ${{ stdlib('c') }}
         - ${{ compiler('cxx') }}
@@ -61,7 +61,7 @@ outputs:
         - meson <1.12
         - meson-python
         - ninja
-        - pkg-config
+        - pkgconf
         - python-build
         - pybind11
         - pythran
@@ -97,7 +97,7 @@ outputs:
         - meson <1.12
         - meson-python
         - ninja
-        - pkg-config
+        - pkgconf
         - python-build
         - pybind11
         - pythran
@@ -233,7 +233,7 @@ outputs:
             - meson-python
             - cmake
             - ninja
-            - pkg-config
+            - pkgconf
         - ${{ compiler('c') }}
         - ${{ stdlib('c') }}
         - ${{ compiler('cxx') }}
@@ -256,7 +256,7 @@ outputs:
         - meson <1.12
         - meson-python
         - ninja
-        - pkg-config
+        - pkgconf
         - python-build
         - pybind11
         - pythran
