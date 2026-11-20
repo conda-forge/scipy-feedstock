@@ -20,7 +20,7 @@ source:
     - patches/0003-preserve-sici-signed-zero.patch
 
 build:
-  number: 3
+  number: 4
   skip:
     - match(python, "<3.12")
 
@@ -43,11 +43,11 @@ outputs:
             - meson-python
             - cmake
             - ninja
-            - pkgconf
         - ${{ compiler('c') }}
         - ${{ stdlib('c') }}
         - ${{ compiler('cxx') }}
         - ${{ compiler('fortran') }}
+        - pkgconf
         # pythran code needs clang-cl on windows
         - if: win
           then: clang
@@ -61,7 +61,6 @@ outputs:
         - meson <1.12
         - meson-python
         - ninja
-        - pkgconf
         - python-build
         - pybind11
         - pythran
@@ -87,6 +86,7 @@ outputs:
         - ${{ stdlib('c') }}
         - ${{ compiler('cxx') }}
         - ${{ compiler('fortran') }}
+        - pkgconf
       host:
         - libblas
         - libcblas
@@ -97,7 +97,6 @@ outputs:
         - meson <1.12
         - meson-python
         - ninja
-        - pkgconf
         - python-build
         - pybind11
         - pythran
@@ -233,11 +232,11 @@ outputs:
             - meson-python
             - cmake
             - ninja
-            - pkgconf
         - ${{ compiler('c') }}
         - ${{ stdlib('c') }}
         - ${{ compiler('cxx') }}
         - ${{ compiler('fortran') }}
+        - pkgconf
         - if: win
           then:
             - clang
