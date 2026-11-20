@@ -232,11 +232,11 @@ outputs:
             - meson-python
             - cmake
             - ninja
-            - pkgconf
         - ${{ compiler('c') }}
         - ${{ stdlib('c') }}
         - ${{ compiler('cxx') }}
         - ${{ compiler('fortran') }}
+        - pkgconf
         - if: win
           then:
             - clang
